@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">BaseProyect</string>
+    <string name="home_id">Home</string>
+    <string name="person_id">Profile</string>
+    <string name="settings_id">Settings</string>
+
+    <string name="api_key">AIzaSyDS62wITZA2AOkv-TDYD0oLaMy5FLzmTHY</string>
+
+</resources>
