@@ -7,11 +7,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.example.baseproyect.R
 import com.example.baseproyect.ViewUtils
 import com.example.baseproyect.ui.Event
@@ -20,16 +20,15 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.Polyline
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.fragment_map_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.*
 
 
 class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListener,
-    GoogleMap.OnPolylineClickListener {
+    GoogleMap.OnPolylineClickListener, GoogleMap.OnInfoWindowClickListener,GoogleMap.OnMapLongClickListener,
+    GoogleMap.OnMapClickListener {
     private lateinit var mMap: GoogleMap
     private val mMapView: MapView by lazy { map }
     private val baseRouteButton by lazy { fragment_map_base_route }
@@ -133,6 +132,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 
             mapFragmentViewModel.showBaseRoute()
         }
+        mMap.setOnMapClickListener(this)
+
+        mMap.setOnMapLongClickListener(this)
+
     }
 
     override fun onMyLocationButtonClick(): Boolean {
@@ -166,5 +169,34 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             setIconFloatingButton(mapFragmentViewModel.imageOpenButton)
             mMap.clear()
         }
+    }
+
+    override fun onMapClick(puntoPulsado: LatLng) {
+
+        mMap.setOnMapClickListener {
+            mMap.addMarker(MarkerOptions().position(puntoPulsado).title("Marker in Sydney"))
+
+        }
+    }
+
+    override fun onInfoWindowClick(p0: Marker) {
+
+    }
+
+    override fun onMapLongClick(p0: LatLng) {
+        val snippet = String.format(
+            Locale.getDefault(),
+            "Lat: %1$.5f, Long: %2$.5f",
+            p0.latitude,
+            p0.longitude
+        )
+        // marker común
+
+        var mMarkerTest: Marker = mMap.addMarker(
+            MarkerOptions()
+                .position(p0)
+                .title("Conductor")
+                .snippet(snippet)
+        )
     }
 }
