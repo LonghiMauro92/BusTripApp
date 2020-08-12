@@ -45,10 +45,10 @@ class MapFragmentViewModel :
         }
     }
 
-    fun showBaseRoute() {
+    fun showBaseRoute(line: String) {
         launch {
             when (val result =
-                withContext(Dispatchers.IO) { getBaseRoutesBusesUseCase.invoke("RECORRIDO_AZUL") }) {
+                withContext(Dispatchers.IO) { getBaseRoutesBusesUseCase.invoke(line) }) {
                 is UseCaseResult.Failure -> {
 //                Timber.e(CONNECT_TO_DRIVER_FAILED)
 //                mutableStatusLiveData.postValue(LiveDataEvent(PassengerMenuStatusLiveData(PassengerMenuRideStatus.NO_CABBIE)))
