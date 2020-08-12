@@ -7,5 +7,8 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-
+    <style name="Etiquetas">
+        <item name="android:background">@drawable/smu_os_ui_components_ic_plus</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
 </resources>

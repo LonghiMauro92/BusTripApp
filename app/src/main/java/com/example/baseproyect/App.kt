@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.example.baseproyect.di.viewModelModule
 import com.example.di.networkingModule
+import com.example.di.repositoryModule
 import com.example.di.useCasesModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -16,7 +17,7 @@ class App : Application() {
         startKoin {
             androidContext(this@App)
             androidLogger(Level.DEBUG)
-            modules(listOf(viewModelModule,useCasesModule,networkingModule))
+            modules(listOf(viewModelModule,useCasesModule,repositoryModule,networkingModule))
         }
     }
 
