@@ -10,12 +10,43 @@
         android:layout_height="match_parent"
         tools:context=".MapsActivity" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/fragment_map_base_route"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="22dp"
+        app:fab_addButtonColorNormal="?attr/colorPrimary"
+        app:fab_addButtonSize="normal"
+        app:fab_labelsPosition="left"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/accion_bus_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_directions_bus_black_24dp"
+            app:fab_colorNormal="@color/colorYell"
+            app:fab_colorPressed="@color/colorYellPressed"
+            app:fab_size="mini"
+            app:fab_title="Favorito" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/accion_bus_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_directions_bus_black_24dp"
+            app:fab_colorNormal="@color/colorGreen"
+            app:fab_size="mini"
+            app:fab_title="Buscar" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/accion_bus_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_directions_bus_black_24dp"
+            app:fab_colorNormal="@color/colorRed"
+            app:fab_size="mini"
+            app:fab_title="Añadir a la cesta" />
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 </androidx.constraintlayout.widget.ConstraintLayout>

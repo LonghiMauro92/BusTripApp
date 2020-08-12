@@ -22,6 +22,7 @@ import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.fragment_map_fragment.*
+import kotlinx.android.synthetic.main.fragment_settings.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
@@ -32,6 +33,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     private lateinit var mMap: GoogleMap
     private val mMapView: MapView by lazy { map }
     private val baseRouteButton by lazy { fragment_map_base_route }
+
+    private val baseRouteButton1 by lazy { accion_bus_1 }
+    private val baseRouteButton2 by lazy { accion_bus_2 }
+    private val baseRouteButton3 by lazy { accion_bus_3 }
     private val LOCATION_REQUEST_CODE = 1
 
     private val mapFragmentViewModel by viewModel<MapFragmentViewModel>()
@@ -48,43 +53,34 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             mMapView.onResume()
             mMapView.getMapAsync(this)
         }
-
     }
 
     private fun updateUI(data: Event<MapFragmentViewModel.Data>) {
         val pokemonCardDetailData = data.getContentIfNotHandled()
         when (pokemonCardDetailData?.status) {
-            MapFragmentViewModel.Status.LOADING -> {
-                configureDrawablesButton(
-                    R.drawable.smu_os_ui_components_ic_plus,
-                    R.drawable.ic_close
-                )
-                setIconFloatingButton(mapFragmentViewModel.imageOpenButton)
+            MapFragmentViewModel.Status.LOADING -> {//nothing now
             }
 
-            MapFragmentViewModel.Status.SHOW_ROUTES -> setVisibilityMenuButton()
+            MapFragmentViewModel.Status.SHOW_ROUTES -> setVisibilityMenuButton(data.peekContent().data)
         }
     }
 
-    private fun setRoutes() {
-
-        val centerPoint = LatLng(-37.328030, -59.137375)
-        mMap.addMarker(MarkerOptions().position(centerPoint).title("Marker in Sydney"))
+    private fun setRoutes(listLatLong: MutableList<LatLng>?) {
 
         val polylineBlueRute = mMap.addPolyline(
             PolylineOptions()
                 .clickable(true)
                 .addAll(
-                    ViewUtils.RECORRIDO_AZUL
+                    listLatLong
                 ).color(Color.BLUE)
         )
-        val polylineRedRute = mMap.addPolyline(
-            PolylineOptions()
-                .clickable(true)
-                .addAll(
-                    ViewUtils.RECORRIDO_ROJO
-                ).color(Color.RED)
-        )
+//        val polylineRedRute = mMap.addPolyline(
+//            PolylineOptions()
+//                .clickable(true)
+//                .addAll(
+//                    ViewUtils.RECORRIDO_ROJO
+//                ).color(Color.RED)
+//        )
 
         mMap.setOnPolylineClickListener(this)
     }
@@ -128,9 +124,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         mMap.uiSettings.isZoomControlsEnabled = true;
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(-37.330472, -59.112383), 13f))
 
-        baseRouteButton.setOnClickListener {
+        baseRouteButton1.setOnClickListener {
 
             mapFragmentViewModel.showBaseRoute()
+        }
+        baseRouteButton2.setOnClickListener {
+
+//            mapFragmentViewModel.showBaseRoute()
+        }
+        baseRouteButton3.setOnClickListener {
+
+//            mapFragmentViewModel.showBaseRoute()
         }
         mMap.setOnMapClickListener(this)
 
@@ -153,20 +157,20 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     }
 
     private fun setIconFloatingButton(@DrawableRes drawable: Int) {
-        baseRouteButton.setImageResource(drawable)
+//        baseRouteButton.setImageResource(drawable)
     }
 
-    private fun setVisibilityMenuButton() {
+    private fun setVisibilityMenuButton(listLatLong:MutableList<LatLng>?) {
 
         if (!mapFragmentViewModel.visibleOptions) {
             mapFragmentViewModel.visibleOptions = true
 
-            setRoutes()
-            setIconFloatingButton(mapFragmentViewModel.imageCloseButton)
+            setRoutes(listLatLong)
+//            setIconFloatingButton(mapFragmentViewModel.imageCloseButton)
 
         } else {
             mapFragmentViewModel.visibleOptions = false
-            setIconFloatingButton(mapFragmentViewModel.imageOpenButton)
+//            setIconFloatingButton(mapFragmentViewModel.imageOpenButton)
             mMap.clear()
         }
     }

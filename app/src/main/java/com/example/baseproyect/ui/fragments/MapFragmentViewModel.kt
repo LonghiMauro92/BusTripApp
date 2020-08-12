@@ -3,10 +3,22 @@ package com.example.baseproyect.ui.fragments
 import androidx.annotation.DrawableRes
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.baseproyect.BaseViewModel
+import com.example.baseproyect.ViewUtils.RECORRIDO_AZUL
 import com.example.baseproyect.ui.Event
+import com.example.domain.response.UseCaseResult
+import com.example.domain.usecase.GetBaseRoutesBusesUseCase
+import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 
 class MapFragmentViewModel :
-    ViewModel() {
+    BaseViewModel() , KoinComponent {
+
+    private val getBaseRoutesBusesUseCase: GetBaseRoutesBusesUseCase by inject()
 
      val mapMutableLiveData = MutableLiveData<Event<Data>>()
 
@@ -23,16 +35,28 @@ class MapFragmentViewModel :
 
     }
     fun showBaseRoute() {
-
-        mapMutableLiveData.postValue(Event(Data(status = Status.SHOW_ROUTES)))
-
+        launch {
+        when (val result = withContext(Dispatchers.IO) { getBaseRoutesBusesUseCase.invoke("RECORRIDO_AZUL") }) {
+            is UseCaseResult.Failure -> {
+//                Timber.e(CONNECT_TO_DRIVER_FAILED)
+//                mutableStatusLiveData.postValue(LiveDataEvent(PassengerMenuStatusLiveData(PassengerMenuRideStatus.NO_CABBIE)))
+            }
+            is UseCaseResult.Success -> {
+                val listLatLng = mutableListOf<LatLng>()
+                for (i in result.data ){
+                    val lat = LatLng(i.lat , i.lng )
+                    listLatLng.add(lat)
+                }
+                mapMutableLiveData.postValue(Event(Data(status = Status.SHOW_ROUTES, data = listLatLng)))
+            }
+        }}
     }
     private fun configureDrawablesButton(@DrawableRes drawable: Int, @DrawableRes drawable2: Int) {
         imageOpenButton = drawable
         imageCloseButton = drawable2
 //        setIconFloatingButton(imageOpenButton)
     }
-    data class Data(var status: Status, var data: String? = null, var error: Exception? = null)
+    data class Data(var status: Status, var data: MutableList<LatLng>? = null, var error: Exception? = null)
 
     enum class Status {
         LOADING,
