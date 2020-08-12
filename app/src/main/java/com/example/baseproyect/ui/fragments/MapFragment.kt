@@ -58,14 +58,20 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     private fun updateUI(data: Event<MapFragmentViewModel.Data>) {
         val pokemonCardDetailData = data.getContentIfNotHandled()
         when (pokemonCardDetailData?.status) {
-            MapFragmentViewModel.Status.LOADING -> {//nothing now
+            MapFragmentViewModel.Status.LOADING -> { setBusLines(data.peekContent().data as MutableList<String>)
             }
 
             MapFragmentViewModel.Status.SHOW_ROUTES -> setVisibilityMenuButton(data.peekContent().data)
         }
     }
 
-    private fun setRoutes(listLatLong: MutableList<LatLng>?) {
+    private fun setBusLines(busLines : MutableList<String>) {
+        accion_bus_1.visibility = if (busLines.contains("500")) View.VISIBLE else View.GONE
+        accion_bus_2.visibility = if (busLines.contains("501")) View.VISIBLE else View.GONE
+        accion_bus_3.visibility = if (busLines.contains("502")) View.VISIBLE else View.GONE
+    }
+
+    private fun setRoutes(listLatLong: MutableList<LatLng>) {
 
         val polylineBlueRute = mMap.addPolyline(
             PolylineOptions()
@@ -160,12 +166,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 //        baseRouteButton.setImageResource(drawable)
     }
 
-    private fun setVisibilityMenuButton(listLatLong:MutableList<LatLng>?) {
+    private fun setVisibilityMenuButton(listLatLong:Any?) {
 
         if (!mapFragmentViewModel.visibleOptions) {
             mapFragmentViewModel.visibleOptions = true
-
-            setRoutes(listLatLong)
+            setRoutes(listLatLong as MutableList<LatLng>)
 //            setIconFloatingButton(mapFragmentViewModel.imageCloseButton)
 
         } else {

@@ -5,4 +5,5 @@ import com.example.domain.response.UseCaseResult
 
 interface RideService {
     fun getRideInformation( destination: String): UseCaseResult<List<Coordinates>>
+    fun getLinesInformation(): UseCaseResult<List<String>>
 }

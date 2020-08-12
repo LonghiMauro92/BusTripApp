@@ -8,15 +8,16 @@ import org.koin.core.KoinComponent
 import org.koin.core.inject
 import retrofit2.Retrofit
 
-class RideServiceImpl: RideService, KoinComponent {
+class RideServiceImpl : RideService, KoinComponent {
 
     private val retrofit: Retrofit by inject()
 
     override fun getRideInformation(
         desination: String
-    ): UseCaseResult<List<Coordinates>>  = UseCaseResult.Success(listOf<Coordinates>(
-        Coordinates(-37.330472, -59.112383),
-        Coordinates(-37.331054, -59.113960),
+    ): UseCaseResult<List<Coordinates>> = UseCaseResult.Success(
+        listOf<Coordinates>(
+            Coordinates(-37.330472, -59.112383),
+            Coordinates(-37.331054, -59.113960),
             Coordinates(-37.331626, -59.115398),
             Coordinates(-37.332172, -59.1169),
             Coordinates(-37.333339, -59.116171),
@@ -60,7 +61,7 @@ class RideServiceImpl: RideService, KoinComponent {
             Coordinates(-37.320460, -59.132823),
             Coordinates(-37.319231, -59.133510),
             Coordinates(-37.318053, -59.134243),
-            Coordinates(-37.317482 ,- 59.13457),
+            Coordinates(-37.317482, -59.13457),
             Coordinates(-37.316912, -59.134911),
             Coordinates(-37.315707, -59.135614),
             Coordinates(-37.314512, -59.136303),
@@ -113,6 +114,32 @@ class RideServiceImpl: RideService, KoinComponent {
             Coordinates(-37.291328, -59.161700),
             Coordinates(-37.292028, -59.162489),
             Coordinates(-37.292973, -59.163702)
-        ))
+        )
+    )
 
+    override fun getLinesInformation(): UseCaseResult<List<String>> {
+//        val call = retrofit.create(RideApi::class.java).getNearDrivers(tokenId, location)
+//
+//        return try {
+//            val response = call.execute()
+//            if (response.isSuccessful) {
+//                val body = response.body()
+//                if (body != null) {
+//                    UseCaseResult.Success(toListDriverData(body))
+//                } else {
+//                    UseCaseResult.Failure(Exception(StringUtils.INVALID_RESPONSE_SERVER))
+//                }
+//            } else {
+//                UseCaseResult.Failure(Exception(StringUtils.RESPONSE_NOT_SUCCESSFUL))
+//            }
+//        } catch (e: Exception) {
+//            UseCaseResult.Failure(e)
+//    }
+        val validation = true
+        if (validation) {
+            return UseCaseResult.Success(listOf<String>("500", "501"))
+        } else {
+            return UseCaseResult.Failure(Exception())
+        }
+    }
 }
