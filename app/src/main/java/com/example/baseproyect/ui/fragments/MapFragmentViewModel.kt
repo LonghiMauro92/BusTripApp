@@ -2,9 +2,7 @@ package com.example.baseproyect.ui.fragments
 
 import androidx.annotation.DrawableRes
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.baseproyect.BaseViewModel
-import com.example.baseproyect.ViewUtils.RECORRIDO_AZUL
 import com.example.baseproyect.ui.Event
 import com.example.domain.response.UseCaseResult
 import com.example.domain.usecase.GetBaseRoutesBusesUseCase
@@ -23,12 +21,6 @@ class MapFragmentViewModel :
     private val getLinesBusesUseCase: GetLinesBusesUseCase by inject()
 
     val mapMutableLiveData = MutableLiveData<Event<Data>>()
-//    val mapMutableLiveDataString = MutableLiveData<Event<DataString>>()
-//
-//    val liveDataBusLine: MutableLiveData<Event<DataString>>
-//        get() {
-//            return mapMutableLiveDataString
-//        }
     val liveData: MutableLiveData<Event<Data>>
         get() {
             return mapMutableLiveData
@@ -90,12 +82,6 @@ class MapFragmentViewModel :
         var data: Any? = null,
         var error: Exception? = null
     )
-//
-//    data class DataString(
-//        var status: Status,
-//        var data: MutableList<String>? = null,
-//        var error: Exception? = null
-//    )
 
     enum class Status {
         LOADING,

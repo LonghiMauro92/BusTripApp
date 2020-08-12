@@ -136,10 +136,12 @@ class RideServiceImpl : RideService, KoinComponent {
 //            UseCaseResult.Failure(e)
 //    }
         val validation = true
-        if (validation) {
-            return UseCaseResult.Success(listOf<String>("500", "501"))
+        return if (validation) {
+            UseCaseResult.Success(listOf<String>("500", "501"))
         } else {
-            return UseCaseResult.Failure(Exception())
+    //            return UseCaseResult.Failure(Exception())
+            UseCaseResult.Success(listOf<String>())
+
         }
     }
 }
