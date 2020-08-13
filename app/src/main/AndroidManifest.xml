@@ -21,7 +21,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDYiFa_Ov3pmkFsbQAdOCgHd4iaYmBEpwY"/>
 
-        <activity android:name=".MainActivity" >
+        <activity android:name=".MainActivity"
+            android:theme="@style/SplashTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
