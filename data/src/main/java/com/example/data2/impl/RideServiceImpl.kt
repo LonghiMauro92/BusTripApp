@@ -1,16 +1,37 @@
 package com.example.data2.impl
 
-import com.example.domain.response.Coordinates
-import com.example.domain.response.UseCaseResult
+import com.example.data2.mapper.BusLineMapper
+import com.example.data2.mapper.toRideInformation
+import com.example.data2.service.ServiceApi
+import com.example.data2.service.ServiceGenerator
+import com.example.domain.response.*
 import com.example.domain.services.RideService
-import com.google.android.gms.maps.model.LatLng
 import org.koin.core.KoinComponent
-import org.koin.core.inject
-import retrofit2.Retrofit
 
 class RideServiceImpl : RideService, KoinComponent {
 
-    private val retrofit: Retrofit by inject()
+    private val api = ServiceGenerator()
+    override fun getLocalServideRideInformation(destination: String): UseCaseResult<RecorridoBaseObjInformation> {
+        val call =
+            api.createService(ServiceApi::class.java).getServiceBaseRouteInformation(destination)
+
+//        val mapper = RecorridoBaseMapper()
+        try {
+            val response = call.execute()
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    return UseCaseResult.Success(body.toRideInformation())
+                } else {
+                    return UseCaseResult.Failure(Exception("failsed"))
+                }
+            }
+        } catch (e: Exception) {
+            return UseCaseResult.Failure(e)
+        }
+
+        return UseCaseResult.Failure(Exception(""))
+    }
 
     override fun getRideInformation(
         desination: String
@@ -117,31 +138,22 @@ class RideServiceImpl : RideService, KoinComponent {
         )
     )
 
-    override fun getLinesInformation(): UseCaseResult<List<String>> {
-//        val call = retrofit.create(RideApi::class.java).getNearDrivers(tokenId, location)
-//
-//        return try {
-//            val response = call.execute()
-//            if (response.isSuccessful) {
-//                val body = response.body()
-//                if (body != null) {
-//                    UseCaseResult.Success(toListDriverData(body))
-//                } else {
-//                    UseCaseResult.Failure(Exception(StringUtils.INVALID_RESPONSE_SERVER))
-//                }
-//            } else {
-//                UseCaseResult.Failure(Exception(StringUtils.RESPONSE_NOT_SUCCESSFUL))
-//            }
-//        } catch (e: Exception) {
-//            UseCaseResult.Failure(e)
-//    }
-        val validation = true
-        return if (validation) {
-            UseCaseResult.Success(listOf<String>("500", "501"))
-        } else {
-    //            return UseCaseResult.Failure(Exception())
-            UseCaseResult.Success(listOf<String>())
+    override fun getLinesInformation(): UseCaseResult<List<ListLineBus>> {
 
+        val call = api.createService(ServiceApi::class.java).getListOfBuses()
+
+        val mapper = BusLineMapper()
+        try {
+            val response = call.execute()
+            if (response.isSuccessful)
+                response.body()?.let {
+                    mapper.transformListOfBuses(it)
+                }?.let {
+                    return UseCaseResult.Success(it)
+                }
+        } catch (e: Exception) {
+            return UseCaseResult.Failure(e)
         }
+        return UseCaseResult.Failure(Exception(""))
     }
 }

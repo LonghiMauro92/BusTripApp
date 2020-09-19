@@ -13,6 +13,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.baseproyect.R
 import com.example.baseproyect.ui.Event
+import com.example.domain.response.Coordinates
+import com.example.domain.response.ListLineBus
+import com.example.domain.response.RecorridoBaseInformation
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener
@@ -25,7 +28,8 @@ import java.util.*
 
 
 class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListener,
-    GoogleMap.OnPolylineClickListener, GoogleMap.OnInfoWindowClickListener,GoogleMap.OnMapLongClickListener,
+    GoogleMap.OnPolylineClickListener, GoogleMap.OnInfoWindowClickListener,
+    GoogleMap.OnMapLongClickListener,
     GoogleMap.OnMapClickListener {
     private lateinit var mMap: GoogleMap
     private val mMapView: MapView by lazy { map }
@@ -55,28 +59,57 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     private fun updateUI(data: Event<MapFragmentViewModel.Data>) {
         val pokemonCardDetailData = data.getContentIfNotHandled()
         when (pokemonCardDetailData?.status) {
-            MapFragmentViewModel.Status.LOADING -> { setBusLines(data.peekContent().data as MutableList<String>)
+            MapFragmentViewModel.Status.LOADING -> {
+                setBusLines(data.peekContent().data as MutableList<ListLineBus>)
             }
 
             MapFragmentViewModel.Status.SHOW_ROUTES -> setVisibilityMenuButton(data.peekContent().data)
         }
     }
 
-    private fun setBusLines(busLines : MutableList<String>) {
-        accion_bus_1.visibility = if (busLines.contains("500")) View.VISIBLE else View.GONE
-        accion_bus_2.visibility = if (busLines.contains("501")) View.VISIBLE else View.GONE
-        accion_bus_3.visibility = if (busLines.contains("502")) View.VISIBLE else View.GONE
+    private fun setBusLines(busLines: MutableList<ListLineBus>) {
+        when (busLines.size) {
+            1 -> {
+
+                accion_bus_1.visibility =
+                    if (busLines[0].linea.contains("500")) View.VISIBLE else View.GONE
+            }
+            2 -> {
+
+                accion_bus_1.visibility =
+                    if (busLines[0].linea.contains("500")) View.VISIBLE else View.GONE
+                accion_bus_2.visibility =
+                    if (busLines[1].linea.contains("501")) View.VISIBLE else View.GONE
+            }
+            3 -> {
+                accion_bus_1.visibility =
+                    if (busLines[0].linea.contains("500")) View.VISIBLE else View.GONE
+                accion_bus_2.visibility =
+                    if (busLines[1].linea.contains("501")) View.VISIBLE else View.GONE
+                accion_bus_3.visibility =
+                    if (busLines[1].linea.contains("503")) View.VISIBLE else View.GONE
+            }
+        }
+
     }
 
-    private fun setRoutes(listLatLong: MutableList<LatLng>) {
+    private fun setRoutes(listLatLong: MutableList<RecorridoBaseInformation>) {
 
-        val polylineBlueRute = mMap.addPolyline(
-            PolylineOptions()
-                .clickable(true)
-                .addAll(
-                    listLatLong
-                ).color(Color.BLUE)
-        )
+        val rec =
+            listLatLong[0].coordenadas
+
+        val listLatLng = mutableListOf<LatLng>()
+        for (i in rec) {
+            val lat = LatLng(i.lat, i.lng)
+            listLatLng.add(lat)
+
+            val polylineBlueRute = mMap.addPolyline(
+                PolylineOptions()
+                    .clickable(true)
+                    .addAll(
+                        listLatLng
+                    ).color(Color.BLUE)
+            )
 //        val polylineRedRute = mMap.addPolyline(
 //            PolylineOptions()
 //                .clickable(true)
@@ -85,7 +118,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 //                ).color(Color.RED)
 //        )
 
-        mMap.setOnPolylineClickListener(this)
+            mMap.setOnPolylineClickListener(this)
+        }
     }
 
     override fun onCreateView(
@@ -163,11 +197,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 //        baseRouteButton.setImageResource(drawable)
     }
 
-    private fun setVisibilityMenuButton(listLatLong:Any?) {
+    private fun setVisibilityMenuButton(listLatLong: Any?) {
 
         if (!mapFragmentViewModel.visibleOptions) {
             mapFragmentViewModel.visibleOptions = true
-            setRoutes(listLatLong as MutableList<LatLng>)
+            setRoutes(listLatLong as MutableList<RecorridoBaseInformation>)
 //            setIconFloatingButton(mapFragmentViewModel.imageCloseButton)
 
         } else {

@@ -2,8 +2,10 @@ package com.example.baseproyect.ui.fragments
 
 import androidx.annotation.DrawableRes
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.baseproyect.BaseViewModel
 import com.example.baseproyect.ui.Event
+import com.example.domain.response.RecorridoBaseInformation
 import com.example.domain.response.UseCaseResult
 import com.example.domain.usecase.GetBaseRoutesBusesUseCase
 import com.example.domain.usecase.GetLinesBusesUseCase
@@ -30,7 +32,7 @@ class MapFragmentViewModel :
     var visibleOptions: Boolean = false
     fun setLoading() {
 
-        launch {
+        viewModelScope.launch {
             when (val result =
                 withContext(Dispatchers.IO) { getLinesBusesUseCase.invoke() }) {
                 is UseCaseResult.Failure -> {
@@ -39,7 +41,14 @@ class MapFragmentViewModel :
                 }
                 is UseCaseResult.Success -> {
 
-                    mapMutableLiveData.postValue(Event(Data(status = Status.LOADING,data = result.data)))
+                    mapMutableLiveData.postValue(
+                        Event(
+                            Data(
+                                status = Status.LOADING,
+                                data = result.data
+                            )
+                        )
+                    )
                 }
             }
         }
@@ -54,11 +63,23 @@ class MapFragmentViewModel :
 //                mutableStatusLiveData.postValue(LiveDataEvent(PassengerMenuStatusLiveData(PassengerMenuRideStatus.NO_CABBIE)))
                 }
                 is UseCaseResult.Success -> {
-                    val listLatLng = mutableListOf<LatLng>()
-                    for (i in result.data) {
-                        val lat = LatLng(i.lat, i.lng)
-                        listLatLng.add(lat)
-                    }
+                    val listLatLng = mutableListOf<RecorridoBaseInformation>()
+                    val recorridoIda = RecorridoBaseInformation(
+                        result.data.recorridoIda.recorridoId,
+                        result.data.recorridoIda.linea,
+                        result.data.recorridoIda.coordenadas
+                    )
+                    val recorridoVuelta = RecorridoBaseInformation(
+                        result.data.recorridoVuelta.recorridoId,
+                        result.data.recorridoVuelta.linea,
+                        result.data.recorridoVuelta.coordenadas
+                    )
+                    listLatLng.add(recorridoIda)
+                    listLatLng.add(recorridoVuelta)
+//                    for (i in result.data) {
+//                        val lat = LatLng(i.lat, i.lng)
+//                        listLatLng.add(lat)
+//                    }
                     mapMutableLiveData.postValue(
                         Event(
                             Data(
@@ -71,6 +92,7 @@ class MapFragmentViewModel :
             }
         }
     }
+
     private fun configureDrawablesButton(@DrawableRes drawable: Int, @DrawableRes drawable2: Int) {
         imageOpenButton = drawable
         imageCloseButton = drawable2
