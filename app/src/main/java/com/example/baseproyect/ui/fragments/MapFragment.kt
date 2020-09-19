@@ -7,13 +7,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.baseproyect.R
+import com.example.baseproyect.adapter.CustomInfoWindowAdapter
 import com.example.baseproyect.ui.Event
-import com.example.domain.response.Coordinates
 import com.example.domain.response.ListLineBus
 import com.example.domain.response.RecorridoBaseInformation
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -39,6 +40,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     private val baseRouteButton2 by lazy { accion_bus_2 }
     private val baseRouteButton3 by lazy { accion_bus_3 }
     private val LOCATION_REQUEST_CODE = 1
+
+    private lateinit var adapter:CustomInfoWindowAdapter
 
     private val mapFragmentViewModel by viewModel<MapFragmentViewModel>()
 
@@ -177,6 +180,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 
         mMap.setOnMapLongClickListener(this)
 
+        adapter = CustomInfoWindowAdapter(LayoutInflater.from(activity))
+
+        mMap.setInfoWindowAdapter( adapter)
+        googleMap.setOnInfoWindowClickListener { marker ->
+            Toast.makeText(context, "${marker.position.latitude} - ${marker.position.longitude}",Toast.LENGTH_LONG).show()
+
+        }
     }
 
     override fun onMyLocationButtonClick(): Boolean {
@@ -224,19 +234,20 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     }
 
     override fun onMapLongClick(p0: LatLng) {
-        val snippet = String.format(
-            Locale.getDefault(),
-            "Lat: %1$.5f, Long: %2$.5f",
-            p0.latitude,
-            p0.longitude
-        )
+        // Snippet de informacion simple, actualmento usamos el CustomInfoWindowAdapter
+//        val snippet = String.format(
+//            Locale.getDefault(),
+//            "Lat: %1$.5f, Long: %2$.5f",
+//            p0.latitude,
+//            p0.longitude
+//        )
         // marker común
 
         var mMarkerTest: Marker = mMap.addMarker(
             MarkerOptions()
                 .position(p0)
-                .title("Conductor")
-                .snippet(snippet)
+//                .title("Conductor")
+//                .snippet(snippet)
         )
     }
 }
