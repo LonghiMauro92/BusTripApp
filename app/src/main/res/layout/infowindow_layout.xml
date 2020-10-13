@@ -6,19 +6,22 @@
     android:padding="5dp">
 
     <ImageView
-        android:id="@+id/info_window_imagen"
+        android:id="@+id/info_window_image"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/bus_icon" />
+        tools:src="@drawable/ic_ubicacion_color"/>
 
     <TextView
         android:id="@+id/info_window_nombre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@id/info_window_imagen"
+        android:layout_toEndOf="@id/info_window_image"
         android:paddingLeft="5dp"
+        android:textSize="20sp"
+        android:textColor="#2196F3"
+        android:textStyle="bold"
         tools:text="Carlo Estrada Solano" />
 
     <TextView
@@ -28,7 +31,7 @@
         android:textStyle="bold"
         android:textSize="20sp"
         android:layout_below="@id/info_window_nombre"
-        android:layout_toRightOf="@id/info_window_imagen"
+        android:layout_toRightOf="@id/info_window_image"
         android:paddingLeft="5dp"
         tools:text="LAT: SX5487" />
 
@@ -39,7 +42,7 @@
         android:textStyle="bold"
         android:textSize="20sp"
         android:layout_below="@id/info_window_lat"
-        android:layout_toEndOf="@id/info_window_imagen"
+        android:layout_toEndOf="@id/info_window_image"
         android:paddingLeft="5dp"
         tools:text="LNG: SX5487" />
     <TextView
@@ -47,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/info_window_lng"
-        android:layout_toEndOf="@id/info_window_imagen"
+        android:layout_toEndOf="@id/info_window_image"
         android:paddingStart="5dp"
         tools:text="Estado: Activo" />
 
@@ -56,8 +59,8 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_below="@id/info_window_estado"
-        android:layout_toEndOf="@id/info_window_imagen"
-        android:background="@drawable/ic_baseline_play_circle_filled_24"
+        android:layout_toEndOf="@id/info_window_image"
+        android:background="@drawable/ic_ir_a_ubicacion"
         android:paddingStart="5dp"
         tools:text="Estado: Activo" />
 </RelativeLayout>

@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorPrimary">#311b92</color>
+    <color name="colorPrimaryDark">#000063</color>
     <color name="colorAccent">#03DAC5</color>
+    <color name="colorAccentLight">#c1d5e0</color>
 
     <color name="colorYell">#ECC503</color>
     <color name="colorYellPressed">#6FF8CF02</color>
     <color name="colorRed">#DA0303</color>
     <color name="colorGreen">#3CDA03</color>
+    <color name="colorTravelPredictionCard">#260178</color>
+    <color name="colorTravelPredictionTitlesCard">#03A9F4</color>
+    <color name="colorTravelPredictionHistoryCard">#FFFFFF</color>
+    <color name="colorDivider">#EAEAEA</color>
+    <color name="colorGris">#6A6A6A</color>
 </resources>

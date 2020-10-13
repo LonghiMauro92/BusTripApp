@@ -7,11 +7,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import com.example.baseproyect.MainActivity
 import com.example.baseproyect.R
 import com.example.baseproyect.adapter.CustomInfoWindowAdapter
 import com.example.baseproyect.ui.Event
@@ -25,7 +26,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.fragment_map_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.*
 
 
 class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListener,
@@ -184,8 +184,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 
         mMap.setInfoWindowAdapter( adapter)
         googleMap.setOnInfoWindowClickListener { marker ->
-            Toast.makeText(context, "${marker.position.latitude} - ${marker.position.longitude}",Toast.LENGTH_LONG).show()
-
+            val ft: FragmentTransaction =
+                (context as MainActivity).supportFragmentManager
+                    .beginTransaction()
+            ft.setCustomAnimations(
+                 R.anim.slide_in,
+                 R.anim.face_out,
+                 R.anim.face_in,
+                 R.anim.slide_out
+            )
+            ft.replace(R.id.account, FragmentTravelPrediction.newInstance(marker.position.latitude,marker.position.longitude))
+            ft.addToBackStack(null)
+            ft.commit()
         }
     }
 

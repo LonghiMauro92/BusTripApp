@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_card_info"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:layout_margin="10dp"
+    android:clickable="false"
+    android:elevation="4dp"
+    android:visibility="visible"
+    app:cardBackgroundColor="@color/colorTravelPredictionCard"
+    app:cardCornerRadius="20dp"
+    app:cardPreventCornerOverlap="true"
+    app:layout_constraintBottom_toBottomOf="parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/fragment_card_title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="Informacion del recorrido "
+            android:textColor="@color/colorTravelPredictionTitlesCard"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/fragment_card_distance_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="Distancia : "
+            android:textColor="@color/colorTravelPredictionTitlesCard"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_card_title_text_view" />
+
+        <TextView
+            android:id="@+id/fragment_card_distance_text_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/colorTravelPredictionHistoryCard"
+            android:textSize="20sp"
+            app:layout_constraintStart_toEndOf="@+id/fragment_card_distance_text"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_card_title_text_view"
+            tools:text="10000 m" />
+
+        <TextView
+            android:id="@+id/fragment_card_time_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="Tiempo : "
+            android:textColor="@color/colorTravelPredictionTitlesCard"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_card_distance_text" />
+
+        <TextView
+            android:id="@+id/fragment_card_time_text_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/colorTravelPredictionHistoryCard"
+            android:textSize="20sp"
+            app:layout_constraintStart_toEndOf="@+id/fragment_card_time_text"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_card_distance_text"
+            tools:text="30seg" />
+        <ImageView
+            android:id="@+id/fragment_card_image_close"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="10dp"
+            android:padding="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_close" />
+
+        <TextView
+            android:id="@+id/fragment_card_image_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View History "
+            android:textColor="@color/colorTravelPredictionHistoryCard"
+            android:layout_marginBottom="15dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
