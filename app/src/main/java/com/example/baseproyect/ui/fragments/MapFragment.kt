@@ -34,7 +34,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     GoogleMap.OnMapClickListener {
     private lateinit var mMap: GoogleMap
     private val mMapView: MapView by lazy { map }
-    private val baseRouteButton by lazy { fragment_map_base_route }
+    private val clearMapButton by lazy { fragment_map_clear_markers }
 
     private val baseRouteButton1 by lazy { accion_bus_1 }
     private val baseRouteButton2 by lazy { accion_bus_2 }
@@ -56,6 +56,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             mMapView.onCreate(null)
             mMapView.onResume()
             mMapView.getMapAsync(this)
+        }
+
+        clearMapButton.setOnClickListener {
+            mMap.clear()
+            mapFragmentViewModel.cleanMarkers()
         }
     }
 
@@ -244,14 +249,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     }
 
     override fun onMapLongClick(p0: LatLng) {
-        // Snippet de informacion simple, actualmento usamos el CustomInfoWindowAdapter
-//        val snippet = String.format(
-//            Locale.getDefault(),
-//            "Lat: %1$.5f, Long: %2$.5f",
-//            p0.latitude,
-//            p0.longitude
-//        )
-        // marker común
 
         var mMarkerTest: Marker = mMap.addMarker(
             MarkerOptions()
@@ -259,5 +256,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 //                .title("Conductor")
 //                .snippet(snippet)
         )
+        mapFragmentViewModel.addMarker(mMarkerTest)
     }
 }

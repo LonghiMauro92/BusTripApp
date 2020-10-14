@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         customViewTab1.counter.text = listOfFragmentNames[0]
         customViewTab1.icon.background = ContextCompat.getDrawable(this, R.drawable.ic_mapas_color)
         customViewTab3.counter.text = listOfFragmentNames[2]
-        customViewTab3.icon.background = ContextCompat.getDrawable(this, R.drawable.ic_configuraciones)
+        customViewTab3.icon.background = ContextCompat.getDrawable(this, R.drawable.ic_configuraciones_color)
 
         tabLayout.getTabAt(FIRST_TAB)?.customView = customViewTab1
         tabLayout.getTabAt(SECOND_TAB)?.customView = customViewTab3

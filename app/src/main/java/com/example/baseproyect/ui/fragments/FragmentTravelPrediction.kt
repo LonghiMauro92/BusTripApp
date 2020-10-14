@@ -48,8 +48,8 @@ class FragmentTravelPrediction : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        cardTimeTextValue.text = latitud.toString()
-        cardDistanceTextValue.text = latitud.toString()
+        cardTimeTextValue.text = "79 seg"
+        cardDistanceTextValue.text = "1000mts"
         cardImageClose.setOnClickListener {
 
             activity?.onBackPressed()

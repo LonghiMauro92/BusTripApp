@@ -10,6 +10,7 @@ import com.example.domain.response.UseCaseResult
 import com.example.domain.usecase.GetBaseRoutesBusesUseCase
 import com.example.domain.usecase.GetLinesBusesUseCase
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -30,6 +31,7 @@ class MapFragmentViewModel :
     var imageOpenButton: Int = 0
     var imageCloseButton: Int = 0
     var visibleOptions: Boolean = false
+    val listMarkers = mutableListOf<Marker>()
     fun setLoading() {
 
         viewModelScope.launch {
@@ -76,10 +78,6 @@ class MapFragmentViewModel :
                     )
                     listLatLng.add(recorridoIda)
                     listLatLng.add(recorridoVuelta)
-//                    for (i in result.data) {
-//                        val lat = LatLng(i.lat, i.lng)
-//                        listLatLng.add(lat)
-//                    }
                     mapMutableLiveData.postValue(
                         Event(
                             Data(
@@ -99,6 +97,13 @@ class MapFragmentViewModel :
 //        setIconFloatingButton(imageOpenButton)
     }
 
+    fun addMarker(marker: Marker) {
+        listMarkers.add(marker)
+    }
+
+    fun cleanMarkers() {
+        listMarkers.clear()
+    }
     data class Data(
         var status: Status,
         var data: Any? = null,

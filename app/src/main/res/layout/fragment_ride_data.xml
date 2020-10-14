@@ -9,7 +9,7 @@
     android:clickable="false"
     android:elevation="4dp"
     android:visibility="visible"
-    app:cardBackgroundColor="@color/colorTravelPredictionCard"
+    app:cardBackgroundColor="#304ffe"
     app:cardCornerRadius="20dp"
     app:cardPreventCornerOverlap="true"
     app:layout_constraintBottom_toBottomOf="parent">

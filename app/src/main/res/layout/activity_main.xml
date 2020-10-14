@@ -10,10 +10,10 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/bottom_tab_layout_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_gravity="bottom"
         app:tabBackground="@color/colorPrimary"
-        app:tabIndicatorColor="@color/colorAccentLight"
+        app:tabIndicatorColor="@color/colorTravelPredictionTitlesCard"
         app:tabIndicatorHeight="5dp"
         app:tabMode="fixed" />
 
