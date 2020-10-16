@@ -24,6 +24,9 @@ import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
+import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_map_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -39,9 +42,23 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     private val baseRouteButton1 by lazy { accion_bus_1 }
     private val baseRouteButton2 by lazy { accion_bus_2 }
     private val baseRouteButton3 by lazy { accion_bus_3 }
-    private val LOCATION_REQUEST_CODE = 1
+    private val layoutBottomSheet by lazy { bottom_sheet }
+    private val containerDropSheetImage by lazy { bottom_sheet_drop_image }
 
-    private lateinit var adapter:CustomInfoWindowAdapter
+    private val btmSheetImageOrigin by lazy { label_origin_imageView }
+    private val btmSheetImageDestino by lazy { label_destino_image }
+    private val btmSheetImageDelete by lazy { label_delete_imageView }
+
+    private val btmSheetTextOrigin by lazy { label_origin_value }
+    private val btmSheetTextDestino by lazy { label_destino_value }
+    private val btmSheetProceedSearch by lazy { btn_buscar }
+
+    private val LOCATION_REQUEST_CODE = 1
+    private var manualFlag = false
+    private var manualPoint = ""
+
+    private lateinit var adapter: CustomInfoWindowAdapter
+    private lateinit var sheetBehavior: BottomSheetBehavior<View>
 
     private val mapFragmentViewModel by viewModel<MapFragmentViewModel>()
 
@@ -62,6 +79,104 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             mMap.clear()
             mapFragmentViewModel.cleanMarkers()
         }
+
+        sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet)
+
+        /**
+         * bottom sheet state change listener
+         * we are changing button text when sheet changed state
+         * */
+        /**
+         * bottom sheet state change listener
+         * we are changing button text when sheet changed state
+         */
+        sheetBehavior.setBottomSheetCallback(object : BottomSheetCallback() {
+            override fun onStateChanged(
+                bottomSheet: View,
+                newState: Int
+            ) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                    }
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                    }
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                    }
+                    BottomSheetBehavior.STATE_DRAGGING -> {
+                    }
+                    BottomSheetBehavior.STATE_SETTLING -> {
+                    }
+                }
+            }
+
+            override fun onSlide(
+                bottomSheet: View,
+                slideOffset: Float
+            ) {
+            }
+        })
+        containerDropSheetImage.setOnClickListener {
+            onClickOriginDestinoButton()
+            toggleBottomSheet()
+        }
+        btmSheetProceedSearch.setOnClickListener {
+            mapFragmentViewModel.proceedSearching()
+        }
+    }
+
+
+    fun toggleBottomSheet() {
+        if (sheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
+            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED)
+        } else {
+            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
+        }
+    }
+
+    fun onClickOriginDestinoButton() {
+        btmSheetImageOrigin.setOnClickListener {
+
+            manualFlag = true
+            manualPoint = "ORIGIN"
+            btmSheetImageDelete.visibility = View.VISIBLE
+            sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+        btmSheetImageDestino.setOnClickListener {
+            manualFlag = true
+            manualPoint = "DESTINO"
+            btmSheetImageDelete.visibility = View.VISIBLE
+            sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+
+        btmSheetImageDelete.setOnClickListener {
+            manualFlag = false
+            manualPoint = ""
+            btmSheetTextOrigin.text = " - "
+            btmSheetTextDestino.text = " - "
+            btmSheetImageDelete.visibility = View.GONE
+            mMap.clear()
+            mapFragmentViewModel.cleanMarkers()
+        }
+    }
+
+    fun searchOperation() {
+
+        btmSheetTextOrigin.text = " - "
+        btmSheetTextDestino.text = " - "
+        btmSheetImageDelete.visibility = View.GONE
+        sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    fun setManualPoint(valor: Any?) {
+        val marcador = valor as Marker?
+        if (manualPoint == "ORIGIN") {
+            btmSheetTextOrigin.text = marcador?.position?.latitude.toString()
+        } else {
+
+            btmSheetTextDestino.text = marcador?.position?.latitude.toString()
+        }
+
+        sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     private fun updateUI(data: Event<MapFragmentViewModel.Data>) {
@@ -72,6 +187,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             }
 
             MapFragmentViewModel.Status.SHOW_ROUTES -> setVisibilityMenuButton(data.peekContent().data)
+            MapFragmentViewModel.Status.MANUAL_POINT -> setManualPoint(data.peekContent().data)
+            MapFragmentViewModel.Status.PROCEED_SEARCHING -> searchOperation()
         }
     }
 
@@ -187,18 +304,24 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 
         adapter = CustomInfoWindowAdapter(LayoutInflater.from(activity))
 
-        mMap.setInfoWindowAdapter( adapter)
+        mMap.setInfoWindowAdapter(adapter)
         googleMap.setOnInfoWindowClickListener { marker ->
             val ft: FragmentTransaction =
                 (context as MainActivity).supportFragmentManager
                     .beginTransaction()
             ft.setCustomAnimations(
-                 R.anim.slide_in,
-                 R.anim.face_out,
-                 R.anim.face_in,
-                 R.anim.slide_out
+                R.anim.slide_in,
+                R.anim.face_out,
+                R.anim.face_in,
+                R.anim.slide_out
             )
-            ft.replace(R.id.account, FragmentTravelPrediction.newInstance(marker.position.latitude,marker.position.longitude))
+            ft.replace(
+                R.id.account,
+                FragmentTravelPrediction.newInstance(
+                    marker.position.latitude,
+                    marker.position.longitude
+                )
+            )
             ft.addToBackStack(null)
             ft.commit()
         }
@@ -257,5 +380,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 //                .snippet(snippet)
         )
         mapFragmentViewModel.addMarker(mMarkerTest)
+
+        if (manualFlag) {
+            manualFlag = false
+
+            if (manualPoint == "ORIGIN") {
+                mapFragmentViewModel.setManualPoint(mMarkerTest)
+            } else {
+                mapFragmentViewModel.setManualPoint(mMarkerTest)
+
+            }
+        }
     }
 }

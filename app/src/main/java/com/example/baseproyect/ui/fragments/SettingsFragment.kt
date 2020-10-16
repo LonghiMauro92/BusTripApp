@@ -22,8 +22,6 @@ class SettingsFragment :Fragment(){
     private val menuItemSetBusLines by lazy {menu_item_set_bus_lines}
     private val menuItemAlgorithms by lazy {menu_item_view_algorithms}
 
-//    private val recyclerMenuList by lazy { view_settings_menu_big_item_down_list }
-
     private var listShown = false
 
     override fun onCreateView(
@@ -45,6 +43,7 @@ class SettingsFragment :Fragment(){
             }
 
 
+        menuItemViewHistory.view_settings_menu_big_item_text_view_label.text = "Ver Historial"
         menuItemSetBusLines.view_settings_menu_big_item_text_view_label.text = "Ver Ruta Colectivos"
         menuItemAlgorithms.view_settings_menu_big_item_text_view_label.text = "Algoritmos"
 
@@ -71,48 +70,10 @@ class SettingsFragment :Fragment(){
         )
 
         menuItemAlgorithms.setSubMenuList(menuAlgoritmosList)
-//        menuItemSetBusLines.setOnClickListener {
-//
-//            toggleListVisibility(it)
-//        }
-//        menuItemAlgorithms.setOnClickListener {
-//
-//            toggleListVisibility(it)
-//        }
     }
-
-
-//    fun setSubMenuList(
-//        view: SettingsMenuBigItemView,
-//        menuList: List<MenuListItem>
-//    ) {
-//        view.recyclerMenuList.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-//        view.recyclerMenuList.adapter = SettingsBigItemMenuListAdapter(menuList)
-//    }
 
     fun showActionListItem() {
         Toast.makeText(context, "My Team`s Dashboard Menu Item", Toast.LENGTH_SHORT).show()
     }
 
-//    fun toggleListVisibility(it: View) {
-//        if (listShown) {
-//            listShown = false
-//            view_settings_menu_big_item_down_list.visibility = View.GONE
-//            it.view_settings_menu_big_item_image_arrow_down.setImageDrawable(
-//                ContextCompat.getDrawable(
-//                    requireContext(),
-//                    R.drawable.ic_arrow_right
-//                )
-//            )
-//        } else {
-//            listShown = true
-//            view_settings_menu_big_item_down_list.visibility = View.VISIBLE
-//            it.view_settings_menu_big_item_image_arrow_down.setImageDrawable(
-//                ContextCompat.getDrawable(
-//                    requireContext(),
-//                    R.drawable.ic_flecha_correcta
-//                )
-//            )
-//        }
-//    }
 }

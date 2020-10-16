@@ -91,6 +91,30 @@ class MapFragmentViewModel :
         }
     }
 
+    fun setManualPoint(point: Marker) {
+
+        mapMutableLiveData.postValue(
+            Event(
+                Data(
+                    status = Status.MANUAL_POINT,
+                    data = point
+                )
+            )
+        )
+    }
+
+    fun proceedSearching() {
+
+        mapMutableLiveData.postValue(
+            Event(
+                Data(
+                    status = Status.PROCEED_SEARCHING,
+                    data = ""
+                )
+            )
+        )
+    }
+
     private fun configureDrawablesButton(@DrawableRes drawable: Int, @DrawableRes drawable2: Int) {
         imageOpenButton = drawable
         imageCloseButton = drawable2
@@ -101,9 +125,14 @@ class MapFragmentViewModel :
         listMarkers.add(marker)
     }
 
+    fun addhjMarker(marker: Marker) {
+        listMarkers.add(marker)
+    }
+
     fun cleanMarkers() {
         listMarkers.clear()
     }
+
     data class Data(
         var status: Status,
         var data: Any? = null,
@@ -113,6 +142,7 @@ class MapFragmentViewModel :
     enum class Status {
         LOADING,
         SHOW_ROUTES,
-        ERROR
+        MANUAL_POINT,
+        PROCEED_SEARCHING
     }
 }
