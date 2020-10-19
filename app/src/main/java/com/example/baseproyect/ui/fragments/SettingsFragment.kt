@@ -7,20 +7,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.baseproyect.R
-import com.example.baseproyect.adapter.SettingsBigItemMenuListAdapter
 import com.example.baseproyect.ui.MenuListItem
-import com.example.baseproyect.ui.SettingsMenuBigItemView
 import kotlinx.android.synthetic.main.fragment_settings.*
-import kotlinx.android.synthetic.main.view_item_menu.*
 import kotlinx.android.synthetic.main.view_item_menu.view.*
 
-class SettingsFragment :Fragment(){
-    private val menuItemViewHistory by lazy {menu_item_view_history}
-    private val menuItemSetBusLines by lazy {menu_item_set_bus_lines}
-    private val menuItemAlgorithms by lazy {menu_item_view_algorithms}
+class SettingsFragment : Fragment() {
+    private val menuItemViewHistory by lazy { menu_item_view_history }
+    private val menuItemSetBusLines by lazy { menu_item_set_bus_lines }
+    private val menuItemAlgorithms by lazy { menu_item_view_algorithms }
 
     private var listShown = false
 
@@ -40,7 +35,7 @@ class SettingsFragment :Fragment(){
                 context, "History",
                 Toast.LENGTH_LONG
             ).show()
-            }
+        }
 
 
         menuItemViewHistory.view_settings_menu_big_item_text_view_label.text = "Ver Historial"
@@ -48,13 +43,16 @@ class SettingsFragment :Fragment(){
         menuItemAlgorithms.view_settings_menu_big_item_text_view_label.text = "Algoritmos"
 
         menuItemAlgorithms.view_settings_menu_big_item_image_view_icon.setImageDrawable(
-            ContextCompat.getDrawable(requireContext(),R.drawable.ic_algoritmo))
+            ContextCompat.getDrawable(requireContext(), R.drawable.ic_algoritmo)
+        )
 
         menuItemViewHistory.view_settings_menu_big_item_image_view_icon.setImageDrawable(
-            ContextCompat.getDrawable(requireContext(),R.drawable.ic_ir_a_ubicacion))
+            ContextCompat.getDrawable(requireContext(), R.drawable.ic_ir_a_ubicacion)
+        )
 
         menuItemSetBusLines.view_settings_menu_big_item_image_view_icon.setImageDrawable(
-            ContextCompat.getDrawable(requireContext(),R.drawable.ic_autobus_lines))
+            ContextCompat.getDrawable(requireContext(), R.drawable.ic_autobus_lines)
+        )
 
 
         val menuList = listOf<MenuListItem>(

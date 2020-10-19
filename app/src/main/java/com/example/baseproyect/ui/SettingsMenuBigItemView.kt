@@ -1,7 +1,6 @@
 package com.example.baseproyect.ui
 
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
@@ -31,7 +30,8 @@ class SettingsMenuBigItemView(context: Context, attributeSet: AttributeSet) :
         View.inflate(context, R.layout.view_item_menu, this)
 
 
-        val attributes = context.obtainStyledAttributes(attributeSet, R.styleable.SettingsMenuBigItemView)
+        val attributes =
+            context.obtainStyledAttributes(attributeSet, R.styleable.SettingsMenuBigItemView)
 
         attributes.getDrawable(R.styleable.SettingsMenuBigItemView_icon)?.let { drawable ->
 
@@ -43,7 +43,8 @@ class SettingsMenuBigItemView(context: Context, attributeSet: AttributeSet) :
             setLabel(label)
         }
 
-        val visibility = attributes.getBoolean(R.styleable.SettingsMenuBigItemView_uic_visibility, false)
+        val visibility =
+            attributes.getBoolean(R.styleable.SettingsMenuBigItemView_uic_visibility, false)
 
 
         attributes.recycle()
@@ -76,12 +77,22 @@ class SettingsMenuBigItemView(context: Context, attributeSet: AttributeSet) :
     fun toggleListVisibility() {
         if (listShown) {
             listShown = false
-            recyclerMenuList.visibility = View.GONE
-            imageViewDropDownMenu.setImageDrawable(getDrawable(context, R.drawable.ic_arrow_right))
+            recyclerMenuList.visibility = View.VISIBLE
+            imageViewDropDownMenu.setImageDrawable(
+                getDrawable(
+                    context,
+                    R.drawable.ic_flecha_hacia_arriba
+                )
+            )
         } else {
             listShown = true
-            recyclerMenuList.visibility = View.VISIBLE
-            imageViewDropDownMenu.setImageDrawable(getDrawable(context, R.drawable.ic_flecha_correcta))
+            recyclerMenuList.visibility = View.GONE
+            imageViewDropDownMenu.setImageDrawable(
+                getDrawable(
+                    context,
+                    R.drawable.ic_flecha_hacia_abajo_gruesa
+                )
+            )
         }
     }
 
@@ -90,10 +101,4 @@ class SettingsMenuBigItemView(context: Context, attributeSet: AttributeSet) :
         recyclerMenuList.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recyclerMenuList.adapter = SettingsBigItemMenuListAdapter(menuList)
     }
-//
-//    fun funsetAppSwitcherList(menuList: List<AppSwitcherItem>) {
-//        imageViewDropDownMenu.visibility = View.VISIBLE
-//        recyclerMenuList.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-//        recyclerMenuList.adapter = SettingsBigItemAppSwitcherAdapter(menuList)
-//    }
 }

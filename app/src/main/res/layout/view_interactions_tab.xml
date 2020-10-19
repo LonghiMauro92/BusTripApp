@@ -10,7 +10,7 @@
         android:id="@id/icon"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        tools:srcCompat="@drawable/ic_baseline_play_circle_filled_24" />
+        tools:srcCompat="@drawable/ic_mapas_color" />
 
     <TextView
         android:id="@+id/counter"
