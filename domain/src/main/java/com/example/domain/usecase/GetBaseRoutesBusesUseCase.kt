@@ -8,5 +8,5 @@ class GetBaseRoutesBusesUseCase : KoinComponent {
 
     private val getRideServiceRepository: RideService by inject()
 //    operator fun invoke(destination: String) = getRideServiceRepository.getRideInformation( destination)
-    operator fun invoke(destination: String) = getRideServiceRepository.getLocalServideRideInformation( destination)
+    operator fun invoke(destination: Int) = getRideServiceRepository.getLocalServideRideInformation( destination)
 }

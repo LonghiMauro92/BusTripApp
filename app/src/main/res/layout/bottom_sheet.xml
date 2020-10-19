@@ -57,7 +57,7 @@
             android:layout_marginTop="15dp"
             android:text="Origen"
             android:textColor="#444"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/label_destino"
             app:layout_constraintStart_toStartOf="parent"
@@ -98,7 +98,7 @@
             android:layout_marginBottom="15dp"
             android:text="Destino"
             android:textColor="#444"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/btn_buscar"
             app:layout_constraintStart_toStartOf="parent" />
@@ -130,13 +130,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/label_origin_imageView" />
 
-
         <Button
             android:id="@+id/btn_buscar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:background="#2488FF"
+            android:enabled="false"
+            style="@style/BaseBottomButton"
             android:foreground="?attr/selectableItemBackground"
             android:text="PROCEED searching"
             android:textColor="#fff"

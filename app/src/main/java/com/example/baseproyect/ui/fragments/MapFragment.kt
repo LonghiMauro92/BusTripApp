@@ -15,7 +15,9 @@ import androidx.fragment.app.FragmentTransaction
 import com.example.baseproyect.MainActivity
 import com.example.baseproyect.R
 import com.example.baseproyect.adapter.CustomInfoWindowAdapter
+import com.example.baseproyect.ui.Address
 import com.example.baseproyect.ui.Event
+import com.example.baseproyect.ui.MapUtils
 import com.example.domain.response.ListLineBus
 import com.example.domain.response.RecorridoBaseInformation
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -69,16 +71,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         mapFragmentViewModel.liveData.observe(::getLifecycle, ::updateUI)
         mapFragmentViewModel.setLoading()
 
-        if (mMapView != null) {
-            mMapView.onCreate(null)
-            mMapView.onResume()
-            mMapView.getMapAsync(this)
-        }
+        mMapView.onCreate(null)
+        mMapView.onResume()
+        mMapView.getMapAsync(this)
 
-        clearMapButton.setOnClickListener {
-            mMap.clear()
-            mapFragmentViewModel.cleanMarkers()
-        }
 
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet)
 
@@ -115,6 +111,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             ) {
             }
         })
+
+        //------------------------------------------------------------------------
+        // ------------------ setting listeners ----------------------------------
+        //------------------------------------------------------------------------
+
+        clearMapButton.setOnClickListener {
+            mMap.clear()
+            mapFragmentViewModel.cleanMarkers()
+        }
         containerDropSheetImage.setOnClickListener {
             onClickOriginDestinoButton()
             toggleBottomSheet()
@@ -165,15 +170,37 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         btmSheetTextDestino.text = " - "
         btmSheetImageDelete.visibility = View.GONE
         sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        goToFragTravelPrediction()
+    }
+    fun goToFragTravelPrediction(){
+
+        val ft: FragmentTransaction =
+            (context as MainActivity).supportFragmentManager
+                .beginTransaction()
+        ft.setCustomAnimations(
+            R.anim.slide_in,
+            R.anim.face_out,
+            R.anim.face_in,
+            R.anim.slide_out
+        )
+        ft.replace(
+            R.id.account,
+            FragmentTravelPrediction.newInstance(
+                100.0,
+                100.0
+            )
+        )
+        ft.addToBackStack(null)
+        ft.commit()
     }
 
     fun setManualPoint(valor: Any?) {
-        val marcador = valor as Marker?
+        val address = valor as Address?
         if (manualPoint == "ORIGIN") {
-            btmSheetTextOrigin.text = marcador?.position?.latitude.toString()
+            btmSheetTextOrigin.text = address?.name
         } else {
 
-            btmSheetTextDestino.text = marcador?.position?.latitude.toString()
+            btmSheetTextDestino.text = address?.name
         }
 
         sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -189,6 +216,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             MapFragmentViewModel.Status.SHOW_ROUTES -> setVisibilityMenuButton(data.peekContent().data)
             MapFragmentViewModel.Status.MANUAL_POINT -> setManualPoint(data.peekContent().data)
             MapFragmentViewModel.Status.PROCEED_SEARCHING -> searchOperation()
+
+            MapFragmentViewModel.Status.ACTIVATE_BUTTON -> btmSheetProceedSearch.isEnabled = true
+            MapFragmentViewModel.Status.DEACTIVATE_BUTTON -> btmSheetProceedSearch.isEnabled = false
         }
     }
 
@@ -288,21 +318,21 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 
         baseRouteButton1.setOnClickListener {
 
-            mapFragmentViewModel.showBaseRoute("RECORRIDO_AZUL")
+            mapFragmentViewModel.showBaseRoute(500)
         }
         baseRouteButton2.setOnClickListener {
 
-            mapFragmentViewModel.showBaseRoute("RECORRIDO_AZUL")
+            mapFragmentViewModel.showBaseRoute(500)
         }
         baseRouteButton3.setOnClickListener {
 
-            mapFragmentViewModel.showBaseRoute("RECORRIDO_AZUL")
+            mapFragmentViewModel.showBaseRoute(500)
         }
         mMap.setOnMapClickListener(this)
 
         mMap.setOnMapLongClickListener(this)
 
-        adapter = CustomInfoWindowAdapter(LayoutInflater.from(activity))
+        adapter = CustomInfoWindowAdapter(LayoutInflater.from(activity), requireContext())
 
         mMap.setInfoWindowAdapter(adapter)
         googleMap.setOnInfoWindowClickListener { marker ->
@@ -383,11 +413,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 
         if (manualFlag) {
             manualFlag = false
-
+            val address =
+                MapUtils.getAddress(requireContext(), mMarkerTest)
             if (manualPoint == "ORIGIN") {
-                mapFragmentViewModel.setManualPoint(mMarkerTest)
+                mapFragmentViewModel.setManualOriginPoint(mMarkerTest,address)
             } else {
-                mapFragmentViewModel.setManualPoint(mMarkerTest)
+                mapFragmentViewModel.setManualDestPoint(mMarkerTest, address)
 
             }
         }

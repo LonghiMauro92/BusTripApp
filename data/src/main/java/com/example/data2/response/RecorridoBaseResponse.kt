@@ -9,5 +9,5 @@ import com.google.gson.annotations.SerializedName
     @SerializedName("linea")
     val linea: String = "",
     @SerializedName("coordenadas")
-    val coordenadas: List<Coordinates> = listOf()
+    val coordenadas: List<CoordinateResponse> = listOf()
 )

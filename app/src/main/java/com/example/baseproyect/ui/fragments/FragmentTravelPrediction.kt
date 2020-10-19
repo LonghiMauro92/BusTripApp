@@ -1,5 +1,7 @@
 package com.example.baseproyect.ui.fragments
 
+import android.location.Address
+import android.location.Geocoder
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +10,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.baseproyect.R
 import kotlinx.android.synthetic.main.fragment_ride_data.*
+import java.util.*
+
 
 class FragmentTravelPrediction : Fragment() {
 
