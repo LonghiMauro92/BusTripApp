@@ -5,19 +5,18 @@ import com.example.data2.response.RecorridoBaseResponse
 import com.example.domain.response.Coordinates
 import com.example.domain.response.RecorridoBaseInformation
 
-//fun RecorridoBaseObjResponse.toRideInformation() =
-//    RecorridoBaseObjInformation(recorridoIda.toInformation(), recorridoVuelta.toInformation())
-
+fun transformListRecorridoBaseResponseToListRecorridoBaseInformation(list: List<RecorridoBaseResponse>): List<RecorridoBaseInformation> =
+    list.map {
+        it.toInformation()
+    }
 fun RecorridoBaseResponse.toInformation() =
     RecorridoBaseInformation(
         recorridoId,
         linea,
-        transformToListOfHouseDetail(coordenadas)
+        transformListCoordinatesResponseToListCoordinates(coordenadas)
     )
 
-fun transformToListOfHouseDetail(list: List<CoordinateResponse>): List<Coordinates> =
+fun transformListCoordinatesResponseToListCoordinates(list: List<CoordinateResponse>): List<Coordinates> =
     list.map {
         Coordinates(it.lat, it.lng)
     }
-//fun CoordinateResponse.toCoordinate() =
-//    Coordinates(lat, lng)

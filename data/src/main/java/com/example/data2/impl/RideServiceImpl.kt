@@ -2,6 +2,7 @@ package com.example.data2.impl
 
 import com.example.data2.mapper.BusLineMapper
 import com.example.data2.mapper.toInformation
+import com.example.data2.mapper.transformListRecorridoBaseResponseToListRecorridoBaseInformation
 import com.example.data2.service.ServiceApi
 import com.example.data2.service.ServiceGenerator
 import com.example.domain.response.*
@@ -11,9 +12,9 @@ import org.koin.core.KoinComponent
 class RideServiceImpl : RideService, KoinComponent {
 
     private val api = ServiceGenerator()
-    override fun getLocalServideRideInformation(destination: Int): UseCaseResult<RecorridoBaseInformation> {
+    override fun getLocalServideRideInformation(destination: Int): UseCaseResult<List<RecorridoBaseInformation>> {
         val call =
-            api.createService(ServiceApi::class.java).getServiceBaseRouteInformation()
+            api.createService(ServiceApi::class.java).getServiceBaseRouteInformation(destination.toString())
 
 //        val mapper = RecorridoBaseMapper()
         try {
@@ -21,7 +22,7 @@ class RideServiceImpl : RideService, KoinComponent {
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body != null) {
-                    return UseCaseResult.Success(body.toInformation())
+                    return UseCaseResult.Success(transformListRecorridoBaseResponseToListRecorridoBaseInformation(body))
                 } else {
                     return UseCaseResult.Failure(Exception("failed"))
                 }

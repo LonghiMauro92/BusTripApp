@@ -1,19 +1,38 @@
 package com.example.data2.service
 
 import com.example.data2.response.ListLineBusResponse
-import com.example.data2.response.RecorridoBaseObjResponse
 import com.example.data2.response.RecorridoBaseResponse
+import com.example.domain.response.Coordinates
 import retrofit2.Call
-import retrofit2.http.Field
+import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface ServiceApi {
-    @GET("/RecorridoBase/ObtenerRecorridoBase?linea=500")
+    @GET("/RecorridoBase/ObtenerRecorridoBase")
     fun getServiceBaseRouteInformation(
-//        @Path("linea") linea: Int
-    ): Call<RecorridoBaseResponse>
+        @Query("linea") linea: String
+    ): Call<List<RecorridoBaseResponse>>
 
     @GET("/Colectivo/ObtenerRecorridos")
     fun getListOfBuses(): Call<List<ListLineBusResponse>>
+
+
+    @POST("/CalculadorTiempo/ObtenerTiempoPorRegresionAcumulado")
+    fun calcularTiempoPorRegresionAcumulado(
+        @Body  user:TravelEstimate
+    ): Call<Double>
+
+
+    @POST("/CalculadorTiempo/ObtenerTiempoPorRegresionDiferenciaDeCeldas")
+    fun calcularTiempoPorRegresionDiferenciaDeCeldas(
+        @Body  user:TravelEstimate
+    ): Call<Double>
+
+
+    @POST("/CalculadorTiempo/ObtenerTiempoEntreCoordenadasComplejo")
+    fun calcularTiempoEntreCoordenadasComplejo(
+        @Body  user:TravelEstimate
+    ): Call<Double>
 }

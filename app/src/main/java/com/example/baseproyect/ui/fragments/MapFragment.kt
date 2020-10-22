@@ -18,6 +18,7 @@ import com.example.baseproyect.adapter.CustomInfoWindowAdapter
 import com.example.baseproyect.ui.Address
 import com.example.baseproyect.ui.Event
 import com.example.baseproyect.ui.MapUtils
+import com.example.baseproyect.ui.PuntoSeleccion
 import com.example.domain.response.ListLineBus
 import com.example.domain.response.RecorridoBaseInformation
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -164,19 +165,28 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         }
     }
 
-    fun searchOperation() {
+    fun searchOperation(data: Any?, dataAlternativa: Any?) {
 
         btmSheetTextOrigin.text = " - "
         btmSheetTextDestino.text = " - "
         btmSheetImageDelete.visibility = View.GONE
         sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        goToFragTravelPrediction()
+        goToFragTravelPrediction(data, dataAlternativa)
     }
-    fun goToFragTravelPrediction(){
+
+    fun goToFragTravelPrediction(data: Any?, dataAlternativa: Any?) {
+
+        val address = data as Address?
+
+        val address2 = dataAlternativa as Address?
+
+        val puntoOrigin= PuntoSeleccion(  true,address)
+        val puntoDest= PuntoSeleccion(  true,address2)
 
         val ft: FragmentTransaction =
             (context as MainActivity).supportFragmentManager
                 .beginTransaction()
+
         ft.setCustomAnimations(
             R.anim.slide_in,
             R.anim.face_out,
@@ -186,8 +196,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         ft.replace(
             R.id.account,
             FragmentTravelPrediction.newInstance(
-                100.0,
-                100.0
+                puntoOrigin,
+                puntoDest,
+                "500",
+                "1"
             )
         )
         ft.addToBackStack(null)
@@ -213,9 +225,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                 setBusLines(data.peekContent().data as MutableList<ListLineBus>)
             }
 
-            MapFragmentViewModel.Status.SHOW_ROUTES -> setVisibilityMenuButton(data.peekContent().data)
+            MapFragmentViewModel.Status.SHOW_ROUTES -> setVisibilityMenuButton(
+                data.peekContent().data,
+                data.peekContent().dataAlternativa
+            )
             MapFragmentViewModel.Status.MANUAL_POINT -> setManualPoint(data.peekContent().data)
-            MapFragmentViewModel.Status.PROCEED_SEARCHING -> searchOperation()
+            MapFragmentViewModel.Status.PROCEED_SEARCHING -> searchOperation(data.peekContent().data,data.peekContent().dataAlternativa)
 
             MapFragmentViewModel.Status.ACTIVATE_BUTTON -> btmSheetProceedSearch.isEnabled = true
             MapFragmentViewModel.Status.DEACTIVATE_BUTTON -> btmSheetProceedSearch.isEnabled = false
@@ -248,33 +263,45 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 
     }
 
-    private fun setRoutes(listLatLong: MutableList<RecorridoBaseInformation>) {
+    private fun setRoutes(
+        listLatLong: MutableList<RecorridoBaseInformation>,
+        mutableList: MutableList<RecorridoBaseInformation>
+    ) {
 
-        val rec =
+        val recIda =
             listLatLong[0].coordenadas
-
+        val recVuelta =
+            mutableList[0].coordenadas
         val listLatLng = mutableListOf<LatLng>()
-        for (i in rec) {
-            val lat = LatLng(i.lat, i.lng)
+        val listLatLng2 = mutableListOf<LatLng>()
+        for (i in recIda) {
+            val lat = LatLng(i.latitude, i.longitude)
             listLatLng.add(lat)
 
-            val polylineBlueRute = mMap.addPolyline(
-                PolylineOptions()
-                    .clickable(true)
-                    .addAll(
-                        listLatLng
-                    ).color(Color.BLUE)
-            )
-//        val polylineRedRute = mMap.addPolyline(
-//            PolylineOptions()
-//                .clickable(true)
-//                .addAll(
-//                    ViewUtils.RECORRIDO_ROJO
-//                ).color(Color.RED)
-//        )
 
-            mMap.setOnPolylineClickListener(this)
         }
+        for (i in recVuelta) {
+            val lat = LatLng(i.latitude, i.longitude)
+            listLatLng2.add(lat)
+
+
+        }
+        val polylineBlueRute = mMap.addPolyline(
+            PolylineOptions()
+                .clickable(true)
+                .addAll(
+                    listLatLng
+                ).color(Color.BLUE)
+        )
+
+        val polylineRedRute = mMap.addPolyline(
+            PolylineOptions()
+                .clickable(true)
+                .addAll(
+                    listLatLng2
+                ).color(Color.RED)
+        )
+        mMap.setOnPolylineClickListener(this)
     }
 
     override fun onCreateView(
@@ -322,11 +349,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         }
         baseRouteButton2.setOnClickListener {
 
-            mapFragmentViewModel.showBaseRoute(500)
+            mapFragmentViewModel.showBaseRoute(501)
         }
         baseRouteButton3.setOnClickListener {
 
-            mapFragmentViewModel.showBaseRoute(500)
+            mapFragmentViewModel.showBaseRoute(503)
         }
         mMap.setOnMapClickListener(this)
 
@@ -336,24 +363,27 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 
         mMap.setInfoWindowAdapter(adapter)
         googleMap.setOnInfoWindowClickListener { marker ->
-            val ft: FragmentTransaction =
-                (context as MainActivity).supportFragmentManager
-                    .beginTransaction()
-            ft.setCustomAnimations(
-                R.anim.slide_in,
-                R.anim.face_out,
-                R.anim.face_in,
-                R.anim.slide_out
-            )
-            ft.replace(
-                R.id.account,
-                FragmentTravelPrediction.newInstance(
-                    marker.position.latitude,
-                    marker.position.longitude
-                )
-            )
-            ft.addToBackStack(null)
-            ft.commit()
+            val address = MapUtils.getAddress(requireContext(),marker)
+
+            goToFragTravelPrediction(address,address)
+//            val ft: FragmentTransaction =
+//                (context as MainActivity).supportFragmentManager
+//                    .beginTransaction()
+//            ft.setCustomAnimations(
+//                R.anim.slide_in,
+//                R.anim.face_out,
+//                R.anim.face_in,
+//                R.anim.slide_out
+//            )
+//            ft.replace(
+//                R.id.account,
+//                FragmentTravelPrediction.newInstance(
+//                    marker.position.latitude,
+//                    marker.position.longitude
+//                )
+//            )
+//            ft.addToBackStack(null)
+//            ft.commit()
         }
     }
 
@@ -375,16 +405,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 //        baseRouteButton.setImageResource(drawable)
     }
 
-    private fun setVisibilityMenuButton(listLatLong: Any?) {
+    private fun setVisibilityMenuButton(listLatLong: Any?, dataAlternativa: Any?) {
 
         if (!mapFragmentViewModel.visibleOptions) {
             mapFragmentViewModel.visibleOptions = true
-            setRoutes(listLatLong as MutableList<RecorridoBaseInformation>)
-//            setIconFloatingButton(mapFragmentViewModel.imageCloseButton)
+            setRoutes(
+                listLatLong as MutableList<RecorridoBaseInformation>,
+                dataAlternativa as MutableList<RecorridoBaseInformation>
+            )
 
         } else {
             mapFragmentViewModel.visibleOptions = false
-//            setIconFloatingButton(mapFragmentViewModel.imageOpenButton)
             mMap.clear()
         }
     }
@@ -416,7 +447,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             val address =
                 MapUtils.getAddress(requireContext(), mMarkerTest)
             if (manualPoint == "ORIGIN") {
-                mapFragmentViewModel.setManualOriginPoint(mMarkerTest,address)
+                mapFragmentViewModel.setManualOriginPoint(mMarkerTest, address)
             } else {
                 mapFragmentViewModel.setManualDestPoint(mMarkerTest, address)
 

@@ -60,6 +60,9 @@ class MapFragmentViewModel :
         }
     }
 
+    var listRecorridoIda = mutableListOf<RecorridoBaseInformation>()
+    var listRecorridoVuelta = mutableListOf<RecorridoBaseInformation>()
+
     fun showBaseRoute(line: Int) {
         launch {
             when (val result =
@@ -69,18 +72,26 @@ class MapFragmentViewModel :
                     mapMutableLiveData.postValue(Event(Data(status = Status.ERROR, data = "service failed")))
                 }
                 is UseCaseResult.Success -> {
-                    val listLatLng = mutableListOf<RecorridoBaseInformation>()
                     val recorridoIda = RecorridoBaseInformation(
-                        result.data.recorridoId,
-                        result.data.linea,
-                        result.data.coordenadas
+                        result.data[0].recorridoId,
+                        result.data[0].linea,
+                        result.data[0].coordenadas
                     )
-                    listLatLng.add(recorridoIda)
+                    val recorridoVuelta = RecorridoBaseInformation(
+                        result.data[1].recorridoId,
+                        result.data[1].linea,
+                        result.data[1].coordenadas
+                    )
+
+                    listRecorridoIda.add(recorridoIda)
+                    listRecorridoVuelta.add(recorridoVuelta)
+
                     mapMutableLiveData.postValue(
                         Event(
                             Data(
                                 status = Status.SHOW_ROUTES,
-                                data = listLatLng
+                                data = listRecorridoIda,
+                                dataAlternativa = listRecorridoVuelta
                             )
                         )
                     )
@@ -141,16 +152,18 @@ class MapFragmentViewModel :
     }
     fun proceedSearching() {
 
-        addressOrigin=Address()
-        addressDestination=Address()
-        checkBothFields()
         mapMutableLiveData.postValue(
             Event(
                 Data(
-                    status = Status.PROCEED_SEARCHING
+                    status = Status.PROCEED_SEARCHING,
+                    data = addressOrigin,
+                    dataAlternativa = addressDestination
                 )
             )
         )
+        addressOrigin=Address()
+        addressDestination=Address()
+        checkBothFields()
     }
 
     fun addMarker(marker: Marker) {
@@ -168,6 +181,7 @@ class MapFragmentViewModel :
     data class Data(
         var status: Status,
         var data: Any? = null,
+        var dataAlternativa: Any? = null,
         var error: Exception? = null
     )
 
