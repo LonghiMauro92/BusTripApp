@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel>
+    <bytecodeTargetLevel target="1.7">
+      <module name="BaseProyect.app" target="1.8" />
+      <module name="BaseProyect.data" target="1.8" />
+      <module name="BaseProyect.di" target="1.8" />
       <module name="domain" target="1.7" />
     </bytecodeTargetLevel>
   </component>

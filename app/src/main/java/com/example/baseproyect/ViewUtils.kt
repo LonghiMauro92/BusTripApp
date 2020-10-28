@@ -1,9 +1,48 @@
 package com.example.baseproyect
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import androidx.core.content.ContextCompat
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Polyline
+
 
 object ViewUtils {
+    fun bitmapDescriptorFromVector(
+        context: Context,
+        vectorResId: Int
+    ): BitmapDescriptor {
+        val vectorDrawable =
+            ContextCompat.getDrawable(context, vectorResId)
+        vectorDrawable?.setBounds(
+            0,
+            0,
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight
+        )
+        val bitmap = vectorDrawable?.intrinsicHeight?.let {
+            Bitmap.createBitmap(
+                vectorDrawable.intrinsicWidth,
+                it,
+                Bitmap.Config.ARGB_8888
+            )
+        }
+        val canvas = bitmap?.let { Canvas(it) }
+        canvas?.let { vectorDrawable.draw(it) }
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+
+    fun getBusIcon(line : String):Int=
+        when(line){
+            "500"->{R.drawable.ic_autobus_yellow}
+            "501"->{R.drawable.ic_autobus}
+            "503"->{R.drawable.ic_autobus_blue}
+            "504"->{R.drawable.ic_autobus_green}
+            else -> {R.drawable.ic_autobus_yellow}
+        }
+
     public val RECORRIDO_AZUL = listOf<LatLng>(
         LatLng(-37.330472, -59.112383),
         LatLng(-37.331054, -59.113960),

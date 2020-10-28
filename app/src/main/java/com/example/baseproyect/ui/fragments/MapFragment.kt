@@ -3,22 +3,26 @@ package com.example.baseproyect.ui.fragments
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.DrawableRes
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.example.baseproyect.MainActivity
 import com.example.baseproyect.R
+import com.example.baseproyect.ViewUtils
+import com.example.baseproyect.ViewUtils.getBusIcon
 import com.example.baseproyect.adapter.CustomInfoWindowAdapter
 import com.example.baseproyect.ui.Address
 import com.example.baseproyect.ui.Event
 import com.example.baseproyect.ui.MapUtils
 import com.example.baseproyect.ui.PuntoSeleccion
+import com.example.domain.response.Coordinates
 import com.example.domain.response.ListLineBus
 import com.example.domain.response.RecorridoBaseInformation
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -35,6 +39,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListener,
+    GoogleMap.OnMyLocationClickListener,
     GoogleMap.OnPolylineClickListener, GoogleMap.OnInfoWindowClickListener,
     GoogleMap.OnMapLongClickListener,
     GoogleMap.OnMapClickListener {
@@ -45,6 +50,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     private val baseRouteButton1 by lazy { accion_bus_1 }
     private val baseRouteButton2 by lazy { accion_bus_2 }
     private val baseRouteButton3 by lazy { accion_bus_3 }
+    private val baseRouteButton4 by lazy { accion_bus_4 }
     private val layoutBottomSheet by lazy { bottom_sheet }
     private val containerDropSheetImage by lazy { bottom_sheet_drop_image }
 
@@ -103,6 +109,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                     }
                     BottomSheetBehavior.STATE_SETTLING -> {
                     }
+                    BottomSheetBehavior.STATE_HALF_EXPANDED -> {
+                    }
                 }
             }
 
@@ -120,6 +128,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         clearMapButton.setOnClickListener {
             mMap.clear()
             mapFragmentViewModel.cleanMarkers()
+
+            mapFragmentViewModel.showAutoLocation()
         }
         containerDropSheetImage.setOnClickListener {
             onClickOriginDestinoButton()
@@ -131,7 +141,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     }
 
 
-    fun toggleBottomSheet() {
+    private fun toggleBottomSheet() {
         if (sheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED)
         } else {
@@ -139,7 +149,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         }
     }
 
-    fun onClickOriginDestinoButton() {
+    private fun onClickOriginDestinoButton() {
         btmSheetImageOrigin.setOnClickListener {
 
             manualFlag = true
@@ -165,7 +175,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         }
     }
 
-    fun searchOperation(data: Any?, dataAlternativa: Any?) {
+    private fun searchOperation(data: Any?, dataAlternativa: Any?) {
 
         btmSheetTextOrigin.text = " - "
         btmSheetTextDestino.text = " - "
@@ -174,14 +184,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         goToFragTravelPrediction(data, dataAlternativa)
     }
 
-    fun goToFragTravelPrediction(data: Any?, dataAlternativa: Any?) {
+    private fun goToFragTravelPrediction(data: Any?, dataAlternativa: Any?) {
 
         val address = data as Address?
 
         val address2 = dataAlternativa as Address?
 
-        val puntoOrigin= PuntoSeleccion(  true,address)
-        val puntoDest= PuntoSeleccion(  true,address2)
+        val puntoOrigin = PuntoSeleccion(true, address)
+        val puntoDest = PuntoSeleccion(true, address2)
 
         val ft: FragmentTransaction =
             (context as MainActivity).supportFragmentManager
@@ -198,15 +208,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             FragmentTravelPrediction.newInstance(
                 puntoOrigin,
                 puntoDest,
-                "500",
-                "1"
+                mapFragmentViewModel.activeLine,
+                "1",
+                mapFragmentViewModel.activeAlgorithm
             )
         )
         ft.addToBackStack(null)
         ft.commit()
     }
 
-    fun setManualPoint(valor: Any?) {
+    private fun setManualPoint(valor: Any?) {
         val address = valor as Address?
         if (manualPoint == "ORIGIN") {
             btmSheetTextOrigin.text = address?.name
@@ -223,6 +234,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         when (pokemonCardDetailData?.status) {
             MapFragmentViewModel.Status.LOADING -> {
                 setBusLines(data.peekContent().data as MutableList<ListLineBus>)
+
             }
 
             MapFragmentViewModel.Status.SHOW_ROUTES -> setVisibilityMenuButton(
@@ -230,10 +242,59 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                 data.peekContent().dataAlternativa
             )
             MapFragmentViewModel.Status.MANUAL_POINT -> setManualPoint(data.peekContent().data)
-            MapFragmentViewModel.Status.PROCEED_SEARCHING -> searchOperation(data.peekContent().data,data.peekContent().dataAlternativa)
+            MapFragmentViewModel.Status.PROCEED_SEARCHING -> searchOperation(
+                data.peekContent().data,
+                data.peekContent().dataAlternativa
+            )
 
             MapFragmentViewModel.Status.ACTIVATE_BUTTON -> btmSheetProceedSearch.isEnabled = true
             MapFragmentViewModel.Status.DEACTIVATE_BUTTON -> btmSheetProceedSearch.isEnabled = false
+            MapFragmentViewModel.Status.SHOW_LOC -> {
+                val marcadorA = data.peekContent().data as Coordinates
+                val marcadorB = data.peekContent().dataAlternativa as Coordinates
+
+                if (ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+
+                    return
+                }
+                mMap.clear()
+                setRoutes(
+                    mapFragmentViewModel.listRecorridoIda,
+                    mapFragmentViewModel.listRecorridoVuelta
+                )
+                val mMarkerTest: Marker = mMap.addMarker(
+                    MarkerOptions()
+                        .position(LatLng(marcadorA.latitude, marcadorA.longitude))
+                        .icon(
+                            ViewUtils.bitmapDescriptorFromVector(
+                                requireContext(),
+                                getBusIcon(mapFragmentViewModel.activeLine)
+                            )
+                        )
+                )
+                val mMarkerBTest: Marker = mMap.addMarker(
+                    MarkerOptions()
+                        .position(LatLng(marcadorB.latitude, marcadorB.longitude))
+                        .icon(
+                            ViewUtils.bitmapDescriptorFromVector(
+                                requireContext(),
+                                getBusIcon(mapFragmentViewModel.activeLine)
+                            )
+                        )
+                )
+                mapFragmentViewModel.addSimBusMarker(mMarkerTest, mMarkerBTest)
+                mMap.isMyLocationEnabled = true
+                mapFragmentViewModel.showAutoLocation()
+            }
+            MapFragmentViewModel.Status.ERROR -> {}
+            null -> {}
         }
     }
 
@@ -241,23 +302,33 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         when (busLines.size) {
             1 -> {
 
-                accion_bus_1.visibility =
+                baseRouteButton1.visibility =
                     if (busLines[0].linea.contains("500")) View.VISIBLE else View.GONE
             }
             2 -> {
 
-                accion_bus_1.visibility =
+                baseRouteButton1.visibility =
                     if (busLines[0].linea.contains("500")) View.VISIBLE else View.GONE
-                accion_bus_2.visibility =
+                baseRouteButton2.visibility =
                     if (busLines[1].linea.contains("501")) View.VISIBLE else View.GONE
             }
             3 -> {
-                accion_bus_1.visibility =
+                baseRouteButton1.visibility =
                     if (busLines[0].linea.contains("500")) View.VISIBLE else View.GONE
-                accion_bus_2.visibility =
+                baseRouteButton2.visibility =
                     if (busLines[1].linea.contains("501")) View.VISIBLE else View.GONE
-                accion_bus_3.visibility =
-                    if (busLines[1].linea.contains("503")) View.VISIBLE else View.GONE
+                baseRouteButton3.visibility =
+                    if (busLines[2].linea.contains("503")) View.VISIBLE else View.GONE
+            }
+            4 -> {
+                baseRouteButton1.visibility =
+                    if (busLines[0].linea.contains("500")) View.VISIBLE else View.GONE
+                baseRouteButton2.visibility =
+                    if (busLines[1].linea.contains("501")) View.VISIBLE else View.GONE
+                baseRouteButton3.visibility =
+                    if (busLines[2].linea.contains("503")) View.VISIBLE else View.GONE
+                baseRouteButton4.visibility =
+                    if (busLines[3].linea.contains("504")) View.VISIBLE else View.GONE
             }
         }
 
@@ -286,7 +357,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 
 
         }
-        val polylineBlueRute = mMap.addPolyline(
+        mMap.addPolyline(
             PolylineOptions()
                 .clickable(true)
                 .addAll(
@@ -294,7 +365,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                 ).color(Color.BLUE)
         )
 
-        val polylineRedRute = mMap.addPolyline(
+        mMap.addPolyline(
             PolylineOptions()
                 .clickable(true)
                 .addAll(
@@ -336,11 +407,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                     requireActivity(),
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                     LOCATION_REQUEST_CODE
-                );
+                )
             }
         }
 
-        mMap.uiSettings.isZoomControlsEnabled = true;
+        mMap.uiSettings.isZoomControlsEnabled = true
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(-37.330472, -59.112383), 13f))
 
         baseRouteButton1.setOnClickListener {
@@ -355,6 +426,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 
             mapFragmentViewModel.showBaseRoute(503)
         }
+        baseRouteButton4.setOnClickListener {
+
+            mapFragmentViewModel.showBaseRoute(504)
+        }
+
         mMap.setOnMapClickListener(this)
 
         mMap.setOnMapLongClickListener(this)
@@ -363,27 +439,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 
         mMap.setInfoWindowAdapter(adapter)
         googleMap.setOnInfoWindowClickListener { marker ->
-            val address = MapUtils.getAddress(requireContext(),marker)
-
-            goToFragTravelPrediction(address,address)
-//            val ft: FragmentTransaction =
-//                (context as MainActivity).supportFragmentManager
-//                    .beginTransaction()
-//            ft.setCustomAnimations(
-//                R.anim.slide_in,
-//                R.anim.face_out,
-//                R.anim.face_in,
-//                R.anim.slide_out
-//            )
-//            ft.replace(
-//                R.id.account,
-//                FragmentTravelPrediction.newInstance(
-//                    marker.position.latitude,
-//                    marker.position.longitude
-//                )
-//            )
-//            ft.addToBackStack(null)
-//            ft.commit()
+            val address = MapUtils.getAddress(requireContext(), marker)
+            mapFragmentViewModel.checkLocation = false
+            goToFragTravelPrediction(address, address)
         }
     }
 
@@ -392,17 +450,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     }
 
     override fun onPolylineClick(p0: Polyline?) {
-    }
-//--- viewmodel
-
-    private fun configureDrawablesButton(@DrawableRes drawable: Int, @DrawableRes drawable2: Int) {
-        mapFragmentViewModel.imageOpenButton = drawable
-        mapFragmentViewModel.imageCloseButton = drawable2
-        setIconFloatingButton(mapFragmentViewModel.imageOpenButton)
-    }
-
-    private fun setIconFloatingButton(@DrawableRes drawable: Int) {
-//        baseRouteButton.setImageResource(drawable)
     }
 
     private fun setVisibilityMenuButton(listLatLong: Any?, dataAlternativa: Any?) {
@@ -434,11 +481,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 
     override fun onMapLongClick(p0: LatLng) {
 
-        var mMarkerTest: Marker = mMap.addMarker(
+        val mMarkerTest: Marker = mMap.addMarker(
             MarkerOptions()
                 .position(p0)
-//                .title("Conductor")
-//                .snippet(snippet)
         )
         mapFragmentViewModel.addMarker(mMarkerTest)
 
@@ -454,4 +499,60 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             }
         }
     }
+
+    override fun onMyLocationClick(p0: Location) {
+        Toast.makeText(context, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+    }
+//    fun llamar(){
+//        // Getting LocationManager object from System Service LOCATION_SERVICE
+//        // Getting LocationManager object from System Service LOCATION_SERVICE
+//        val locationManager: LocationManager? =  (LocationManager) getSystemService(LOCATION_SERVICE);
+//
+//        // Creating a criteria object to retrieve provider
+//
+//        // Creating a criteria object to retrieve provider
+//        val criteria = Criteria()
+//
+//        // Getting the name of the best provider
+//
+//        // Getting the name of the best provider
+//        val provider: String = locationManager.getBestProvider(criteria, true)
+//
+//        // Getting Current Location
+//
+//        // Getting Current Location
+//        val location: Location = if (ActivityCompat.checkSelfPermission(
+//                requireContext(),
+//                Manifest.permission.ACCESS_FINE_LOCATION
+//            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+//                requireContext(),
+//                Manifest.permission.ACCESS_COARSE_LOCATION
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//
+//            //    ActivityCompat#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//            locationManager.getLastKnownLocation(provider)
+//
+//        } else {
+//            locationManager.getLastKnownLocation(provider)
+//        }
+//
+//        if (location != null) {
+//            // Getting latitude of the current location
+//            val latitude = location.latitude
+//
+//            // Getting longitude of the current location
+//            val longitude = location.longitude
+//
+//            // Creating a LatLng object for the current location
+//            val latLng = LatLng(latitude, longitude)
+////            myPosition = LatLng(latitude, longitude)
+//            mMap.addMarker(MarkerOptions().position(latLng).title("Start"))
+//        }
+//    }
 }

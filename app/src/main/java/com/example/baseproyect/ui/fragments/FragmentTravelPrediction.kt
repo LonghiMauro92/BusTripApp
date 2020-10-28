@@ -17,8 +17,11 @@ class FragmentTravelPrediction : Fragment() {
 
     //    private val cardInformation by lazy { fragment_card_info }
     private val cardMainTitleText by lazy { fragment_card_title_text_view }
-    private val cardDistanceText by lazy { fragment_card_distance_text }
-    private val cardDistanceTextValue by lazy { fragment_card_distance_text_value }
+    private val cardRecorridoText by lazy { fragment_card_recorrido_text }
+    private val cardRecorridoOriginTextValue by lazy { fragment_card_recorrido_text_value_origin }
+    private val cardRecorridoDestTextValue by lazy { fragment_card_recorrido_text_value_destino }
+    private val cardAlgorithmText by lazy { fragment_card_algorithm_text }
+    private val cardAlgorithmTextValue by lazy { fragment_card_algorithm_text_value }
     private val cardTimeText by lazy { fragment_card_time_text }
     private val cardTimeTextValue by lazy { fragment_card_time_text_value }
 
@@ -29,6 +32,7 @@ class FragmentTravelPrediction : Fragment() {
     private lateinit var puntoDest: PuntoSeleccion
     private var linea: String = ""
     private var recorridoId: String = ""
+    private var algoritmo: String = ""
 
 
     private val predictorViewModel by viewModel<FragmentTravelPredictionViewModel>()
@@ -38,7 +42,8 @@ class FragmentTravelPrediction : Fragment() {
             address1: PuntoSeleccion,
             address2: PuntoSeleccion,
             linea: String,
-            recorridoId: String
+            recorridoId: String,
+            algorithm: String
         ): FragmentTravelPrediction {
 
             val fragment = FragmentTravelPrediction()
@@ -48,6 +53,7 @@ class FragmentTravelPrediction : Fragment() {
             args.putSerializable("EXTRA_VAL_PUNTO_DEST", address2 as PuntoSeleccion)
             args.putString("EXTRA_VAL_LINEA", linea)
             args.putString("EXTRA_VAL_RECORRIDO", recorridoId)
+            args.putString("EXTRA_VAL_ALGORITHM", algorithm)
 
             fragment.arguments = args
             return fragment
@@ -61,6 +67,7 @@ class FragmentTravelPrediction : Fragment() {
         puntoDest = requireArguments().getSerializable("EXTRA_VAL_PUNTO_DEST") as PuntoSeleccion
         linea = requireArguments().getString("EXTRA_VAL_LINEA").toString()
         recorridoId = requireArguments().getString("EXTRA_VAL_RECORRIDO").toString()
+        algoritmo = requireArguments().getString("EXTRA_VAL_ALGORITHM").toString()
 
     }
 
@@ -72,7 +79,8 @@ class FragmentTravelPrediction : Fragment() {
             puntoOrigin,
             puntoDest,
             linea,
-            recorridoId
+            recorridoId,
+            algoritmo
         )
 
 
@@ -105,22 +113,30 @@ class FragmentTravelPrediction : Fragment() {
     private fun setLoader() {
         loader.visibility = View.VISIBLE
         cardTimeTextValue.visibility = View.GONE
-        cardDistanceTextValue.visibility = View.GONE
-        cardDistanceText.visibility = View.GONE
+        cardRecorridoOriginTextValue.visibility = View.GONE
+        cardRecorridoDestTextValue.visibility = View.GONE
+        cardAlgorithmText.visibility = View.GONE
+        cardAlgorithmTextValue.visibility = View.GONE
+        cardRecorridoText.visibility = View.GONE
         cardTimeText.visibility = View.GONE
     }
 
     fun setUIValues(data: Any?) {
-
+        val values = data as Double
         cardTimeTextValue.visibility = View.VISIBLE
-        cardDistanceTextValue.visibility = View.VISIBLE
-        cardDistanceText.visibility = View.VISIBLE
+        cardRecorridoOriginTextValue.visibility = View.VISIBLE
+        cardRecorridoDestTextValue.visibility = View.VISIBLE
+        cardAlgorithmText.visibility = View.VISIBLE
+        cardAlgorithmTextValue.visibility = View.VISIBLE
+        cardRecorridoText.visibility = View.VISIBLE
         cardTimeText.visibility = View.VISIBLE
 
         loader.visibility = View.GONE
 
-        cardTimeTextValue.text = "79 seg"
-        cardDistanceTextValue.text = "1000mts"
+        cardTimeTextValue.text = values.toString()
+        cardRecorridoOriginTextValue.text = puntoOrigin.address?.name
+        cardRecorridoDestTextValue.text = puntoDest.address?.name
+        cardAlgorithmTextValue.text = algoritmo
     }
 
     override fun onCreateView(

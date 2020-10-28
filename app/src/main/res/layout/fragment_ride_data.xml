@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_card_info"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="wrap_content"
     android:layout_margin="10dp"
     android:clickable="false"
     android:elevation="4dp"
@@ -23,21 +23,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:text="Informacion del recorrido "
             android:textColor="@color/colorTravelPredictionTitlesCard"
             android:textSize="25sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
         <TextView
-            android:id="@+id/fragment_card_distance_text"
+            android:id="@+id/fragment_card_recorrido_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:text="Distancia : "
+            android:layout_marginTop="10dp"
+            android:text="Recorrido : "
             android:textColor="@color/colorTravelPredictionTitlesCard"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -45,15 +44,49 @@
             app:layout_constraintTop_toBottomOf="@+id/fragment_card_title_text_view" />
 
         <TextView
-            android:id="@+id/fragment_card_distance_text_value"
+            android:id="@+id/fragment_card_recorrido_text_value_origin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTravelPredictionHistoryCard"
+            android:textSize="20sp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_card_recorrido_text"
+            tools:text="Alsina 1111" />
+
+        <TextView
+            android:id="@+id/fragment_card_recorrido_text_value_destino"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTravelPredictionHistoryCard"
+            android:textSize="20sp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_card_recorrido_text_value_origin"
+            tools:text="Grl Paz 1111" />
+
+        <TextView
+            android:id="@+id/fragment_card_algorithm_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
+            android:text="Algoritmo : "
+            android:textColor="@color/colorTravelPredictionTitlesCard"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_card_recorrido_text_value_destino" />
+
+        <TextView
+            android:id="@+id/fragment_card_algorithm_text_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
             android:textColor="@color/colorTravelPredictionHistoryCard"
             android:textSize="20sp"
-            app:layout_constraintStart_toEndOf="@+id/fragment_card_distance_text"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_card_title_text_view"
+            app:layout_constraintStart_toEndOf="@+id/fragment_card_recorrido_text"
+            app:layout_constraintTop_toTopOf="@+id/fragment_card_algorithm_text"
             tools:text="10000 m" />
 
         <TextView
@@ -61,13 +94,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
+            android:layout_marginBottom="20dp"
             android:layout_marginTop="20dp"
             android:text="Tiempo : "
             android:textColor="@color/colorTravelPredictionTitlesCard"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_card_distance_text" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_card_algorithm_text" />
 
         <TextView
             android:id="@+id/fragment_card_time_text_value"
@@ -78,7 +113,7 @@
             android:textColor="@color/colorTravelPredictionHistoryCard"
             android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/fragment_card_time_text"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_card_distance_text"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_card_algorithm_text"
             tools:text="30seg" />
         <ImageView
             android:id="@+id/fragment_card_image_close"
@@ -96,7 +131,8 @@
             android:layout_height="wrap_content"
             android:text="View History "
             android:textColor="@color/colorTravelPredictionHistoryCard"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="5dp"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -15,13 +15,14 @@ import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 class FragmentTravelPredictionViewModel :
     BaseViewModel(), KoinComponent {
 
     private val getCalculoAlgSimpleUseCase: GetCalculoAlgoritmosUseCase by inject()
+
+    lateinit var algorithm:String
 
     val predictionMutableLiveData = MutableLiveData<Event<Data>>()
     val liveData: MutableLiveData<Event<Data>>
@@ -34,7 +35,8 @@ class FragmentTravelPredictionViewModel :
         puntoOrigin: PuntoSeleccion,
         puntoDest: PuntoSeleccion,
         linea: String,
-        recorridoId: String
+        recorridoId: String,
+        algorithmValue:String
     ) {
         predictionMutableLiveData.postValue(
             Event(
@@ -43,6 +45,7 @@ class FragmentTravelPredictionViewModel :
                 )
             )
         )
+        algorithm = algorithmValue
 
         val date = Calendar.getInstance().time
         val dateInString = date.toString("yyyy-MM-dd'T'HH:mm:ss")
@@ -66,6 +69,7 @@ class FragmentTravelPredictionViewModel :
                         dateInString,
                         recorridoId,
                         linea,
+                        "1",
                         "1"
                     )
                 }) {

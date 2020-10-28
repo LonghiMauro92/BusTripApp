@@ -11,6 +11,7 @@ import com.example.baseproyect.R
 import com.example.baseproyect.ui.MenuListItem
 import kotlinx.android.synthetic.main.fragment_settings.*
 import kotlinx.android.synthetic.main.view_item_menu.view.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SettingsFragment : Fragment() {
     private val menuItemViewHistory by lazy { menu_item_view_history }
@@ -18,6 +19,8 @@ class SettingsFragment : Fragment() {
     private val menuItemAlgorithms by lazy { menu_item_view_algorithms }
 
     private var listShown = false
+
+    private val mapViewModel by sharedViewModel<MapFragmentViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,22 +59,27 @@ class SettingsFragment : Fragment() {
 
 
         val menuList = listOf<MenuListItem>(
-            MenuListItem("ROJO", ::showActionListItem),
-            MenuListItem("VERDE", ::showActionListItem),
-            MenuListItem("Amarillo", ::showActionListItem)
+            MenuListItem("ROJO", ::lineBusActionItem),
+            MenuListItem("VERDE", ::lineBusActionItem),
+            MenuListItem("Amarillo", ::lineBusActionItem)
         )
         menuItemSetBusLines.setSubMenuList(menuList)
+
         val menuAlgoritmosList = listOf<MenuListItem>(
-            MenuListItem("ROJO-alg", ::showActionListItem),
-            MenuListItem("VERDE-alg", ::showActionListItem),
-            MenuListItem("Amarillo-alg", ::showActionListItem)
+            MenuListItem("ROJO-alg", ::AlgorithmActionItem),
+            MenuListItem("VERDE-alg", ::AlgorithmActionItem),
+            MenuListItem("Amarillo-alg", ::AlgorithmActionItem)
         )
 
         menuItemAlgorithms.setSubMenuList(menuAlgoritmosList)
     }
 
-    fun showActionListItem() {
-        Toast.makeText(context, "My Team`s Dashboard Menu Item", Toast.LENGTH_SHORT).show()
+    fun lineBusActionItem() {
+        mapViewModel.showBaseRoute(500)
+    }
+
+    fun AlgorithmActionItem() {
+        mapViewModel.activeAlgorithm = "RegresionAcumulado"
     }
 
 }

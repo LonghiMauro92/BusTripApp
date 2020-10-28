@@ -5,12 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.baseproyect.BaseViewModel
 import com.example.baseproyect.ui.Address
 import com.example.baseproyect.ui.Event
+import com.example.domain.response.Coordinates
 import com.example.domain.response.RecorridoBaseInformation
 import com.example.domain.response.UseCaseResult
 import com.example.domain.usecase.GetBaseRoutesBusesUseCase
 import com.example.domain.usecase.GetLinesBusesUseCase
 import com.google.android.gms.maps.model.Marker
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
@@ -30,7 +32,12 @@ class MapFragmentViewModel :
     var imageOpenButton: Int = 0
     var imageCloseButton: Int = 0
     var visibleOptions: Boolean = false
+    var checkLocation: Boolean = true
     val listMarkers = mutableListOf<Marker>()
+    val listSimulateBusMarkers = mutableListOf<Marker>()
+
+    lateinit var activeLine :String
+    lateinit var activeAlgorithm :String
 
 
     lateinit var addressOrigin: Address
@@ -43,7 +50,14 @@ class MapFragmentViewModel :
                 withContext(Dispatchers.IO) { getLinesBusesUseCase.invoke() }) {
                 is UseCaseResult.Failure -> {
 //                Timber.e(CONNECT_TO_DRIVER_FAILED)
-                    mapMutableLiveData.postValue(Event(Data(status = Status.ERROR, data = "service failed")))
+                    mapMutableLiveData.postValue(
+                        Event(
+                            Data(
+                                status = Status.ERROR,
+                                data = "service failed"
+                            )
+                        )
+                    )
                 }
                 is UseCaseResult.Success -> {
 
@@ -61,15 +75,33 @@ class MapFragmentViewModel :
     }
 
     var listRecorridoIda = mutableListOf<RecorridoBaseInformation>()
+    var listActiveBusRecA = mutableListOf<Coordinates>()
     var listRecorridoVuelta = mutableListOf<RecorridoBaseInformation>()
+    var listActiveBusRecB = mutableListOf<Coordinates>()
 
     fun showBaseRoute(line: Int) {
+        activeLine = line.toString()
+
+        if (listRecorridoIda.isNotEmpty() && listActiveBusRecB.isNotEmpty()) {
+            listRecorridoIda.clear()
+            listActiveBusRecA.clear()
+            listRecorridoVuelta.clear()
+            listActiveBusRecB.clear()
+        }
+
         launch {
             when (val result =
                 withContext(Dispatchers.IO) { getBaseRoutesBusesUseCase.invoke(line) }) {
                 is UseCaseResult.Failure -> {
 //                Timber.e(CONNECT_TO_DRIVER_FAILED)
-                    mapMutableLiveData.postValue(Event(Data(status = Status.ERROR, data = "service failed")))
+                    mapMutableLiveData.postValue(
+                        Event(
+                            Data(
+                                status = Status.ERROR,
+                                data = "service failed"
+                            )
+                        )
+                    )
                 }
                 is UseCaseResult.Success -> {
                     val recorridoIda = RecorridoBaseInformation(
@@ -82,9 +114,9 @@ class MapFragmentViewModel :
                         result.data[1].linea,
                         result.data[1].coordenadas
                     )
-
                     listRecorridoIda.add(recorridoIda)
                     listRecorridoVuelta.add(recorridoVuelta)
+                    selectActiveBus(listRecorridoIda, listRecorridoVuelta)
 
                     mapMutableLiveData.postValue(
                         Event(
@@ -95,31 +127,44 @@ class MapFragmentViewModel :
                             )
                         )
                     )
+
                 }
             }
         }
+    }
+
+    private fun selectActiveBus(
+        recorridoIda: MutableList<RecorridoBaseInformation>,
+        recorridoVuelta: MutableList<RecorridoBaseInformation>
+    ) {
+        listActiveBusRecA.addAll(recorridoIda[0].coordenadas)
+        listActiveBusRecB.addAll(recorridoVuelta[0].coordenadas)
     }
 
     private fun checkBothFields() {
         if (::addressOrigin.isInitialized && ::addressDestination.isInitialized) {
             if (addressOrigin.name.isNotEmpty() && addressDestination.name.isNotEmpty()) {
                 mapMutableLiveData.value = Event(
-                    Data(status = Status.ACTIVATE_BUTTON))
+                    Data(status = Status.ACTIVATE_BUTTON)
+                )
             } else {
                 mapMutableLiveData.value = Event(
                     Data(
-                        status = Status.DEACTIVATE_BUTTON))
+                        status = Status.DEACTIVATE_BUTTON
+                    )
+                )
             }
         } else {
             mapMutableLiveData.value = Event(
-                Data(status = Status.DEACTIVATE_BUTTON))
+                Data(status = Status.DEACTIVATE_BUTTON)
+            )
         }
     }
 
 
     fun setManualOriginPoint(
         point: Marker,
-        address: com.example.baseproyect.ui.Address
+        address: Address
     ) {
 
         addressOrigin = address
@@ -135,7 +180,7 @@ class MapFragmentViewModel :
 
     fun setManualDestPoint(
         point: Marker,
-        address: com.example.baseproyect.ui.Address
+        address: Address
     ) {
 
         addressDestination = address
@@ -150,8 +195,9 @@ class MapFragmentViewModel :
 
         checkBothFields()
     }
-    fun proceedSearching() {
 
+    fun proceedSearching() {
+        checkLocation = false
         mapMutableLiveData.postValue(
             Event(
                 Data(
@@ -161,8 +207,8 @@ class MapFragmentViewModel :
                 )
             )
         )
-        addressOrigin=Address()
-        addressDestination=Address()
+        addressOrigin = Address()
+        addressDestination = Address()
         checkBothFields()
     }
 
@@ -170,12 +216,42 @@ class MapFragmentViewModel :
         listMarkers.add(marker)
     }
 
+    fun addSimBusMarker(markerA: Marker, markerB: Marker) {
+        listSimulateBusMarkers.clear()
+        listSimulateBusMarkers.add(markerA)
+        listSimulateBusMarkers.add(markerB)
+    }
+
     fun cleanMarkers() {
         listMarkers.clear()
-        addressOrigin=Address()
-        addressDestination=Address()
-        mapMutableLiveData.value = Event(
-            Data(status = Status.DEACTIVATE_BUTTON))
+        addressOrigin = Address()
+        addressDestination = Address()
+        mapMutableLiveData.postValue(
+            Event(
+                Data(status = Status.DEACTIVATE_BUTTON)
+            )
+        )
+    }
+
+    fun showAutoLocation() {
+        if (checkLocation) {
+            launch {
+                withContext(Dispatchers.IO) {
+                    delay(2500L) // retraso non-blocking de 2,5 segundos
+                    mapMutableLiveData.postValue(
+                        Event(
+                            Data(
+                                status = Status.SHOW_LOC,
+                                data = listActiveBusRecA[0],
+                                dataAlternativa = listActiveBusRecB[0]
+                            )
+                        )
+                    )
+                    listActiveBusRecA.removeAt(0)
+                    listActiveBusRecB.removeAt(0)
+                }
+            }
+        }
     }
 
     data class Data(
@@ -192,6 +268,7 @@ class MapFragmentViewModel :
         MANUAL_POINT,
         PROCEED_SEARCHING,
         ACTIVATE_BUTTON,
-        DEACTIVATE_BUTTON
+        DEACTIVATE_BUTTON,
+        SHOW_LOC
     }
 }
