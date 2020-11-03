@@ -107,6 +107,8 @@ class FragmentTravelPrediction : Fragment() {
             FragmentTravelPredictionViewModel.Status.CONTENT_DATA -> {
                 setUIValues(data.peekContent().data)
             }
+            FragmentTravelPredictionViewModel.Status.ERROR -> {}
+
         }
     }
 

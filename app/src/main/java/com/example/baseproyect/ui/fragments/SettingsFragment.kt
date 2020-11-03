@@ -19,6 +19,8 @@ class SettingsFragment : Fragment() {
     private val menuItemAlgorithms by lazy { menu_item_view_algorithms }
 
     private var listShown = false
+    lateinit var menuBussLinesList : List<MenuListItem>
+    lateinit var menuAlgoritmosList : List<MenuListItem>
 
     private val mapViewModel by sharedViewModel<MapFragmentViewModel>()
 
@@ -58,28 +60,29 @@ class SettingsFragment : Fragment() {
         )
 
 
-        val menuList = listOf<MenuListItem>(
-            MenuListItem("ROJO", ::lineBusActionItem),
-            MenuListItem("VERDE", ::lineBusActionItem),
-            MenuListItem("Amarillo", ::lineBusActionItem)
+        menuBussLinesList = listOf<MenuListItem>(
+            MenuListItem("500 - AMARILLO") { lineBusActionItem(500) },
+            MenuListItem("501 - BLANCO"){ lineBusActionItem(500) },
+            MenuListItem("503 - AZUL"){ lineBusActionItem(503) },
+            MenuListItem("504 - VERDE"){ lineBusActionItem(504) }
         )
-        menuItemSetBusLines.setSubMenuList(menuList)
+        menuItemSetBusLines.setSubMenuList(menuBussLinesList)
 
-        val menuAlgoritmosList = listOf<MenuListItem>(
-            MenuListItem("ROJO-alg", ::AlgorithmActionItem),
-            MenuListItem("VERDE-alg", ::AlgorithmActionItem),
-            MenuListItem("Amarillo-alg", ::AlgorithmActionItem)
+        menuAlgoritmosList = listOf<MenuListItem>(
+            MenuListItem("Alg - RegresionAcumulado"){ AlgorithmActionItem("RegresionAcumulado") },
+            MenuListItem("Alg - RegresionDiferenciaDeCeldas"){ AlgorithmActionItem("RegresionDiferenciaDeCeldas") },
+            MenuListItem("Alg - TiempoEntreCoordenadasComplejo"){ AlgorithmActionItem("TiempoEntreCoordenadasComplejo") }
         )
 
         menuItemAlgorithms.setSubMenuList(menuAlgoritmosList)
     }
 
-    fun lineBusActionItem() {
-        mapViewModel.showBaseRoute(500)
+    fun lineBusActionItem(linea:Int) {
+        mapViewModel.showBaseRoute(linea)
     }
 
-    fun AlgorithmActionItem() {
-        mapViewModel.activeAlgorithm = "RegresionAcumulado"
+    fun AlgorithmActionItem(algorithm:String) {
+        mapViewModel.activeAlgorithm = algorithm
     }
 
 }

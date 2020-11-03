@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_card_info"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="250dp"
     android:layout_margin="10dp"
     android:clickable="false"
     android:elevation="4dp"
@@ -87,7 +87,7 @@
             android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/fragment_card_recorrido_text"
             app:layout_constraintTop_toTopOf="@+id/fragment_card_algorithm_text"
-            tools:text="10000 m" />
+            tools:text="Algoritmo nro1" />
 
         <TextView
             android:id="@+id/fragment_card_time_text"
@@ -112,6 +112,7 @@
             android:layout_marginTop="20dp"
             android:textColor="@color/colorTravelPredictionHistoryCard"
             android:textSize="20sp"
+            android:maxLength="6"
             app:layout_constraintStart_toEndOf="@+id/fragment_card_time_text"
             app:layout_constraintTop_toBottomOf="@+id/fragment_card_algorithm_text"
             tools:text="30seg" />

@@ -24,9 +24,9 @@ class CalculadorTiemposServiceImpl : AlgoritmsService, KoinComponent {
             cordenadaO,
             cordenadaD,
             currentDateTimeString,
-            recorridoId,
-            lineaId,
-            unidadId
+            recorridoId.toInt(),
+            lineaId.toInt(),
+            unidadId.toInt()
         )
         val call =
             api.createService(ServiceApi::class.java).calcularTiempoPorRegresionAcumulado(
@@ -51,7 +51,7 @@ class CalculadorTiemposServiceImpl : AlgoritmsService, KoinComponent {
     }
 
     override fun getCalcularTiempoPorRegresionDiferenciaDeCeldas(
-        cordenadaO: Coordinates,
+        destination: Coordinates,
         cordenadaD: Coordinates,
         currentDateTimeString: String,
         recorridoId: String,
@@ -60,12 +60,12 @@ class CalculadorTiemposServiceImpl : AlgoritmsService, KoinComponent {
     ): UseCaseResult<Double> {
 
         val travelData = TravelEstimate(
-            cordenadaO,
+            destination,
             cordenadaD,
-            currentDateTimeString.toString(),
-            recorridoId,
-            lineaId,
-            unidadId
+            currentDateTimeString,
+            recorridoId.toInt(),
+            lineaId.toInt(),
+            unidadId.toInt()
         )
         val call =
             api.createService(ServiceApi::class.java).calcularTiempoPorRegresionDiferenciaDeCeldas(
@@ -102,12 +102,12 @@ class CalculadorTiemposServiceImpl : AlgoritmsService, KoinComponent {
             cordenadaO,
             cordenadaD,
             currentDateTimeString.toString(),
-            recorridoId,
-            lineaId,
-            unidadId
+            recorridoId.toInt(),
+            lineaId.toInt(),
+            unidadId.toInt()
         )
         val call =
-            api.createService(ServiceApi::class.java).calcularTiempoPorRegresionDiferenciaDeCeldas(
+            api.createService(ServiceApi::class.java).calcularTiempoEntreCoordenadasComplejo(
                 travelData
             )
 

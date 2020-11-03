@@ -18,10 +18,7 @@ import com.example.baseproyect.R
 import com.example.baseproyect.ViewUtils
 import com.example.baseproyect.ViewUtils.getBusIcon
 import com.example.baseproyect.adapter.CustomInfoWindowAdapter
-import com.example.baseproyect.ui.Address
-import com.example.baseproyect.ui.Event
-import com.example.baseproyect.ui.MapUtils
-import com.example.baseproyect.ui.PuntoSeleccion
+import com.example.baseproyect.ui.*
 import com.example.domain.response.Coordinates
 import com.example.domain.response.ListLineBus
 import com.example.domain.response.RecorridoBaseInformation
@@ -129,7 +126,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             mMap.clear()
             mapFragmentViewModel.cleanMarkers()
 
-            mapFragmentViewModel.showAutoLocation()
+//            mapFragmentViewModel.showAutoLocation()
         }
         containerDropSheetImage.setOnClickListener {
             onClickOriginDestinoButton()
@@ -167,8 +164,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         btmSheetImageDelete.setOnClickListener {
             manualFlag = false
             manualPoint = ""
-            btmSheetTextOrigin.text = " - "
-            btmSheetTextDestino.text = " - "
+            btmSheetTextOrigin.text = getString(R.string.bottom_sheet_hint_origen)
+            btmSheetTextDestino.text = getString(R.string.bottom_sheet_hint_destino)
             btmSheetImageDelete.visibility = View.GONE
             mMap.clear()
             mapFragmentViewModel.cleanMarkers()
@@ -209,7 +206,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                 puntoOrigin,
                 puntoDest,
                 mapFragmentViewModel.activeLine,
-                "1",
+                "1", // ver cual parametro enviarle
                 mapFragmentViewModel.activeAlgorithm
             )
         )
@@ -293,8 +290,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                 mMap.isMyLocationEnabled = true
                 mapFragmentViewModel.showAutoLocation()
             }
-            MapFragmentViewModel.Status.ERROR -> {}
-            null -> {}
+            MapFragmentViewModel.Status.ERROR -> {
+
+                invokeAlertDialog(
+                    activity = requireActivity(),
+                    message = data.peekContent().data.toString(),
+                    positiveButtonS = data.peekContent().dataAlternativa.toString()
+                )
+            }
+            null -> {
+            }
         }
     }
 
@@ -492,9 +497,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             val address =
                 MapUtils.getAddress(requireContext(), mMarkerTest)
             if (manualPoint == "ORIGIN") {
-                mapFragmentViewModel.setManualOriginPoint(mMarkerTest, address)
+                mapFragmentViewModel.setManualOriginPoint(address)
             } else {
-                mapFragmentViewModel.setManualDestPoint(mMarkerTest, address)
+                mapFragmentViewModel.setManualDestPoint(address)
 
             }
         }

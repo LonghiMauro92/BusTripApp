@@ -63,22 +63,23 @@ class FragmentTravelPredictionViewModel :
         viewModelScope.launch {
             when (val result =
                 withContext(Dispatchers.IO) {
-                    getCalculoAlgSimpleUseCase.invokeAlgSimple(
+                    getCalculoAlgSimpleUseCase.selectTypeAlgService(
                         coordA,
                         coordB,
                         dateInString,
                         recorridoId,
                         linea,
                         "1",
-                        "1"
+                        algorithmValue
                     )
                 }) {
                 is UseCaseResult.Failure -> {
                     predictionMutableLiveData.postValue(
                         Event(
                             Data(
-                                status = Status.CONTENT_DATA,
-                                data = "bien"
+                                status = Status.ERROR,
+                                data = result.exception.message,
+                                dataAlternativa = "Back"
                             )
                         )
                     )
@@ -107,6 +108,7 @@ class FragmentTravelPredictionViewModel :
     data class Data(
         var status: Status,
         var data: Any? = null,
+        var dataAlternativa: Any? = null,
         var error: Exception? = null
     )
 

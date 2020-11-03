@@ -36,8 +36,8 @@ class MapFragmentViewModel :
     val listMarkers = mutableListOf<Marker>()
     val listSimulateBusMarkers = mutableListOf<Marker>()
 
-    lateinit var activeLine :String
-    lateinit var activeAlgorithm :String
+    var activeLine: String = ""
+    var activeAlgorithm: String = ""
 
 
     lateinit var addressOrigin: Address
@@ -49,12 +49,12 @@ class MapFragmentViewModel :
             when (val result =
                 withContext(Dispatchers.IO) { getLinesBusesUseCase.invoke() }) {
                 is UseCaseResult.Failure -> {
-//                Timber.e(CONNECT_TO_DRIVER_FAILED)
                     mapMutableLiveData.postValue(
                         Event(
                             Data(
                                 status = Status.ERROR,
-                                data = "service failed"
+                                data = result.exception.message,
+                                dataAlternativa = "Back"
                             )
                         )
                     )
@@ -93,12 +93,12 @@ class MapFragmentViewModel :
             when (val result =
                 withContext(Dispatchers.IO) { getBaseRoutesBusesUseCase.invoke(line) }) {
                 is UseCaseResult.Failure -> {
-//                Timber.e(CONNECT_TO_DRIVER_FAILED)
                     mapMutableLiveData.postValue(
                         Event(
                             Data(
                                 status = Status.ERROR,
-                                data = "service failed"
+                                data = result.exception.message,
+                                dataAlternativa = "Back"
                             )
                         )
                     )
@@ -118,16 +118,8 @@ class MapFragmentViewModel :
                     listRecorridoVuelta.add(recorridoVuelta)
                     selectActiveBus(listRecorridoIda, listRecorridoVuelta)
 
-                    mapMutableLiveData.postValue(
-                        Event(
-                            Data(
-                                status = Status.SHOW_ROUTES,
-                                data = listRecorridoIda,
-                                dataAlternativa = listRecorridoVuelta
-                            )
-                        )
-                    )
-
+                    checkLocation = true
+                    showAutoLocation()
                 }
             }
         }
@@ -163,7 +155,6 @@ class MapFragmentViewModel :
 
 
     fun setManualOriginPoint(
-        point: Marker,
         address: Address
     ) {
 
@@ -179,7 +170,6 @@ class MapFragmentViewModel :
     }
 
     fun setManualDestPoint(
-        point: Marker,
         address: Address
     ) {
 
@@ -226,6 +216,7 @@ class MapFragmentViewModel :
         listMarkers.clear()
         addressOrigin = Address()
         addressDestination = Address()
+        checkLocation=false
         mapMutableLiveData.postValue(
             Event(
                 Data(status = Status.DEACTIVATE_BUTTON)
@@ -238,17 +229,29 @@ class MapFragmentViewModel :
             launch {
                 withContext(Dispatchers.IO) {
                     delay(2500L) // retraso non-blocking de 2,5 segundos
-                    mapMutableLiveData.postValue(
-                        Event(
-                            Data(
-                                status = Status.SHOW_LOC,
-                                data = listActiveBusRecA[0],
-                                dataAlternativa = listActiveBusRecB[0]
+                    if(listActiveBusRecA.isNotEmpty() || listActiveBusRecB.isNotEmpty()) {
+                        mapMutableLiveData.postValue(
+                            Event(
+                                Data(
+                                    status = Status.SHOW_LOC,
+                                    data = listActiveBusRecA[0],
+                                    dataAlternativa = listActiveBusRecB[0]
+                                )
                             )
                         )
-                    )
-                    listActiveBusRecA.removeAt(0)
-                    listActiveBusRecB.removeAt(0)
+                        listActiveBusRecA.removeAt(0)
+                        listActiveBusRecB.removeAt(0)
+                    }else{
+                        mapMutableLiveData.postValue(
+                            Event(
+                                Data(
+                                    status = Status.ERROR,
+                                    data = "error service",
+                                    dataAlternativa = "Back"
+                                )
+                            )
+                        )
+                    }
                 }
             }
         }

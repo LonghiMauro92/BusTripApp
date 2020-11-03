@@ -4,10 +4,7 @@ import com.example.data2.response.ListLineBusResponse
 import com.example.data2.response.RecorridoBaseResponse
 import com.example.domain.response.Coordinates
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface ServiceApi {
     @GET("/RecorridoBase/ObtenerRecorridoBase")
@@ -19,6 +16,7 @@ interface ServiceApi {
     fun getListOfBuses(): Call<List<ListLineBusResponse>>
 
 
+    @Headers( "Content-Type: application/json;charset=UTF-8")
     @POST("/CalculadorTiempo/ObtenerTiempoPorRegresionAcumulado")
     fun calcularTiempoPorRegresionAcumulado(
         @Body  user:TravelEstimate

@@ -9,6 +9,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
+        android:background="@drawable/settings_item_bg"
         android:layout_height="80dp">
 
         <ImageView
@@ -23,7 +24,6 @@
 
         <TextView
             android:id="@+id/view_settings_menu_big_item_text_view_label"
-            fontPath="fonts/Roboto/Roboto-Medium.ttf"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -31,9 +31,8 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:text="View history"
-            android:textColor="@color/colorTravelPredictionTitlesCard"
+            android:textColor="@color/colorTravelPredictionHistoryCard"
             android:textSize="20sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/view_settings_menu_big_item_image_arrow_down"
             app:layout_constraintStart_toEndOf="@+id/view_settings_menu_big_item_image_view_icon"

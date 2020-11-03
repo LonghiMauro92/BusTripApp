@@ -9,7 +9,7 @@ import org.koin.core.inject
 class GetCalculoAlgoritmosUseCase() : KoinComponent {
 
     private val getAlgoritmsServiceRepository: AlgoritmsService by inject()
-    fun invokeAlgSimple(
+    fun selectTypeAlgService(
         cordenadaO: Coordinates,
         cordenadaD: Coordinates,
         currentDateTimeString: String,
@@ -27,6 +27,14 @@ class GetCalculoAlgoritmosUseCase() : KoinComponent {
             unidadId
         )
         "2"->getAlgoritmsServiceRepository.getCalcularTiempoPorRegresionDiferenciaDeCeldas(
+            cordenadaO,
+            cordenadaD,
+            currentDateTimeString,
+            recorridoId,
+            lineaId,
+            unidadId
+        )
+        "3"->getAlgoritmsServiceRepository.getCalcularTiempoEntreCoordenadasComplejo(
             cordenadaO,
             cordenadaD,
             currentDateTimeString,

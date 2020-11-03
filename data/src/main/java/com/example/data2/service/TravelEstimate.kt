@@ -6,6 +6,6 @@ class TravelEstimate(
     var posicionOrigen: Coordinates,
     var posicionDestino: Coordinates,
     var fecha: String,
-    var recorridoId: String,
-    var lineaId: String,
-    var unidadId: String = "" )
+    var recorridoId: Int,
+    var lineaId: Int,
+    var unidadId: Int = 1 )
