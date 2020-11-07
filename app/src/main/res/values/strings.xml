@@ -1,8 +1,7 @@
 <resources>
-    <string name="app_name">BaseProyect</string>
-    <string name="home_id">Home</string>
-    <string name="person_id">Profile</string>
-    <string name="settings_id">Settings</string>
+    <string name="app_name">BusTravelApp</string>
+    <string name="home_id">Mapa</string>
+    <string name="settings_id">Menu-Configuraciones</string>
 
     <string name="api_key">AIzaSyDS62wITZA2AOkv-TDYD0oLaMy5FLzmTHY</string>
 

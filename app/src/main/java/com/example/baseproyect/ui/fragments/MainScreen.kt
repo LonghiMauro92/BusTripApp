@@ -11,9 +11,8 @@ enum class MainScreen(@IdRes val menuItemId: Int,
                       @StringRes val titleStringId: Int,
                       val fragment: Fragment
 ) {
-    LOGS(R.id.bottom_navigation_item_logs, R.drawable.ic_home_black_24dp, R.string.home_id, MapFragment()),
-    PROGRESS(R.id.bottom_navigation_item_progress, R.drawable.ic_person_black_24dp, R.string.person_id, SettingsFragment()),
-    PROFILE(R.id.bottom_navigation_item_profile, R.drawable.ic_settings_black_24dp, R.string.settings_id, SettingsFragment())
+    MAP(R.id.bottom_navigation_item_logs, R.drawable.ic_home_black_24dp, R.string.home_id, MapFragment()),
+    CONFIGURATION(R.id.bottom_navigation_item_progress, R.drawable.ic_person_black_24dp, R.string.settings_id, SettingsFragment()),
 }
 
 fun getMainScreenForMenuItem(menuItemId: Int): MainScreen? {
