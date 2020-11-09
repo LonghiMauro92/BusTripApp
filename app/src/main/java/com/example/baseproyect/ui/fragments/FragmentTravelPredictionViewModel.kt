@@ -69,7 +69,7 @@ class FragmentTravelPredictionViewModel :
                         dateInString,
                         recorridoId,
                         linea,
-                        "1",
+                        recorridoId,
                         algorithmValue
                     )
                 }) {

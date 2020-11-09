@@ -1,8 +1,9 @@
 package com.example.data2.service
 
 import com.example.data2.response.ListLineBusResponse
+import com.example.data2.response.PositionRecorridoResponse
 import com.example.data2.response.RecorridoBaseResponse
-import com.example.domain.response.Coordinates
+import com.example.domain.response.PositionRecorrido
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -33,4 +34,10 @@ interface ServiceApi {
     fun calcularTiempoEntreCoordenadasComplejo(
         @Body  user:TravelEstimate
     ): Call<Double>
+
+
+    @POST("/RecorridoBase/CaminosAlternativos")
+    fun calcularRecorridoEntreDosPuntosSeleccionados(
+        @Body  puntosSeleccionados: PositionRecorrido
+    ): Call<PositionRecorridoResponse>
 }

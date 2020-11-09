@@ -1,8 +1,9 @@
 package com.example.data2.impl
 
 import com.example.data2.mapper.BusLineMapper
-import com.example.data2.mapper.toInformation
 import com.example.data2.mapper.transformListRecorridoBaseResponseToListRecorridoBaseInformation
+import com.example.data2.mapper.transformPositionRecorridoResponseToRecorridoIntermedio
+import com.example.domain.response.PositionRecorrido
 import com.example.data2.service.ServiceApi
 import com.example.data2.service.ServiceGenerator
 import com.example.domain.response.*
@@ -14,7 +15,8 @@ class RideServiceImpl : RideService, KoinComponent {
     private val api = ServiceGenerator()
     override fun getLocalServideRideInformation(destination: Int): UseCaseResult<List<RecorridoBaseInformation>> {
         val call =
-            api.createService(ServiceApi::class.java).getServiceBaseRouteInformation(destination.toString())
+            api.createService(ServiceApi::class.java)
+                .getServiceBaseRouteInformation(destination.toString())
 
 //        val mapper = RecorridoBaseMapper()
         try {
@@ -22,7 +24,9 @@ class RideServiceImpl : RideService, KoinComponent {
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body != null) {
-                    return UseCaseResult.Success(transformListRecorridoBaseResponseToListRecorridoBaseInformation(body))
+                    return UseCaseResult.Success(
+                        transformListRecorridoBaseResponseToListRecorridoBaseInformation(body)
+                    )
                 } else {
                     return UseCaseResult.Failure(Exception("failed"))
                 }
@@ -149,6 +153,26 @@ class RideServiceImpl : RideService, KoinComponent {
             if (response.isSuccessful)
                 response.body()?.let {
                     mapper.transformListOfBuses(it)
+                }?.let {
+                    return UseCaseResult.Success(it)
+                }
+        } catch (e: Exception) {
+            return UseCaseResult.Failure(e)
+        }
+        return UseCaseResult.Failure(Exception(""))
+    }
+
+
+    override fun getRecorridoEntrePuntosSeleccionados(puntosSeleccionados: PositionRecorrido): UseCaseResult<RecorridoIntermedio> {
+
+        val call =
+            api.createService(ServiceApi::class.java).calcularRecorridoEntreDosPuntosSeleccionados(puntosSeleccionados)
+
+        try {
+            val response = call.execute()
+            if (response.isSuccessful)
+                response.body()?.let {
+                    transformPositionRecorridoResponseToRecorridoIntermedio(it)
                 }?.let {
                     return UseCaseResult.Success(it)
                 }

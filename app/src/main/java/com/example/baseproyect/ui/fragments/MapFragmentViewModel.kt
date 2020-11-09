@@ -6,10 +6,12 @@ import com.example.baseproyect.BaseViewModel
 import com.example.baseproyect.ui.Address
 import com.example.baseproyect.ui.Event
 import com.example.domain.response.Coordinates
+import com.example.domain.response.PositionRecorrido
 import com.example.domain.response.RecorridoBaseInformation
 import com.example.domain.response.UseCaseResult
 import com.example.domain.usecase.GetBaseRoutesBusesUseCase
 import com.example.domain.usecase.GetLinesBusesUseCase
+import com.example.domain.usecase.GetRecorridoEntrePuntosSeleccionados
 import com.google.android.gms.maps.model.Marker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -23,6 +25,7 @@ class MapFragmentViewModel :
 
     private val getBaseRoutesBusesUseCase: GetBaseRoutesBusesUseCase by inject()
     private val getLinesBusesUseCase: GetLinesBusesUseCase by inject()
+    private val getRecorridoEntrePuntosSeleccionados: GetRecorridoEntrePuntosSeleccionados by inject()
 
     val mapMutableLiveData = MutableLiveData<Event<Data>>()
     val liveData: MutableLiveData<Event<Data>>
@@ -36,8 +39,8 @@ class MapFragmentViewModel :
     val listMarkers = mutableListOf<Marker>()
     val listSimulateBusMarkers = mutableListOf<Marker>()
 
-    var activeLine: String = ""
-    var activeAlgorithm: String = ""
+    var activeLine: String = "500" // Por defecto toma la linea 500
+    var activeAlgorithm: String = "RegresionAcumulado" // Por defecto tomara el 1er algoritmo
 
 
     lateinit var addressOrigin: Address
@@ -188,18 +191,22 @@ class MapFragmentViewModel :
 
     fun proceedSearching() {
         checkLocation = false
-        mapMutableLiveData.postValue(
-            Event(
-                Data(
-                    status = Status.PROCEED_SEARCHING,
-                    data = addressOrigin,
-                    dataAlternativa = addressDestination
-                )
-            )
-        )
-        addressOrigin = Address()
-        addressDestination = Address()
-        checkBothFields()
+        getRecorridoEntreDosPuntosSeleccionados(PositionRecorrido(
+            Coordinates(addressOrigin.latitude!!, addressOrigin.longitude!!),
+            Coordinates(addressDestination.latitude!!, addressDestination.longitude!!),
+            activeLine.toInt() ))
+//        mapMutableLiveData.postValue(
+//            Event(
+//                Data(
+//                    status = Status.PROCEED_SEARCHING,
+//                    data = addressOrigin,
+//                    dataAlternativa = addressDestination
+//                )
+//            )
+//        )
+//        addressOrigin = Address()
+//        addressDestination = Address()
+//        checkBothFields()
     }
 
     fun addMarker(marker: Marker) {
@@ -256,11 +263,47 @@ class MapFragmentViewModel :
             }
         }
     }
+    fun getRecorridoEntreDosPuntosSeleccionados(puntosSeleccionados: PositionRecorrido) {
 
+        viewModelScope.launch {
+            when (val result =
+                withContext(Dispatchers.IO) { getRecorridoEntrePuntosSeleccionados.invoke(puntosSeleccionados) }) {
+                is UseCaseResult.Failure -> {
+                    mapMutableLiveData.postValue(
+                        Event(
+                            Data(
+                                status = Status.ERROR,
+                                data = result.exception.message,
+                                dataAlternativa = "Back"
+                            )
+                        )
+                    )
+                }
+                is UseCaseResult.Success -> {
+
+                    mapMutableLiveData.postValue(
+                        Event(
+                            Data(
+                                status = Status.PROCEED_SEARCHING,
+                                data = result.data,
+                                dataAlternativa = addressOrigin,
+                                extraData= addressDestination
+                            )
+                        )
+                    )
+
+                    addressOrigin = Address()
+                    addressDestination = Address()
+                    checkBothFields()
+                }
+            }
+        }
+    }
     data class Data(
         var status: Status,
         var data: Any? = null,
         var dataAlternativa: Any? = null,
+        var extraData: Any? = null,
         var error: Exception? = null
     )
 

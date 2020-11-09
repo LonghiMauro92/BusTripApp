@@ -22,6 +22,7 @@ import com.example.baseproyect.ui.*
 import com.example.domain.response.Coordinates
 import com.example.domain.response.ListLineBus
 import com.example.domain.response.RecorridoBaseInformation
+import com.example.domain.response.RecorridoIntermedio
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener
@@ -172,23 +173,73 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         }
     }
 
-    private fun searchOperation(data: Any?, dataAlternativa: Any?) {
+    private fun searchOperation(data: Any?, dataAlternativa: Any?, extraData: Any?) {
 
         btmSheetTextOrigin.text = " - "
         btmSheetTextDestino.text = " - "
         btmSheetImageDelete.visibility = View.GONE
         sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        goToFragTravelPrediction(data, dataAlternativa)
+        showIntermidateTravel(data,dataAlternativa, extraData)
     }
 
-    private fun goToFragTravelPrediction(data: Any?, dataAlternativa: Any?) {
+    private fun showIntermidateTravel(data: Any?, dataAlternativa: Any?, extraData: Any?) {
+        val travel = data as RecorridoIntermedio
 
-        val address = data as Address?
+        val listLatLng = mutableListOf<LatLng>()
+        for (i in travel.coordenadasIntermedias) {
+            val lat = LatLng(i.latitude, i.longitude)
+            listLatLng.add(lat)
 
-        val address2 = dataAlternativa as Address?
 
-        val puntoOrigin = PuntoSeleccion(true, address)
-        val puntoDest = PuntoSeleccion(true, address2)
+        }
+        mMap.addPolyline(
+            PolylineOptions()
+                .clickable(true)
+                .addAll(
+                    listLatLng
+                ).color(if (travel.recorridoId == "1") Color.BLUE else Color.RED)
+        )
+
+        val markerParadaOrigen = mMap.addMarker(
+            MarkerOptions()
+                .position(
+                    LatLng(
+                        travel.coordenadasIntermedias[0].latitude,
+                        travel.coordenadasIntermedias[0].longitude
+                    )
+                )
+                .icon(
+                    ViewUtils.bitmapDescriptorFromVector(
+                        requireContext(),
+                        R.drawable.ic_parada_de_autobus
+                    )
+                )
+        )
+        val markerParadaDestino = mMap.addMarker(
+            MarkerOptions()
+                .position(
+                    LatLng(
+                        travel.coordenadasIntermedias[travel.coordenadasIntermedias.size - 1].latitude,
+                        travel.coordenadasIntermedias[travel.coordenadasIntermedias.size - 1].longitude
+                    )
+                )
+                .icon(
+                    ViewUtils.bitmapDescriptorFromVector(
+                        requireContext(),
+                        R.drawable.ic_parada_de_autobus
+                    )
+                )
+        )
+
+        goToFragTravelPrediction(MapUtils.getAddress(requireContext(), markerParadaOrigen),
+            MapUtils.getAddress(requireContext(), markerParadaDestino),
+            travel.recorridoId)
+
+    }
+    private fun goToFragTravelPrediction(data: Address, dataAlternativa: Address, recorridoId:String) {
+
+        val puntoOrigin = PuntoSeleccion(true, data)
+        val puntoDest = PuntoSeleccion(true, dataAlternativa)
 
         val ft: FragmentTransaction =
             (context as MainActivity).supportFragmentManager
@@ -206,7 +257,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                 puntoOrigin,
                 puntoDest,
                 mapFragmentViewModel.activeLine,
-                "1", // ver cual parametro enviarle
+                recorridoId, // ver cual parametro enviarle
                 mapFragmentViewModel.activeAlgorithm
             )
         )
@@ -241,7 +292,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             MapFragmentViewModel.Status.MANUAL_POINT -> setManualPoint(data.peekContent().data)
             MapFragmentViewModel.Status.PROCEED_SEARCHING -> searchOperation(
                 data.peekContent().data,
-                data.peekContent().dataAlternativa
+                data.peekContent().dataAlternativa,
+                data.peekContent().extraData
             )
 
             MapFragmentViewModel.Status.ACTIVATE_BUTTON -> btmSheetProceedSearch.isEnabled = true
@@ -444,9 +496,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 
         mMap.setInfoWindowAdapter(adapter)
         googleMap.setOnInfoWindowClickListener { marker ->
-            val address = MapUtils.getAddress(requireContext(), marker)
-            mapFragmentViewModel.checkLocation = false
-            goToFragTravelPrediction(address, address)
+            //todo en el segundo parametro debo mandarle la posicion del usuario
+//            val address = MapUtils.getAddress(requireContext(), marker)
+//            mapFragmentViewModel.checkLocation = false
+//            goToFragTravelPrediction(address, address)
         }
     }
 

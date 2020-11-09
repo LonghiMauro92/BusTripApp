@@ -8,12 +8,14 @@ import com.example.domain.services.RideService
 import com.example.domain.usecase.GetBaseRoutesBusesUseCase
 import com.example.domain.usecase.GetCalculoAlgoritmosUseCase
 import com.example.domain.usecase.GetLinesBusesUseCase
+import com.example.domain.usecase.GetRecorridoEntrePuntosSeleccionados
 import org.koin.dsl.module
 
 val useCasesModule = module {
     single { GetBaseRoutesBusesUseCase() }
     single { GetLinesBusesUseCase() }
     single { GetCalculoAlgoritmosUseCase() }
+    single { GetRecorridoEntrePuntosSeleccionados() }
 
 }
 

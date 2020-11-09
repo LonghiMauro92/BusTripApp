@@ -49,8 +49,8 @@ class FragmentTravelPrediction : Fragment() {
             val fragment = FragmentTravelPrediction()
 
             val args = Bundle()
-            args.putSerializable("EXTRA_VAL_PUNTO_ORIGIN", address1 as PuntoSeleccion)
-            args.putSerializable("EXTRA_VAL_PUNTO_DEST", address2 as PuntoSeleccion)
+            args.putSerializable("EXTRA_VAL_PUNTO_ORIGIN", address1)
+            args.putSerializable("EXTRA_VAL_PUNTO_DEST", address2)
             args.putString("EXTRA_VAL_LINEA", linea)
             args.putString("EXTRA_VAL_RECORRIDO", recorridoId)
             args.putString("EXTRA_VAL_ALGORITHM", algorithm)

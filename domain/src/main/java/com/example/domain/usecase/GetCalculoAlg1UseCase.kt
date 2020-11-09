@@ -18,7 +18,7 @@ class GetCalculoAlgoritmosUseCase() : KoinComponent {
         unidadId: String,
         algoritm:String
     ) = when(algoritm){
-        "1"->getAlgoritmsServiceRepository.getCalcularTiempoPorRegresionAcumulado(
+        "RegresionAcumulado"->getAlgoritmsServiceRepository.getCalcularTiempoPorRegresionAcumulado(
             cordenadaO,
             cordenadaD,
             currentDateTimeString,
@@ -26,7 +26,7 @@ class GetCalculoAlgoritmosUseCase() : KoinComponent {
             lineaId,
             unidadId
         )
-        "2"->getAlgoritmsServiceRepository.getCalcularTiempoPorRegresionDiferenciaDeCeldas(
+        "RegresionDiferenciaDeCeldas"->getAlgoritmsServiceRepository.getCalcularTiempoPorRegresionDiferenciaDeCeldas(
             cordenadaO,
             cordenadaD,
             currentDateTimeString,
@@ -34,7 +34,7 @@ class GetCalculoAlgoritmosUseCase() : KoinComponent {
             lineaId,
             unidadId
         )
-        "3"->getAlgoritmsServiceRepository.getCalcularTiempoEntreCoordenadasComplejo(
+        "TiempoEntreCoordenadasComplejo"->getAlgoritmsServiceRepository.getCalcularTiempoEntreCoordenadasComplejo(
             cordenadaO,
             cordenadaD,
             currentDateTimeString,
