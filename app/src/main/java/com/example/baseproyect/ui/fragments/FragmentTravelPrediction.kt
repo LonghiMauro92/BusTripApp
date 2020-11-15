@@ -11,6 +11,8 @@ import com.example.baseproyect.ui.Event
 import com.example.baseproyect.ui.PuntoSeleccion
 import kotlinx.android.synthetic.main.fragment_ride_data.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.time.LocalTime
+import java.util.*
 
 
 class FragmentTravelPrediction : Fragment() {
@@ -24,6 +26,9 @@ class FragmentTravelPrediction : Fragment() {
     private val cardAlgorithmTextValue by lazy { fragment_card_algorithm_text_value }
     private val cardTimeText by lazy { fragment_card_time_text }
     private val cardTimeTextValue by lazy { fragment_card_time_text_value }
+
+    private val cardLineaText by lazy { fragment_card_linea_text }
+    private val cardLineaTextValue by lazy { fragment_card_linea_text_value }
 
     private val cardImageClose by lazy { fragment_card_image_close }
     private val cardImageHistory by lazy { fragment_card_image_history }
@@ -107,7 +112,8 @@ class FragmentTravelPrediction : Fragment() {
             FragmentTravelPredictionViewModel.Status.CONTENT_DATA -> {
                 setUIValues(data.peekContent().data)
             }
-            FragmentTravelPredictionViewModel.Status.ERROR -> {}
+            FragmentTravelPredictionViewModel.Status.ERROR -> {
+            }
 
         }
     }
@@ -121,6 +127,8 @@ class FragmentTravelPrediction : Fragment() {
         cardAlgorithmTextValue.visibility = View.GONE
         cardRecorridoText.visibility = View.GONE
         cardTimeText.visibility = View.GONE
+        cardLineaText.visibility = View.GONE
+        cardLineaTextValue.visibility = View.GONE
     }
 
     fun setUIValues(data: Any?) {
@@ -132,10 +140,14 @@ class FragmentTravelPrediction : Fragment() {
         cardAlgorithmTextValue.visibility = View.VISIBLE
         cardRecorridoText.visibility = View.VISIBLE
         cardTimeText.visibility = View.VISIBLE
+        cardLineaText.visibility = View.VISIBLE
+        cardLineaTextValue.visibility = View.VISIBLE
+        cardLineaTextValue.text = linea
 
         loader.visibility = View.GONE
 
-        cardTimeTextValue.text = values.toString()
+        val timeOfDay: LocalTime = LocalTime.ofSecondOfDay(values.toLong())
+        cardTimeTextValue.text = timeOfDay.toString()
         cardRecorridoOriginTextValue.text = puntoOrigin.address?.name
         cardRecorridoDestTextValue.text = puntoDest.address?.name
         cardAlgorithmTextValue.text = algoritmo

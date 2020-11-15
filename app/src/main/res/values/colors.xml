@@ -15,6 +15,7 @@
     <color name="colorTravelPredictionHistoryCard">#FFFFFF</color>
     <color name="colorDivider">#EAEAEA</color>
     <color name="colorGris">#6A6A6A</color>
+    <color name="colorNegro">#000000</color>
 
     <color name="btn_base_bottom_selector_enable">#00c4e2</color>
     <color name="btn_base_bottom_selector_disabled">#757575</color>

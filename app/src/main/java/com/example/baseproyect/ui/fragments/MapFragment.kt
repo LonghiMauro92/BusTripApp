@@ -23,12 +23,14 @@ import com.example.domain.response.Coordinates
 import com.example.domain.response.ListLineBus
 import com.example.domain.response.RecorridoBaseInformation
 import com.example.domain.response.RecorridoIntermedio
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import kotlinx.android.synthetic.main.bottom_sheet.*
@@ -165,8 +167,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         btmSheetImageDelete.setOnClickListener {
             manualFlag = false
             manualPoint = ""
-            btmSheetTextOrigin.text = getString(R.string.bottom_sheet_hint_origen)
-            btmSheetTextDestino.text = getString(R.string.bottom_sheet_hint_destino)
+            btmSheetTextOrigin.text = ""
+            btmSheetTextDestino.text = ""
             btmSheetImageDelete.visibility = View.GONE
             mMap.clear()
             mapFragmentViewModel.cleanMarkers()
@@ -175,11 +177,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 
     private fun searchOperation(data: Any?, dataAlternativa: Any?, extraData: Any?) {
 
-        btmSheetTextOrigin.text = " - "
-        btmSheetTextDestino.text = " - "
+        btmSheetTextOrigin.text = ""
+        btmSheetTextDestino.text = ""
         btmSheetImageDelete.visibility = View.GONE
         sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        showIntermidateTravel(data,dataAlternativa, extraData)
+        showIntermidateTravel(data, dataAlternativa, extraData)
     }
 
     private fun showIntermidateTravel(data: Any?, dataAlternativa: Any?, extraData: Any?) {
@@ -230,16 +232,23 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                     )
                 )
         )
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markerParadaOrigen.position, 12F))
 
-        goToFragTravelPrediction(MapUtils.getAddress(requireContext(), markerParadaOrigen),
+        goToFragTravelPrediction(
+            MapUtils.getAddress(requireContext(), markerParadaOrigen),
             MapUtils.getAddress(requireContext(), markerParadaDestino),
-            travel.recorridoId)
+            travel.recorridoId
+        )
 
     }
-    private fun goToFragTravelPrediction(data: Address, dataAlternativa: Address, recorridoId:String) {
+    private fun goToFragTravelPrediction(
+        data: Address,
+        dataAlternativa: Address,
+        recorridoId: String
+    ) {
 
-        val puntoOrigin = PuntoSeleccion(true, data)
-        val puntoDest = PuntoSeleccion(true, dataAlternativa)
+        val puntoOrigin = PuntoSeleccion( data)
+        val puntoDest = PuntoSeleccion( dataAlternativa)
 
         val ft: FragmentTransaction =
             (context as MainActivity).supportFragmentManager
@@ -297,7 +306,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             )
 
             MapFragmentViewModel.Status.ACTIVATE_BUTTON -> btmSheetProceedSearch.isEnabled = true
-            MapFragmentViewModel.Status.DEACTIVATE_BUTTON -> btmSheetProceedSearch.isEnabled = false
+            MapFragmentViewModel.Status.DEACTIVATE_BUTTON -> {
+                btmSheetTextOrigin.text = ""
+                btmSheetTextDestino.text = ""
+                btmSheetProceedSearch.isEnabled = false
+            }
             MapFragmentViewModel.Status.SHOW_LOC -> {
                 val marcadorA = data.peekContent().data as Coordinates
                 val marcadorB = data.peekContent().dataAlternativa as Coordinates
@@ -451,6 +464,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         ) {
             mMap.isMyLocationEnabled = true
             mMap.uiSettings.isMyLocationButtonEnabled = true
+            goToMyLocation()
         } else {
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     requireActivity(),
@@ -497,9 +511,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         mMap.setInfoWindowAdapter(adapter)
         googleMap.setOnInfoWindowClickListener { marker ->
             //todo en el segundo parametro debo mandarle la posicion del usuario
-//            val address = MapUtils.getAddress(requireContext(), marker)
-//            mapFragmentViewModel.checkLocation = false
-//            goToFragTravelPrediction(address, address)
+
+            goToMyLocation()
+            val address = MapUtils.getAddress(requireContext(), marker)
+            val address2 = MapUtils.getAddressByLatLng(requireContext(), mapFragmentViewModel.myLocation)
+            mapFragmentViewModel.checkLocation = false
+            mapFragmentViewModel.addressOrigin=address2
+            mapFragmentViewModel.addressDestination=address
+
+            mapFragmentViewModel.proceedSearching()
+
+//            goToFragTravelPrediction(address, address2)
         }
     }
 
@@ -561,56 +583,30 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     override fun onMyLocationClick(p0: Location) {
         Toast.makeText(context, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
     }
-//    fun llamar(){
-//        // Getting LocationManager object from System Service LOCATION_SERVICE
-//        // Getting LocationManager object from System Service LOCATION_SERVICE
-//        val locationManager: LocationManager? =  (LocationManager) getSystemService(LOCATION_SERVICE);
-//
-//        // Creating a criteria object to retrieve provider
-//
-//        // Creating a criteria object to retrieve provider
-//        val criteria = Criteria()
-//
-//        // Getting the name of the best provider
-//
-//        // Getting the name of the best provider
-//        val provider: String = locationManager.getBestProvider(criteria, true)
-//
-//        // Getting Current Location
-//
-//        // Getting Current Location
-//        val location: Location = if (ActivityCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.ACCESS_FINE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.ACCESS_COARSE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            locationManager.getLastKnownLocation(provider)
-//
-//        } else {
-//            locationManager.getLastKnownLocation(provider)
-//        }
-//
-//        if (location != null) {
-//            // Getting latitude of the current location
-//            val latitude = location.latitude
-//
-//            // Getting longitude of the current location
-//            val longitude = location.longitude
-//
-//            // Creating a LatLng object for the current location
-//            val latLng = LatLng(latitude, longitude)
-////            myPosition = LatLng(latitude, longitude)
-//            mMap.addMarker(MarkerOptions().position(latLng).title("Start"))
-//        }
-//    }
+    fun goToMyLocation(){
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            LocationServices.getFusedLocationProviderClient(requireContext()).getLastLocation()
+                .addOnSuccessListener(
+                    OnSuccessListener<Location?> {
+                        mMap.isMyLocationEnabled = true
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it?.latitude?: 0.0, it?.longitude?: 0.0), 12F))
+                    })
+        }else{
+            LocationServices.getFusedLocationProviderClient(requireContext()).getLastLocation()
+                .addOnSuccessListener(
+                    OnSuccessListener<Location?> {
+
+                        mapFragmentViewModel.myLocation= LatLng(it?.latitude?: 0.0, it?.longitude?: 0.0)
+                        mMap.isMyLocationEnabled = true
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it?.latitude?: 0.0, it?.longitude?: 0.0), 12F))
+                    })
+        }
+    }
 }

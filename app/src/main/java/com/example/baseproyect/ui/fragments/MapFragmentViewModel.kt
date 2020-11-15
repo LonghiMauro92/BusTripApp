@@ -12,6 +12,7 @@ import com.example.domain.response.UseCaseResult
 import com.example.domain.usecase.GetBaseRoutesBusesUseCase
 import com.example.domain.usecase.GetLinesBusesUseCase
 import com.example.domain.usecase.GetRecorridoEntrePuntosSeleccionados
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -42,6 +43,7 @@ class MapFragmentViewModel :
     var activeLine: String = "500" // Por defecto toma la linea 500
     var activeAlgorithm: String = "RegresionAcumulado" // Por defecto tomara el 1er algoritmo
 
+    var myLocation: LatLng = LatLng(0.0,0.0)
 
     lateinit var addressOrigin: Address
     lateinit var addressDestination: Address

@@ -1,6 +1,8 @@
 package com.example.baseproyect.ui.fragments
 
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.baseproyect.BaseViewModel
@@ -38,6 +40,8 @@ class FragmentTravelPredictionViewModel :
         recorridoId: String,
         algorithmValue:String
     ) {
+
+
         predictionMutableLiveData.postValue(
             Event(
                 Data(
@@ -85,7 +89,6 @@ class FragmentTravelPredictionViewModel :
                     )
                 }
                 is UseCaseResult.Success -> {
-
                     predictionMutableLiveData.postValue(
                         Event(
                             Data(
@@ -98,7 +101,6 @@ class FragmentTravelPredictionViewModel :
             }
         }
     }
-
 
     fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
         val formatter = SimpleDateFormat(format, locale)
