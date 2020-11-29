@@ -50,14 +50,20 @@ object ViewUtils {
             "501" -> {
                 R.drawable.ic_autobus
             }
+            "502" -> {
+                R.drawable.ic_autobus_502
+            }
             "503" -> {
                 R.drawable.ic_autobus_blue
             }
             "504" -> {
                 R.drawable.ic_autobus_green
             }
+            "505" -> {
+                R.drawable.ic_autobus_marron
+            }
             else -> {
-                R.drawable.ic_autobus_yellow
+                R.drawable.ic_autobus_502
             }
         }
 

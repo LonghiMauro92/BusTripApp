@@ -54,6 +54,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     private val baseRouteButton2 by lazy { accion_bus_2 }
     private val baseRouteButton3 by lazy { accion_bus_3 }
     private val baseRouteButton4 by lazy { accion_bus_4 }
+    private val baseRouteButton5 by lazy { accion_bus_5 }
+    private val baseRouteButton6 by lazy { accion_bus_6 }
     private val layoutBottomSheet by lazy { bottom_sheet }
     private val containerDropSheetImage by lazy { bottom_sheet_drop_image }
 
@@ -375,8 +377,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                     positiveButtonS = data.peekContent().dataAlternativa.toString()
                 )
             }
-            MapFragmentViewModel.Status.ENABLE_GOTO_BUTTON -> buttonSelectedLines.visibility = View.VISIBLE
-            MapFragmentViewModel.Status.DISABLE_GOTO_BUTTON -> buttonSelectedLines.visibility = View.GONE
+            MapFragmentViewModel.Status.ENABLE_GOTO_BUTTON -> buttonSelectedLines.visibility =
+                View.VISIBLE
+            MapFragmentViewModel.Status.DISABLE_GOTO_BUTTON -> buttonSelectedLines.visibility =
+                View.GONE
             null -> {
             }
         }
@@ -402,7 +406,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                 baseRouteButton2.visibility =
                     if (busLines[1].linea.contains("501")) View.VISIBLE else View.GONE
                 baseRouteButton3.visibility =
-                    if (busLines[2].linea.contains("503")) View.VISIBLE else View.GONE
+                    if (busLines[2].linea.contains("502")) View.VISIBLE else View.GONE
             }
             4 -> {
                 baseRouteButton1.visibility =
@@ -410,9 +414,35 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                 baseRouteButton2.visibility =
                     if (busLines[1].linea.contains("501")) View.VISIBLE else View.GONE
                 baseRouteButton3.visibility =
-                    if (busLines[2].linea.contains("503")) View.VISIBLE else View.GONE
+                    if (busLines[2].linea.contains("502")) View.VISIBLE else View.GONE
                 baseRouteButton4.visibility =
+                    if (busLines[3].linea.contains("503")) View.VISIBLE else View.GONE
+            }
+            5 -> {
+                baseRouteButton1.visibility =
+                    if (busLines[0].linea.contains("500")) View.VISIBLE else View.GONE
+                baseRouteButton2.visibility =
+                    if (busLines[1].linea.contains("501")) View.VISIBLE else View.GONE
+                baseRouteButton3.visibility =
+                    if (busLines[2].linea.contains("502")) View.VISIBLE else View.GONE
+                baseRouteButton4.visibility =
+                    if (busLines[3].linea.contains("503")) View.VISIBLE else View.GONE
+                baseRouteButton5.visibility =
                     if (busLines[3].linea.contains("504")) View.VISIBLE else View.GONE
+            }
+            6 -> {
+                baseRouteButton1.visibility =
+                    if (busLines[0].linea.contains("500")) View.VISIBLE else View.GONE
+                baseRouteButton2.visibility =
+                    if (busLines[1].linea.contains("501")) View.VISIBLE else View.GONE
+                baseRouteButton3.visibility =
+                    if (busLines[2].linea.contains("502")) View.VISIBLE else View.GONE
+                baseRouteButton4.visibility =
+                    if (busLines[3].linea.contains("503")) View.VISIBLE else View.GONE
+                baseRouteButton5.visibility =
+                    if (busLines[3].linea.contains("504")) View.VISIBLE else View.GONE
+                baseRouteButton6.visibility =
+                    if (busLines[3].linea.contains("505")) View.VISIBLE else View.GONE
             }
         }
 
@@ -540,7 +570,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         }
         baseRouteButton3.setOnLongClickListener {
             if (!mapFragmentViewModel.activeLineButtonFlag3) {
-                mapFragmentViewModel.activeLine.add(503)
+                mapFragmentViewModel.activeLine.add(502)
 //                baseRouteButton3.background = setBackgroundColorShape(
 //                    requireContext(),
 //                    R.color.colorBlue,5
@@ -554,7 +584,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                 mapFragmentViewModel.activeLineButtonFlag3 = false
                 baseRouteButton3.size = FloatingActionButton.SIZE_MINI
 
-                mapFragmentViewModel.activeLine.remove(503)
+                mapFragmentViewModel.activeLine.remove(502)
                 mapFragmentViewModel.setGoToButton()
                 return@setOnLongClickListener true
             }
@@ -563,7 +593,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             if (!mapFragmentViewModel.activeLineButtonFlag4) {
                 buttonSelectedLines.visibility = View.VISIBLE
 
-                mapFragmentViewModel.activeLine.add(504)
+                mapFragmentViewModel.activeLine.add(503)
                 baseRouteButton4.size = FloatingActionButton.SIZE_NORMAL
 
                 mapFragmentViewModel.activeLineButtonFlag4 = true
@@ -571,9 +601,47 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                 return@setOnLongClickListener true
             } else {
 
-                mapFragmentViewModel.activeLine.remove(504)
+                mapFragmentViewModel.activeLine.remove(503)
                 baseRouteButton4.size = FloatingActionButton.SIZE_MINI
                 mapFragmentViewModel.activeLineButtonFlag4 = false
+                mapFragmentViewModel.setGoToButton()
+                return@setOnLongClickListener true
+            }
+        }
+        baseRouteButton5.setOnLongClickListener {
+            if (!mapFragmentViewModel.activeLineButtonFlag5) {
+                buttonSelectedLines.visibility = View.VISIBLE
+
+                mapFragmentViewModel.activeLine.add(504)
+                baseRouteButton5.size = FloatingActionButton.SIZE_NORMAL
+
+                mapFragmentViewModel.activeLineButtonFlag5 = true
+                mapFragmentViewModel.setGoToButton()
+                return@setOnLongClickListener true
+            } else {
+
+                mapFragmentViewModel.activeLine.remove(504)
+                baseRouteButton5.size = FloatingActionButton.SIZE_MINI
+                mapFragmentViewModel.activeLineButtonFlag5 = false
+                mapFragmentViewModel.setGoToButton()
+                return@setOnLongClickListener true
+            }
+        }
+        baseRouteButton6.setOnLongClickListener {
+            if (!mapFragmentViewModel.activeLineButtonFlag6) {
+                buttonSelectedLines.visibility = View.VISIBLE
+
+                mapFragmentViewModel.activeLine.add(505)
+                baseRouteButton6.size = FloatingActionButton.SIZE_NORMAL
+
+                mapFragmentViewModel.activeLineButtonFlag6 = true
+                mapFragmentViewModel.setGoToButton()
+                return@setOnLongClickListener true
+            } else {
+
+                mapFragmentViewModel.activeLine.remove(505)
+                baseRouteButton6.size = FloatingActionButton.SIZE_MINI
+                mapFragmentViewModel.activeLineButtonFlag6 = false
                 mapFragmentViewModel.setGoToButton()
                 return@setOnLongClickListener true
             }
@@ -589,11 +657,19 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         }
         baseRouteButton3.setOnClickListener {
 
-            mapFragmentViewModel.showBaseRoute(503)
+            mapFragmentViewModel.showBaseRoute(502)
         }
         baseRouteButton4.setOnClickListener {
 
+            mapFragmentViewModel.showBaseRoute(503)
+        }
+        baseRouteButton5.setOnClickListener {
+
             mapFragmentViewModel.showBaseRoute(504)
+        }
+        baseRouteButton6.setOnClickListener {
+
+            mapFragmentViewModel.showBaseRoute(505)
         }
 
         mMap.setOnMapClickListener(this)

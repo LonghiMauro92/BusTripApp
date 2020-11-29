@@ -45,6 +45,7 @@ class MapFragmentViewModel :
     var activeLineButtonFlag3: Boolean = false // Por defecto toma la linea 500
     var activeLineButtonFlag4: Boolean = false // Por defecto toma la linea 500
     var activeLineButtonFlag5: Boolean = false // Por defecto toma la linea 500
+    var activeLineButtonFlag6: Boolean = false // Por defecto toma la linea 500
 
     var activeAlgorithm: String = "RegresionAcumulado" // Por defecto tomara el 1er algoritmo
 
@@ -356,7 +357,7 @@ class MapFragmentViewModel :
     }
 
     fun setGoToButton() {
-    if(activeLineButtonFlag1 || activeLineButtonFlag2 || activeLineButtonFlag3 || activeLineButtonFlag4){
+        if (activeLineButtonFlag1 || activeLineButtonFlag2 || activeLineButtonFlag3 || activeLineButtonFlag4 || activeLineButtonFlag5 || activeLineButtonFlag6) {
             mapMutableLiveData.postValue(
                 Event(
                     Data(
@@ -364,13 +365,16 @@ class MapFragmentViewModel :
                     )
                 )
             )
-        }else{mapMutableLiveData.postValue(
-        Event(
-            Data(
-                status = Status.DISABLE_GOTO_BUTTON
+        } else {
+            activeLine.add(500)
+            mapMutableLiveData.postValue(
+                Event(
+                    Data(
+                        status = Status.DISABLE_GOTO_BUTTON
+                    )
+                )
             )
-        )
-    )}
+        }
     }
 
     data class Data(

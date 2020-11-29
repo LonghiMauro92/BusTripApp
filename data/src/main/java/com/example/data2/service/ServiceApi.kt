@@ -12,7 +12,7 @@ interface ServiceApi {
         @Query("linea") linea: String
     ): Call<List<RecorridoBaseResponse>>
 
-    @GET("/Colectivo/ObtenerRecorridos")
+    @GET("/RecorridoBase/ObtenerRecorridos")
     fun getListOfBuses(): Call<List<ListLineBusResponse>>
 
 

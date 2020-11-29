@@ -15,9 +15,7 @@
             android:id="@+id/map"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".MapsActivity"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="16dp" />
+            tools:context=".MapsActivity"/>
 
         <com.getbase.floatingactionbutton.FloatingActionsMenu
             android:id="@+id/fragment_map_base_route"
@@ -38,7 +36,7 @@
                 app:fab_colorNormal="@color/colorYell"
                 app:fab_colorPressed="@color/colorYellPressed"
                 app:fab_size="mini"
-                app:fab_title="Favorito" />
+                app:fab_title="500" />
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/accion_bus_2"
@@ -46,17 +44,19 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_directions_bus_black_24dp"
                 app:fab_colorNormal="@color/colorRed"
+                app:fab_colorPressed="@color/colorRedPressed"
                 app:fab_size="mini"
-                app:fab_title="Buscar" />
+                app:fab_title="501" />
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/accion_bus_3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_directions_bus_black_24dp"
-                app:fab_colorNormal="@color/colorBlue"
+                app:fab_colorNormal="@color/color502"
+                app:fab_colorPressed="@color/colorGris"
                 app:fab_size="mini"
-                app:fab_title="Añadir a la cesta" />
+                app:fab_title="502"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/accion_bus_4"
@@ -64,9 +64,29 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_directions_bus_black_24dp"
                 app:fab_colorNormal="@color/colorGreen"
+                app:fab_colorPressed="@color/colorGreenPressed"
                 app:fab_size="mini"
-                app:fab_title="Añadir a la cesta" />
+                app:fab_title="503" />
 
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/accion_bus_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_directions_bus_black_24dp"
+                app:fab_colorNormal="@color/colorBlue"
+                app:fab_colorPressed="@color/colorBluePressed"
+                app:fab_size="mini"
+                app:fab_title="504" />
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/accion_bus_6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_directions_bus_black_24dp"
+                app:fab_colorNormal="@color/color505"
+                app:fab_colorPressed="@color/color505Pressed"
+                app:fab_size="mini"
+                app:fab_title="505" />
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
