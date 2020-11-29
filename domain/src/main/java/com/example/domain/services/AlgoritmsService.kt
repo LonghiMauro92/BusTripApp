@@ -1,9 +1,10 @@
 package com.example.domain.services
 
 import com.example.domain.response.Coordinates
+import com.example.domain.response.TravelBody
 import com.example.domain.response.UseCaseResult
 
-interface AlgoritmsService  {
+interface AlgoritmsService {
     fun getCalcularTiempoPorRegresionAcumulado(
         destination: Coordinates,
         cordenadaD: Coordinates,
@@ -11,7 +12,7 @@ interface AlgoritmsService  {
         recorridoId: String,
         lineaId: String,
         unidadId: String
-    ): UseCaseResult<Double>
+    ): UseCaseResult<TravelBody>
 
     fun getCalcularTiempoPorRegresionDiferenciaDeCeldas(
         destination: Coordinates,
@@ -20,7 +21,7 @@ interface AlgoritmsService  {
         recorridoId: String,
         lineaId: String,
         unidadId: String
-    ): UseCaseResult<Double>
+    ): UseCaseResult<TravelBody>
 
     fun getCalcularTiempoEntreCoordenadasComplejo(
         destination: Coordinates,
@@ -29,5 +30,5 @@ interface AlgoritmsService  {
         recorridoId: String,
         lineaId: String,
         unidadId: String
-    ): UseCaseResult<Double>
+    ): UseCaseResult<TravelBody>
 }

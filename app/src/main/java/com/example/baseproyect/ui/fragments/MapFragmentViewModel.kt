@@ -5,12 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.baseproyect.BaseViewModel
 import com.example.baseproyect.ui.Address
 import com.example.baseproyect.ui.Event
-import com.example.domain.response.Coordinates
-import com.example.domain.response.PositionRecorrido
-import com.example.domain.response.RecorridoBaseInformation
-import com.example.domain.response.UseCaseResult
+import com.example.domain.response.*
 import com.example.domain.usecase.GetBaseRoutesBusesUseCase
 import com.example.domain.usecase.GetLinesBusesUseCase
+import com.example.domain.usecase.GetListMultipleLinesTravelInfoUseCase
 import com.example.domain.usecase.GetRecorridoEntrePuntosSeleccionados
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -27,6 +25,7 @@ class MapFragmentViewModel :
     private val getBaseRoutesBusesUseCase: GetBaseRoutesBusesUseCase by inject()
     private val getLinesBusesUseCase: GetLinesBusesUseCase by inject()
     private val getRecorridoEntrePuntosSeleccionados: GetRecorridoEntrePuntosSeleccionados by inject()
+    private val getRecorridoEntreLineasSeleccionadas: GetListMultipleLinesTravelInfoUseCase by inject()
 
     val mapMutableLiveData = MutableLiveData<Event<Data>>()
     val liveData: MutableLiveData<Event<Data>>
@@ -40,10 +39,16 @@ class MapFragmentViewModel :
     val listMarkers = mutableListOf<Marker>()
     val listSimulateBusMarkers = mutableListOf<Marker>()
 
-    var activeLine: String = "500" // Por defecto toma la linea 500
+    var activeLine: MutableList<Int> = mutableListOf(500) // Por defecto toma la linea 500
+    var activeLineButtonFlag1: Boolean = false // Por defecto toma la linea 500
+    var activeLineButtonFlag2: Boolean = false // Por defecto toma la linea 500
+    var activeLineButtonFlag3: Boolean = false // Por defecto toma la linea 500
+    var activeLineButtonFlag4: Boolean = false // Por defecto toma la linea 500
+    var activeLineButtonFlag5: Boolean = false // Por defecto toma la linea 500
+
     var activeAlgorithm: String = "RegresionAcumulado" // Por defecto tomara el 1er algoritmo
 
-    var myLocation: LatLng = LatLng(0.0,0.0)
+    var myLocation: LatLng = LatLng(0.0, 0.0)
 
     lateinit var addressOrigin: Address
     lateinit var addressDestination: Address
@@ -85,7 +90,7 @@ class MapFragmentViewModel :
     var listActiveBusRecB = mutableListOf<Coordinates>()
 
     fun showBaseRoute(line: Int) {
-        activeLine = line.toString()
+        activeLine = mutableListOf(line)
 
         if (listRecorridoIda.isNotEmpty() && listActiveBusRecB.isNotEmpty()) {
             listRecorridoIda.clear()
@@ -138,7 +143,7 @@ class MapFragmentViewModel :
         listActiveBusRecB.addAll(recorridoVuelta[0].coordenadas)
     }
 
-    private fun checkBothFields() {
+    fun checkBothFields() {
         if (::addressOrigin.isInitialized && ::addressDestination.isInitialized) {
             if (addressOrigin.name.isNotEmpty() && addressDestination.name.isNotEmpty()) {
                 mapMutableLiveData.value = Event(
@@ -172,6 +177,7 @@ class MapFragmentViewModel :
                 )
             )
         )
+        checkBothFields()
     }
 
     fun setManualDestPoint(
@@ -193,10 +199,14 @@ class MapFragmentViewModel :
 
     fun proceedSearching() {
         checkLocation = false
-        getRecorridoEntreDosPuntosSeleccionados(PositionRecorrido(
-            Coordinates(addressOrigin.latitude!!, addressOrigin.longitude!!),
-            Coordinates(addressDestination.latitude!!, addressDestination.longitude!!),
-            activeLine.toInt() ))
+        getRecorridoEntreDosPuntosSeleccionados(
+            PositionMultipleLines(
+                Coordinates(addressOrigin.latitude!!, addressOrigin.longitude!!),
+                Coordinates(addressDestination.latitude!!, addressDestination.longitude!!),
+                activeLine
+            )
+        )
+
 //        mapMutableLiveData.postValue(
 //            Event(
 //                Data(
@@ -225,7 +235,7 @@ class MapFragmentViewModel :
         listMarkers.clear()
         addressOrigin = Address()
         addressDestination = Address()
-        checkLocation=false
+        checkLocation = false
         mapMutableLiveData.postValue(
             Event(
                 Data(status = Status.DEACTIVATE_BUTTON)
@@ -237,8 +247,8 @@ class MapFragmentViewModel :
         if (checkLocation) {
             launch {
                 withContext(Dispatchers.IO) {
-                    delay(2500L) // retraso non-blocking de 2,5 segundos
-                    if(listActiveBusRecA.isNotEmpty() || listActiveBusRecB.isNotEmpty()) {
+                    delay(4000L) // retraso non-blocking de 4 segundos
+                    if (listActiveBusRecA.isNotEmpty() || listActiveBusRecB.isNotEmpty()) {
                         mapMutableLiveData.postValue(
                             Event(
                                 Data(
@@ -250,7 +260,7 @@ class MapFragmentViewModel :
                         )
                         listActiveBusRecA.removeAt(0)
                         listActiveBusRecB.removeAt(0)
-                    }else{
+                    } else {
                         mapMutableLiveData.postValue(
                             Event(
                                 Data(
@@ -265,11 +275,16 @@ class MapFragmentViewModel :
             }
         }
     }
-    fun getRecorridoEntreDosPuntosSeleccionados(puntosSeleccionados: PositionRecorrido) {
+
+    fun getRecorridoEntreDosPuntosSeleccionados(puntosSeleccionados: PositionMultipleLines) {
 
         viewModelScope.launch {
             when (val result =
-                withContext(Dispatchers.IO) { getRecorridoEntrePuntosSeleccionados.invoke(puntosSeleccionados) }) {
+                withContext(Dispatchers.IO) {
+                    getRecorridoEntrePuntosSeleccionados.invoke(
+                        puntosSeleccionados
+                    )
+                }) {
                 is UseCaseResult.Failure -> {
                     mapMutableLiveData.postValue(
                         Event(
@@ -289,7 +304,7 @@ class MapFragmentViewModel :
                                 status = Status.PROCEED_SEARCHING,
                                 data = result.data,
                                 dataAlternativa = addressOrigin,
-                                extraData= addressDestination
+                                extraData = addressDestination
                             )
                         )
                     )
@@ -301,6 +316,63 @@ class MapFragmentViewModel :
             }
         }
     }
+
+    fun getRecorridoEntreDosLineasSeleccionadas(puntosSeleccionados: PositionMultipleLines) {
+
+        viewModelScope.launch {
+            when (val result =
+                withContext(Dispatchers.IO) {
+                    getRecorridoEntreLineasSeleccionadas.invoke(
+                        puntosSeleccionados
+                    )
+                }) {
+                is UseCaseResult.Failure -> {
+                    mapMutableLiveData.postValue(
+                        Event(
+                            Data(
+                                status = Status.ERROR,
+                                data = result.exception.message,
+                                dataAlternativa = "Back"
+                            )
+                        )
+                    )
+                }
+                is UseCaseResult.Success -> {
+
+                    mapMutableLiveData.postValue(
+                        Event(
+                            Data(
+                                status = Status.PROCEED_SEARCHING,
+                                data = result.data,
+                                dataAlternativa = addressOrigin,
+                                extraData = addressDestination
+                            )
+                        )
+                    )
+
+                }
+            }
+        }
+    }
+
+    fun setGoToButton() {
+    if(activeLineButtonFlag1 || activeLineButtonFlag2 || activeLineButtonFlag3 || activeLineButtonFlag4){
+            mapMutableLiveData.postValue(
+                Event(
+                    Data(
+                        status = Status.ENABLE_GOTO_BUTTON
+                    )
+                )
+            )
+        }else{mapMutableLiveData.postValue(
+        Event(
+            Data(
+                status = Status.DISABLE_GOTO_BUTTON
+            )
+        )
+    )}
+    }
+
     data class Data(
         var status: Status,
         var data: Any? = null,
@@ -317,6 +389,8 @@ class MapFragmentViewModel :
         PROCEED_SEARCHING,
         ACTIVATE_BUTTON,
         DEACTIVATE_BUTTON,
-        SHOW_LOC
+        SHOW_LOC,
+        ENABLE_GOTO_BUTTON,
+        DISABLE_GOTO_BUTTON
     }
 }

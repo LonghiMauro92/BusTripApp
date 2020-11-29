@@ -31,13 +31,18 @@ class CustomInfoWindowAdapter(
             "LAT: " + address.marker?.position?.latitude
         (v.findViewById<View>(R.id.info_window_lng) as TextView).text =
             "LNG: " + address.marker?.position?.longitude
-        (v.findViewById<View>(R.id.info_window_estado) as TextView).text = "Estado: Activo"
+//        (v.findViewById<View>(R.id.info_window_estado) as TextView).text = "Estado: Activo"
 
-        (v.findViewById<View>(R.id.info_window_action_button) as ImageButton).background =
-            ContextCompat.getDrawable(v.context, R.drawable.ic_ir_a_ubicacion)
+//        (v.findViewById<View>(R.id.info_window_action_button) as ImageButton).background =
+//            ContextCompat.getDrawable(v.context, R.drawable.ic_ir_a_ubicacion)
         (v.findViewById<View>(R.id.info_window_image) as ImageView).background =
             ContextCompat.getDrawable(v.context, R.drawable.ic_ubicacion_color)
-        (v.findViewById<View>(R.id.info_window_action_button) as ImageButton).setOnClickListener {
+//        (v.findViewById<View>(R.id.info_window_action_button) as ImageButton).setOnClickListener {
+//            onUserClickListener?.invoke(m.position)
+//        }
+        (v.findViewById<View>(R.id.info_window_parada_button) as ImageButton).background =
+            ContextCompat.getDrawable(v.context, R.drawable.ic_parada_de_autobus)
+        (v.findViewById<View>(R.id.info_window_parada_button) as ImageButton).setOnClickListener {
             onUserClickListener?.invoke(m.position)
         }
         return v

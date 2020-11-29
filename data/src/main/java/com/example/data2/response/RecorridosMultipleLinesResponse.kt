@@ -2,11 +2,10 @@ package com.example.data2.response
 
 import com.google.gson.annotations.SerializedName
 
-data class RecorridoBaseResponse(
+class RecorridosMultipleLinesResponse (
     @SerializedName("trayecto")
-    val recorridoId: String = "",
+    val trayecto: String = "",
     @SerializedName("linea")
     val linea: String = "",
-    @SerializedName("coordenadas")
-    val coordenadas: List<CoordinateResponse> = listOf()
-)
+    @SerializedName("coordenadasIntermedias")
+    val coordenadas: List<CoordinateResponse> = listOf())

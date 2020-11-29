@@ -79,27 +79,26 @@
         app:layout_constraintTop_toBottomOf="@+id/info_window_address"
         tools:text="lng: SX5487" />
 
-    <TextView
-        android:id="@+id/info_window_estado"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/info_window_lng"
-        android:layout_toEndOf="@id/info_window_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/info_window_lat"
-        tools:text="Estado: Activo" />
+<!--    <ImageButton-->
+<!--        android:id="@+id/info_window_action_button"-->
+<!--        android:layout_width="40dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_marginEnd="30dp"-->
+<!--        android:layout_toEndOf="@id/info_window_image"-->
+<!--        android:background="@drawable/ic_ir_a_ubicacion"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toStartOf="@+id/guideline"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/info_window_lat"-->
+<!--        tools:text="Estado: Activo" />-->
 
     <ImageButton
-        android:id="@+id/info_window_action_button"
+        android:id="@+id/info_window_parada_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_below="@id/info_window_estado"
         android:layout_toEndOf="@id/info_window_image"
-        android:background="@drawable/ic_ir_a_ubicacion"
+        android:background="@drawable/ic_parada_de_autobus"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/info_window_estado"
-        tools:text="Estado: Activo" />
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/info_window_lng" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,10 +5,7 @@ import com.example.data2.impl.CalculadorTiemposServiceImpl
 import com.example.data2.impl.RideServiceImpl
 import com.example.domain.services.AlgoritmsService
 import com.example.domain.services.RideService
-import com.example.domain.usecase.GetBaseRoutesBusesUseCase
-import com.example.domain.usecase.GetCalculoAlgoritmosUseCase
-import com.example.domain.usecase.GetLinesBusesUseCase
-import com.example.domain.usecase.GetRecorridoEntrePuntosSeleccionados
+import com.example.domain.usecase.*
 import org.koin.dsl.module
 
 val useCasesModule = module {
@@ -16,6 +13,7 @@ val useCasesModule = module {
     single { GetLinesBusesUseCase() }
     single { GetCalculoAlgoritmosUseCase() }
     single { GetRecorridoEntrePuntosSeleccionados() }
+    single { GetListMultipleLinesTravelInfoUseCase() }
 
 }
 

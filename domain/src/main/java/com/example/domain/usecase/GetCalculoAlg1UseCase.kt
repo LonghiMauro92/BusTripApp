@@ -1,6 +1,7 @@
 package com.example.domain.usecase
 
 import com.example.domain.response.Coordinates
+import com.example.domain.response.TravelBody
 import com.example.domain.response.UseCaseResult
 import com.example.domain.services.AlgoritmsService
 import org.koin.core.KoinComponent
@@ -42,7 +43,7 @@ class GetCalculoAlgoritmosUseCase() : KoinComponent {
             lineaId,
             unidadId
         )
-        else -> {UseCaseResult.Success(0.0)}
+        else -> {UseCaseResult.Success(TravelBody())}
     }
 
 }

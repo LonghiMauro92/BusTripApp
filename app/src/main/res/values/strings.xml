@@ -6,7 +6,7 @@
     <string name="api_key">AIzaSyDS62wITZA2AOkv-TDYD0oLaMy5FLzmTHY</string>
 
     <string name="bottom_sheet_hint_origen">Selecciona el punto de partida</string>
-    <string name="bottom_sheet_hint_destino">Selecciona el punto de destino</string>
+    <string name="bottom_sheet_hint_destino">Selecciona el lugar de destino</string>
     <string name="bottom_sheet_button_buscar">Buscar</string>
 
 </resources>

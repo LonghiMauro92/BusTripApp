@@ -1,9 +1,12 @@
 package com.example.data2.impl
 
+import com.example.data2.mapper.toTravelBody
+import com.example.data2.response.TravelBodyBEResponse
 import com.example.data2.service.ServiceApi
 import com.example.data2.service.ServiceGenerator
 import com.example.data2.service.TravelEstimate
 import com.example.domain.response.Coordinates
+import com.example.domain.response.TravelBody
 import com.example.domain.response.UseCaseResult
 import com.example.domain.services.AlgoritmsService
 import org.koin.core.KoinComponent
@@ -18,7 +21,7 @@ class CalculadorTiemposServiceImpl : AlgoritmsService, KoinComponent {
         recorridoId: String,
         lineaId: String,
         unidadId: String
-    ): UseCaseResult<Double> {
+    ): UseCaseResult<TravelBody> {
 
         val travelData = TravelEstimate(
             cordenadaO,
@@ -38,7 +41,7 @@ class CalculadorTiemposServiceImpl : AlgoritmsService, KoinComponent {
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body != null) {
-                    return UseCaseResult.Success(body)
+                    return UseCaseResult.Success(body.toTravelBody())
                 } else {
                     return UseCaseResult.Failure(Exception("failed"))
                 }
@@ -57,7 +60,7 @@ class CalculadorTiemposServiceImpl : AlgoritmsService, KoinComponent {
         recorridoId: String,
         lineaId: String,
         unidadId: String
-    ): UseCaseResult<Double> {
+    ): UseCaseResult<TravelBody> {
 
         val travelData = TravelEstimate(
             destination,
@@ -77,7 +80,7 @@ class CalculadorTiemposServiceImpl : AlgoritmsService, KoinComponent {
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body != null) {
-                    return UseCaseResult.Success(body)
+                    return UseCaseResult.Success(body.toTravelBody())
                 } else {
                     return UseCaseResult.Failure(Exception("failed"))
                 }
@@ -96,7 +99,7 @@ class CalculadorTiemposServiceImpl : AlgoritmsService, KoinComponent {
         recorridoId: String,
         lineaId: String,
         unidadId: String
-    ): UseCaseResult<Double> {
+    ): UseCaseResult<TravelBody> {
 
         val travelData = TravelEstimate(
             cordenadaO,
@@ -116,7 +119,7 @@ class CalculadorTiemposServiceImpl : AlgoritmsService, KoinComponent {
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body != null) {
-                    return UseCaseResult.Success(body)
+                    return UseCaseResult.Success(body.toTravelBody())
                 } else {
                     return UseCaseResult.Failure(Exception("failed"))
                 }

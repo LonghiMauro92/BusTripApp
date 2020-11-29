@@ -1,16 +1,13 @@
 package com.example.data2.mapper
 
-import com.example.data2.response.CoordinateResponse
-import com.example.data2.response.PositionRecorridoResponse
-import com.example.data2.response.RecorridoBaseResponse
-import com.example.domain.response.Coordinates
-import com.example.domain.response.RecorridoBaseInformation
-import com.example.domain.response.RecorridoIntermedio
+import com.example.data2.response.*
+import com.example.domain.response.*
 
 fun transformListRecorridoBaseResponseToListRecorridoBaseInformation(list: List<RecorridoBaseResponse>): List<RecorridoBaseInformation> =
     list.map {
         it.toInformation()
     }
+
 fun RecorridoBaseResponse.toInformation() =
     RecorridoBaseInformation(
         recorridoId,
@@ -28,3 +25,18 @@ fun transformPositionRecorridoResponseToRecorridoIntermedio(response: PositionRe
         recorridoId = response.recorridoId,
         coordenadasIntermedias = transformListCoordinatesResponseToListCoordinates(response.coordenadasIntermedias)
     )
+
+
+fun transformListRecorridosMultipleLinesResponseToListRecorridoBaseInformation(list: List<RecorridosMultipleLinesResponse>): List<MultipleLinesTravelInfo> =
+    list.map {
+        it.toMultipleLinesTravelInfo()
+    }
+
+fun RecorridosMultipleLinesResponse.toMultipleLinesTravelInfo() =
+    MultipleLinesTravelInfo(
+        trayecto,
+        linea,
+        transformListCoordinatesResponseToListCoordinates(coordenadas)
+    )
+
+fun TravelBodyBEResponse.toTravelBody(): TravelBody = TravelBody(tiempo, distancia)

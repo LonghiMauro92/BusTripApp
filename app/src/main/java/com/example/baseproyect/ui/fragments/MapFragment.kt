@@ -17,12 +17,14 @@ import com.example.baseproyect.MainActivity
 import com.example.baseproyect.R
 import com.example.baseproyect.ViewUtils
 import com.example.baseproyect.ViewUtils.getBusIcon
+import com.example.baseproyect.ViewUtils.setBackgroundColorShape
 import com.example.baseproyect.adapter.CustomInfoWindowAdapter
 import com.example.baseproyect.ui.*
 import com.example.domain.response.Coordinates
 import com.example.domain.response.ListLineBus
+import com.example.domain.response.MultipleLinesTravelInfo
 import com.example.domain.response.RecorridoBaseInformation
-import com.example.domain.response.RecorridoIntermedio
+import com.getbase.floatingactionbutton.FloatingActionButton
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -47,6 +49,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     private val mMapView: MapView by lazy { map }
     private val clearMapButton by lazy { fragment_map_clear_markers }
 
+    private val buttonSelectedLines by lazy { fragment_map_selectec_lines_markers }
     private val baseRouteButton1 by lazy { accion_bus_1 }
     private val baseRouteButton2 by lazy { accion_bus_2 }
     private val baseRouteButton3 by lazy { accion_bus_3 }
@@ -61,6 +64,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     private val btmSheetTextOrigin by lazy { label_origin_value }
     private val btmSheetTextDestino by lazy { label_destino_value }
     private val btmSheetProceedSearch by lazy { btn_buscar }
+
+    private val imagePuntoOrigen by lazy { imageViewPuntoOrigen }
 
     private val LOCATION_REQUEST_CODE = 1
     private var manualFlag = false
@@ -128,8 +133,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         clearMapButton.setOnClickListener {
             mMap.clear()
             mapFragmentViewModel.cleanMarkers()
-
-//            mapFragmentViewModel.showAutoLocation()
         }
         containerDropSheetImage.setOnClickListener {
             onClickOriginDestinoButton()
@@ -138,6 +141,27 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         btmSheetProceedSearch.setOnClickListener {
             mapFragmentViewModel.proceedSearching()
         }
+        imagePuntoOrigen.setOnClickListener {
+            goToMyLocation()
+            val address = MapUtils.getAddressByLatLng(
+                requireContext(),
+                mapFragmentViewModel.myLocation
+            )
+            manualPoint = "ORIGIN"
+            btmSheetTextOrigin.text = address.name
+
+            mapFragmentViewModel.setManualOriginPoint(address)
+        }
+        buttonSelectedLines.visibility = View.GONE
+        buttonSelectedLines.setOnClickListener {
+            goToMyLocation()
+            btmSheetTextOrigin.text = MapUtils.getAddressByLatLng(
+                requireContext(),
+                mapFragmentViewModel.myLocation
+            ).name
+
+        }
+
     }
 
 
@@ -185,10 +209,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     }
 
     private fun showIntermidateTravel(data: Any?, dataAlternativa: Any?, extraData: Any?) {
-        val travel = data as RecorridoIntermedio
+        val travel = data as List<MultipleLinesTravelInfo>
 
         val listLatLng = mutableListOf<LatLng>()
-        for (i in travel.coordenadasIntermedias) {
+        for (i in travel.get(0).coordenadasIntermedias) {
             val lat = LatLng(i.latitude, i.longitude)
             listLatLng.add(lat)
 
@@ -199,15 +223,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                 .clickable(true)
                 .addAll(
                     listLatLng
-                ).color(if (travel.recorridoId == "1") Color.BLUE else Color.RED)
+                ).color(if (travel.get(0).trayecto == "1") Color.BLUE else Color.RED)
         )
 
         val markerParadaOrigen = mMap.addMarker(
             MarkerOptions()
                 .position(
                     LatLng(
-                        travel.coordenadasIntermedias[0].latitude,
-                        travel.coordenadasIntermedias[0].longitude
+                        travel.get(0).coordenadasIntermedias[0].latitude,
+                        travel.get(0).coordenadasIntermedias[0].longitude
                     )
                 )
                 .icon(
@@ -221,8 +245,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             MarkerOptions()
                 .position(
                     LatLng(
-                        travel.coordenadasIntermedias[travel.coordenadasIntermedias.size - 1].latitude,
-                        travel.coordenadasIntermedias[travel.coordenadasIntermedias.size - 1].longitude
+                        travel[0].coordenadasIntermedias[travel[0].coordenadasIntermedias.size - 1].latitude,
+                        travel[0].coordenadasIntermedias[travel[0].coordenadasIntermedias.size - 1].longitude
                     )
                 )
                 .icon(
@@ -237,18 +261,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         goToFragTravelPrediction(
             MapUtils.getAddress(requireContext(), markerParadaOrigen),
             MapUtils.getAddress(requireContext(), markerParadaDestino),
-            travel.recorridoId
+            travel[0].trayecto
         )
-
     }
+
     private fun goToFragTravelPrediction(
         data: Address,
         dataAlternativa: Address,
         recorridoId: String
     ) {
 
-        val puntoOrigin = PuntoSeleccion( data)
-        val puntoDest = PuntoSeleccion( dataAlternativa)
+        val puntoOrigin = PuntoSeleccion(data)
+        val puntoDest = PuntoSeleccion(dataAlternativa)
 
         val ft: FragmentTransaction =
             (context as MainActivity).supportFragmentManager
@@ -265,7 +289,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             FragmentTravelPrediction.newInstance(
                 puntoOrigin,
                 puntoDest,
-                mapFragmentViewModel.activeLine,
+                mapFragmentViewModel.activeLine[0].toString(),
                 recorridoId, // ver cual parametro enviarle
                 mapFragmentViewModel.activeAlgorithm
             )
@@ -315,17 +339,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                 val marcadorA = data.peekContent().data as Coordinates
                 val marcadorB = data.peekContent().dataAlternativa as Coordinates
 
-                if (ActivityCompat.checkSelfPermission(
-                        requireContext(),
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                        requireContext(),
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-
-                    return
-                }
                 mMap.clear()
                 setRoutes(
                     mapFragmentViewModel.listRecorridoIda,
@@ -337,7 +350,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                         .icon(
                             ViewUtils.bitmapDescriptorFromVector(
                                 requireContext(),
-                                getBusIcon(mapFragmentViewModel.activeLine)
+                                getBusIcon(mapFragmentViewModel.activeLine[0].toString())
                             )
                         )
                 )
@@ -347,12 +360,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                         .icon(
                             ViewUtils.bitmapDescriptorFromVector(
                                 requireContext(),
-                                getBusIcon(mapFragmentViewModel.activeLine)
+                                getBusIcon(mapFragmentViewModel.activeLine[0].toString())
                             )
                         )
                 )
                 mapFragmentViewModel.addSimBusMarker(mMarkerTest, mMarkerBTest)
-                mMap.isMyLocationEnabled = true
                 mapFragmentViewModel.showAutoLocation()
             }
             MapFragmentViewModel.Status.ERROR -> {
@@ -363,6 +375,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                     positiveButtonS = data.peekContent().dataAlternativa.toString()
                 )
             }
+            MapFragmentViewModel.Status.ENABLE_GOTO_BUTTON -> buttonSelectedLines.visibility = View.VISIBLE
+            MapFragmentViewModel.Status.DISABLE_GOTO_BUTTON -> buttonSelectedLines.visibility = View.GONE
             null -> {
             }
         }
@@ -485,6 +499,86 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         mMap.uiSettings.isZoomControlsEnabled = true
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(-37.330472, -59.112383), 13f))
 
+        baseRouteButton1.setOnLongClickListener {
+
+            if (!mapFragmentViewModel.activeLineButtonFlag1) {
+
+                mapFragmentViewModel.activeLine.add(500)
+                baseRouteButton1.size = FloatingActionButton.SIZE_NORMAL
+
+                mapFragmentViewModel.activeLineButtonFlag1 = true
+                mapFragmentViewModel.setGoToButton()
+                return@setOnLongClickListener true
+            } else {
+
+                mapFragmentViewModel.activeLine.remove(500)
+                baseRouteButton1.size = FloatingActionButton.SIZE_MINI
+
+                mapFragmentViewModel.activeLineButtonFlag1 = false
+                mapFragmentViewModel.setGoToButton()
+                return@setOnLongClickListener true
+            }
+        }
+        baseRouteButton2.setOnLongClickListener {
+
+            if (!mapFragmentViewModel.activeLineButtonFlag2) {
+
+                mapFragmentViewModel.activeLine.add(501)
+                baseRouteButton2.size = FloatingActionButton.SIZE_NORMAL
+
+                mapFragmentViewModel.activeLineButtonFlag2 = true
+                mapFragmentViewModel.setGoToButton()
+                return@setOnLongClickListener true
+            } else {
+
+                mapFragmentViewModel.activeLine.remove(501)
+                baseRouteButton2.size = FloatingActionButton.SIZE_MINI
+                mapFragmentViewModel.activeLineButtonFlag2 = false
+                mapFragmentViewModel.setGoToButton()
+                return@setOnLongClickListener true
+            }
+        }
+        baseRouteButton3.setOnLongClickListener {
+            if (!mapFragmentViewModel.activeLineButtonFlag3) {
+                mapFragmentViewModel.activeLine.add(503)
+//                baseRouteButton3.background = setBackgroundColorShape(
+//                    requireContext(),
+//                    R.color.colorBlue,5
+//                )
+
+                baseRouteButton3.size = FloatingActionButton.SIZE_NORMAL
+                mapFragmentViewModel.activeLineButtonFlag3 = true
+                mapFragmentViewModel.setGoToButton()
+                return@setOnLongClickListener true
+            } else {
+                mapFragmentViewModel.activeLineButtonFlag3 = false
+                baseRouteButton3.size = FloatingActionButton.SIZE_MINI
+
+                mapFragmentViewModel.activeLine.remove(503)
+                mapFragmentViewModel.setGoToButton()
+                return@setOnLongClickListener true
+            }
+        }
+        baseRouteButton4.setOnLongClickListener {
+            if (!mapFragmentViewModel.activeLineButtonFlag4) {
+                buttonSelectedLines.visibility = View.VISIBLE
+
+                mapFragmentViewModel.activeLine.add(504)
+                baseRouteButton4.size = FloatingActionButton.SIZE_NORMAL
+
+                mapFragmentViewModel.activeLineButtonFlag4 = true
+                mapFragmentViewModel.setGoToButton()
+                return@setOnLongClickListener true
+            } else {
+
+                mapFragmentViewModel.activeLine.remove(504)
+                baseRouteButton4.size = FloatingActionButton.SIZE_MINI
+                mapFragmentViewModel.activeLineButtonFlag4 = false
+                mapFragmentViewModel.setGoToButton()
+                return@setOnLongClickListener true
+            }
+        }
+
         baseRouteButton1.setOnClickListener {
 
             mapFragmentViewModel.showBaseRoute(500)
@@ -510,18 +604,22 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 
         mMap.setInfoWindowAdapter(adapter)
         googleMap.setOnInfoWindowClickListener { marker ->
-            //todo en el segundo parametro debo mandarle la posicion del usuario
 
-            goToMyLocation()
+//            goToMyLocation()
+//            val address = MapUtils.getAddress(requireContext(), marker)
+//            val address2 =
+//                MapUtils.getAddressByLatLng(requireContext(), mapFragmentViewModel.myLocation)
+//            mapFragmentViewModel.checkLocation = false
+//            mapFragmentViewModel.addressOrigin = address2
+//            mapFragmentViewModel.addressDestination = address
+//
+//            mapFragmentViewModel.proceedSearching()
             val address = MapUtils.getAddress(requireContext(), marker)
-            val address2 = MapUtils.getAddressByLatLng(requireContext(), mapFragmentViewModel.myLocation)
-            mapFragmentViewModel.checkLocation = false
-            mapFragmentViewModel.addressOrigin=address2
-            mapFragmentViewModel.addressDestination=address
-
-            mapFragmentViewModel.proceedSearching()
-
-//            goToFragTravelPrediction(address, address2)
+            manualPoint = "DESTINO"
+            mapFragmentViewModel.addressDestination = address
+            btmSheetTextDestino.text = address.name
+            toggleBottomSheet()
+            mapFragmentViewModel.setManualDestPoint(address)
         }
     }
 
@@ -583,7 +681,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     override fun onMyLocationClick(p0: Location) {
         Toast.makeText(context, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
     }
-    fun goToMyLocation(){
+
+    fun goToMyLocation() {
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -596,16 +695,29 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                 .addOnSuccessListener(
                     OnSuccessListener<Location?> {
                         mMap.isMyLocationEnabled = true
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it?.latitude?: 0.0, it?.longitude?: 0.0), 12F))
+                        mMap.animateCamera(
+                            CameraUpdateFactory.newLatLngZoom(
+                                LatLng(
+                                    it?.latitude ?: 0.0, it?.longitude ?: 0.0
+                                ), 12F
+                            )
+                        )
                     })
-        }else{
+        } else {
             LocationServices.getFusedLocationProviderClient(requireContext()).getLastLocation()
                 .addOnSuccessListener(
                     OnSuccessListener<Location?> {
 
-                        mapFragmentViewModel.myLocation= LatLng(it?.latitude?: 0.0, it?.longitude?: 0.0)
+                        mapFragmentViewModel.myLocation =
+                            LatLng(it?.latitude ?: 0.0, it?.longitude ?: 0.0)
                         mMap.isMyLocationEnabled = true
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it?.latitude?: 0.0, it?.longitude?: 0.0), 12F))
+                        mMap.animateCamera(
+                            CameraUpdateFactory.newLatLngZoom(
+                                LatLng(
+                                    it?.latitude ?: 0.0, it?.longitude ?: 0.0
+                                ), 12F
+                            )
+                        )
                     })
         }
     }

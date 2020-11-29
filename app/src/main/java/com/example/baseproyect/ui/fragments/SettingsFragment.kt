@@ -54,7 +54,7 @@ class SettingsFragment : Fragment() {
         menuItemViewHistory.view_settings_menu_big_item_image_view_icon.setImageDrawable(
             ContextCompat.getDrawable(requireContext(), R.drawable.ic_ir_a_ubicacion)
         )
-
+        menuItemViewHistory.visibility = View.GONE
         menuItemSetBusLines.view_settings_menu_big_item_image_view_icon.setImageDrawable(
             ContextCompat.getDrawable(requireContext(), R.drawable.ic_autobus_lines)
         )
