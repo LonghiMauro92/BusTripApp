@@ -15,7 +15,7 @@ class SettingsBigItemMenuListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         SettingsBigItemMenuViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.view_settings_menu_big_item_recycler_item,
+                R.layout.view_settings_menu_recycler_item,
                 parent,
                 false
             )

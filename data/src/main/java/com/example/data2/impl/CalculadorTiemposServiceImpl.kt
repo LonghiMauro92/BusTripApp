@@ -1,6 +1,8 @@
 package com.example.data2.impl
 
 import com.example.data2.mapper.toTravelBody
+import com.example.data2.mapper.transformListRecorridosMultipleLinesResponseToListRecorridoBaseInformation
+import com.example.data2.mapper.transformListTravelBodyBEResponseToListTravelBodyInformation
 import com.example.data2.response.TravelBodyBEResponse
 import com.example.data2.service.ServiceApi
 import com.example.data2.service.ServiceGenerator
@@ -9,6 +11,7 @@ import com.example.domain.response.Coordinates
 import com.example.domain.response.TravelBody
 import com.example.domain.response.UseCaseResult
 import com.example.domain.services.AlgoritmsService
+import com.example.domain.usecase.InfoPuntoParadaDomain
 import org.koin.core.KoinComponent
 
 class CalculadorTiemposServiceImpl : AlgoritmsService, KoinComponent {
@@ -31,21 +34,52 @@ class CalculadorTiemposServiceImpl : AlgoritmsService, KoinComponent {
             lineaId.toInt(),
             unidadId.toInt()
         )
+//        val call =
+//            api.createService(ServiceApi::class.java).calcularTiempoPorRegresionAcumulado(
+//                travelData
+//            )
+//
+//        try {
+//            val response = call.execute()
+//            if (response.isSuccessful) {
+//                val body = response.body()
+//                if (body != null) {
+//                    return UseCaseResult.Success(body.toTravelBody())
+//                } else {
+//                    return UseCaseResult.Failure(Exception("failed"))
+//                }
+//            }
+//        } catch (e: Exception) {
+//            return UseCaseResult.Failure(e)
+//        }
+//
+        return UseCaseResult.Failure(Exception("response not success"))
+    }
+
+    override fun getCalcularTiempoPorRegresionAcumulado(destination: List<*>?): UseCaseResult<List<TravelBody>> {
+        val list = destination as List<InfoPuntoParadaDomain>
+//        val travelData = TravelEstimate(
+//            cordenadaO,
+//            cordenadaD,
+//            currentDateTimeString,
+//            recorridoId.toInt(),
+//            lineaId.toInt(),
+//            unidadId.toInt()
+//        )
         val call =
             api.createService(ServiceApi::class.java).calcularTiempoPorRegresionAcumulado(
-                travelData
+                list
             )
 
         try {
+
             val response = call.execute()
-            if (response.isSuccessful) {
-                val body = response.body()
-                if (body != null) {
-                    return UseCaseResult.Success(body.toTravelBody())
-                } else {
-                    return UseCaseResult.Failure(Exception("failed"))
+            if (response.isSuccessful)
+                response.body()?.let {
+                    transformListTravelBodyBEResponseToListTravelBodyInformation(it)
+                }?.let {
+                    return UseCaseResult.Success(it)
                 }
-            }
         } catch (e: Exception) {
             return UseCaseResult.Failure(e)
         }
@@ -62,29 +96,53 @@ class CalculadorTiemposServiceImpl : AlgoritmsService, KoinComponent {
         unidadId: String
     ): UseCaseResult<TravelBody> {
 
-        val travelData = TravelEstimate(
-            destination,
-            cordenadaD,
-            currentDateTimeString,
-            recorridoId.toInt(),
-            lineaId.toInt(),
-            unidadId.toInt()
-        )
+//        val travelData = TravelEstimate(
+//            destination,
+//            cordenadaD,
+//            currentDateTimeString,
+//            recorridoId.toInt(),
+//            lineaId.toInt(),
+//            unidadId.toInt()
+//        )
+//        val call =
+//            api.createService(ServiceApi::class.java).calcularTiempoPorRegresionDiferenciaDeCeldas(
+//                travelData
+//            )
+//
+//        try {
+//            val response = call.execute()
+//            if (response.isSuccessful) {
+//                val body = response.body()
+//                if (body != null) {
+//                    return UseCaseResult.Success(body.toTravelBody())
+//                } else {
+//                    return UseCaseResult.Failure(Exception("failed"))
+//                }
+//            }
+//        } catch (e: Exception) {
+//            return UseCaseResult.Failure(e)
+//        }
+
+        return UseCaseResult.Failure(Exception("response not success"))
+    }
+
+    override fun getCalcularTiempoPorRegresionDiferenciaDeCeldas(destination: List<*>?): UseCaseResult<List<TravelBody>> {
+        val list = destination as List<InfoPuntoParadaDomain>
+
         val call =
             api.createService(ServiceApi::class.java).calcularTiempoPorRegresionDiferenciaDeCeldas(
-                travelData
+                list
             )
 
         try {
+
             val response = call.execute()
-            if (response.isSuccessful) {
-                val body = response.body()
-                if (body != null) {
-                    return UseCaseResult.Success(body.toTravelBody())
-                } else {
-                    return UseCaseResult.Failure(Exception("failed"))
+            if (response.isSuccessful)
+                response.body()?.let {
+                    transformListTravelBodyBEResponseToListTravelBodyInformation(it)
+                }?.let {
+                    return UseCaseResult.Success(it)
                 }
-            }
         } catch (e: Exception) {
             return UseCaseResult.Failure(e)
         }
@@ -101,29 +159,53 @@ class CalculadorTiemposServiceImpl : AlgoritmsService, KoinComponent {
         unidadId: String
     ): UseCaseResult<TravelBody> {
 
-        val travelData = TravelEstimate(
-            cordenadaO,
-            cordenadaD,
-            currentDateTimeString.toString(),
-            recorridoId.toInt(),
-            lineaId.toInt(),
-            unidadId.toInt()
-        )
+//        val travelData = TravelEstimate(
+//            cordenadaO,
+//            cordenadaD,
+//            currentDateTimeString.toString(),
+//            recorridoId.toInt(),
+//            lineaId.toInt(),
+//            unidadId.toInt()
+//        )
+//        val call =
+//            api.createService(ServiceApi::class.java).calcularTiempoEntreCoordenadasComplejo(
+//                travelData
+//            )
+//
+//        try {
+//            val response = call.execute()
+//            if (response.isSuccessful) {
+//                val body = response.body()
+//                if (body != null) {
+//                    return UseCaseResult.Success(body.toTravelBody())
+//                } else {
+//                    return UseCaseResult.Failure(Exception("failed"))
+//                }
+//            }
+//        } catch (e: Exception) {
+//            return UseCaseResult.Failure(e)
+//        }
+
+        return UseCaseResult.Failure(Exception("response not success"))
+    }
+
+    override fun getCalcularTiempoEntreCoordenadasComplejo(destination: List<*>?): UseCaseResult<List<TravelBody>> {
+        val listSelected = destination as List<InfoPuntoParadaDomain>
+
         val call =
             api.createService(ServiceApi::class.java).calcularTiempoEntreCoordenadasComplejo(
-                travelData
+                listSelected
             )
 
         try {
+
             val response = call.execute()
-            if (response.isSuccessful) {
-                val body = response.body()
-                if (body != null) {
-                    return UseCaseResult.Success(body.toTravelBody())
-                } else {
-                    return UseCaseResult.Failure(Exception("failed"))
+            if (response.isSuccessful)
+                response.body()?.let {
+                    transformListTravelBodyBEResponseToListTravelBodyInformation(it)
+                }?.let {
+                    return UseCaseResult.Success(it)
                 }
-            }
         } catch (e: Exception) {
             return UseCaseResult.Failure(e)
         }

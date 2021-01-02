@@ -7,14 +7,19 @@
 
     <color name="colorYell">#ECC503</color>
     <color name="colorYellPressed">#6FF8CF02</color>
+    <color name="colorYellCard">#86F6F202</color>
     <color name="colorRed">#DA0303</color>
     <color name="colorRedPressed">#ADDA0303</color>
+    <color name="colorRedCard">#37F60505</color>
     <color name="colorBlue">#1C33B1</color>
     <color name="colorBluePressed">#0F1C60</color>
+    <color name="colorBlueCard">#8B032AFB</color>
     <color name="colorGreen">#3CDA03</color>
     <color name="colorGreenPressed">#217A01</color>
+    <color name="colorGreenCard">#8043EC06</color>
     <color name="color505">#975F01</color>
     <color name="color505Pressed">#573701</color>
+    <color name="color505Card">#99603D01</color>
     <color name="color502">#FFFFFF</color>
     <color name="colorTravelPredictionCard">#260178</color>
     <color name="colorTravelPredictionTitlesCard">#03A9F4</color>

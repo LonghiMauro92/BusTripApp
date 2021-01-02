@@ -3,6 +3,7 @@ package com.example.data2.service
 import com.example.data2.response.*
 import com.example.domain.response.PositionMultipleLines
 import com.example.domain.response.PositionRecorrido
+import com.example.domain.usecase.InfoPuntoParadaDomain
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -19,20 +20,20 @@ interface ServiceApi {
     @Headers( "Content-Type: application/json;charset=UTF-8")
     @POST("/CalculadorTiempo/ObtenerTiempoPorRegresionAcumulado")
     fun calcularTiempoPorRegresionAcumulado(
-        @Body  user:TravelEstimate
-    ): Call<TravelBodyBEResponse>
+        @Body  user:List<InfoPuntoParadaDomain>
+    ): Call<List<TravelBodyBEResponse>>
 
 
     @POST("/CalculadorTiempo/ObtenerTiempoPorRegresionDiferenciaDeCeldas")
     fun calcularTiempoPorRegresionDiferenciaDeCeldas(
-        @Body  user:TravelEstimate
-    ): Call<TravelBodyBEResponse>
+        @Body  user:List<InfoPuntoParadaDomain>
+    ): Call<List<TravelBodyBEResponse>>
 
 
     @POST("/CalculadorTiempo/ObtenerTiempoEntreCoordenadasComplejo")
     fun calcularTiempoEntreCoordenadasComplejo(
-        @Body  user:TravelEstimate
-    ): Call<TravelBodyBEResponse>
+        @Body  user:List<InfoPuntoParadaDomain>
+    ): Call<List<TravelBodyBEResponse>>
 
 
     @POST("/RecorridoBase/CaminosAlternativos")

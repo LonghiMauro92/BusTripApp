@@ -3,7 +3,7 @@ package com.example.baseproyect.adapter
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.example.baseproyect.ui.MenuListItem
-import kotlinx.android.synthetic.main.view_settings_menu_big_item_recycler_item.view.*
+import kotlinx.android.synthetic.main.view_settings_menu_recycler_item.view.*
 
 
 class SettingsBigItemMenuViewHolder(itemView: View) :

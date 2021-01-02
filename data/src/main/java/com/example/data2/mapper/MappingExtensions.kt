@@ -39,4 +39,17 @@ fun RecorridosMultipleLinesResponse.toMultipleLinesTravelInfo() =
         transformListCoordinatesResponseToListCoordinates(coordenadas)
     )
 
-fun TravelBodyBEResponse.toTravelBody(): TravelBody = TravelBody(tiempo, distancia)
+fun transformListTravelBodyBEResponseToListTravelBodyInformation(list: List<TravelBodyBEResponse>): List<TravelBody> =
+    list.map {
+        it.toTravelBody()
+    }
+
+fun TravelBodyBEResponse.toTravelBody(): TravelBody = TravelBody(
+    tiempo,
+    distancia,
+    linea,
+    trayecto,
+    coordenadaOrigen.toModel(), coordenadaDestino.toModel()
+)
+
+fun CoordinateResponse.toModel(): Coordinates = Coordinates(lat, lng)

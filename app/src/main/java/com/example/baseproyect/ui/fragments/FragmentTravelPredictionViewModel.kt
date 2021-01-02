@@ -1,14 +1,12 @@
 package com.example.baseproyect.ui.fragments
 
 import android.annotation.SuppressLint
-import android.content.ContentValues.TAG
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.baseproyect.BaseViewModel
 import com.example.baseproyect.ui.Event
-import com.example.baseproyect.ui.PuntoSeleccion
-import com.example.domain.response.Coordinates
+import com.example.baseproyect.ui.InfoPuntoParada
+import com.example.baseproyect.ui.toDomainModel
 import com.example.domain.response.UseCaseResult
 import com.example.domain.usecase.GetCalculoAlgoritmosUseCase
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +22,7 @@ class FragmentTravelPredictionViewModel :
 
     private val getCalculoAlgSimpleUseCase: GetCalculoAlgoritmosUseCase by inject()
 
-    lateinit var algorithm:String
+    lateinit var algorithm: String
 
     val predictionMutableLiveData = MutableLiveData<Event<Data>>()
     val liveData: MutableLiveData<Event<Data>>
@@ -34,11 +32,8 @@ class FragmentTravelPredictionViewModel :
 
     @SuppressLint("SimpleDateFormat")
     fun getCurrentPrediction(
-        puntoOrigin: PuntoSeleccion,
-        puntoDest: PuntoSeleccion,
-        linea: String,
-        recorridoId: String,
-        algorithmValue:String
+        listOfParadas: List<InfoPuntoParada>?,
+        algoritmo: String
     ) {
 
 
@@ -49,32 +44,19 @@ class FragmentTravelPredictionViewModel :
                 )
             )
         )
-        algorithm = algorithmValue
+        algorithm = algoritmo
 
         val date = Calendar.getInstance().time
         val dateInString = date.toString("yyyy-MM-dd'T'HH:mm:ss")
+        listOfParadas?.forEach { it.fecha = dateInString }
 
-        val coordA = Coordinates()
-        val coordB = Coordinates()
-        puntoOrigin.address?.let {
-            coordA.latitude = it.latitude!!
-            coordA.longitude = it.longitude!!
-        }
-        puntoDest.address?.let {
-            coordB.latitude = it.latitude!!
-            coordB.longitude = it.longitude!!
-        }
+        val lista = listOfParadas?.map { it.toDomainModel() }
         viewModelScope.launch {
             when (val result =
                 withContext(Dispatchers.IO) {
                     getCalculoAlgSimpleUseCase.selectTypeAlgService(
-                        coordA,
-                        coordB,
-                        dateInString,
-                        recorridoId,
-                        "500",
-                        "1",
-                        algorithmValue
+                        lista,
+                        algorithm
                     )
                 }) {
                 is UseCaseResult.Failure -> {
@@ -83,7 +65,7 @@ class FragmentTravelPredictionViewModel :
                             Data(
                                 status = Status.ERROR,
                                 data = result.exception.message,
-                                dataAlternativa = "Back"
+                                dataAlternativa = "Volver"
                             )
                         )
                     )

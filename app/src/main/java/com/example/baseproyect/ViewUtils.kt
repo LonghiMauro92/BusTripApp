@@ -67,6 +67,27 @@ object ViewUtils {
             }
         }
 
+    fun getBusColorRoute(line: String): Int =
+        when (line) {
+            "500" -> R.color.colorYell
+            "501" -> R.color.colorRed
+            "502" -> R.color.colorNegro
+            "503" -> R.color.colorGreenPressed
+            "504" -> R.color.colorBlue
+            "505" -> R.color.color505
+            else -> R.color.colorNegro
+        }
+
+    fun getBusCard(line: String): Int =
+        when (line) {
+            "500" -> R.color.colorYellCard
+            "501" -> R.color.colorRedCard
+            "502" -> R.color.color502
+            "503" -> R.color.colorGreenCard
+            "504" -> R.color.colorBlueCard
+            "505" -> R.color.color505Card
+            else -> R.color.colorNegro
+        }
     fun setBackgroundColorShape(context: Context, @ColorRes color: Int,wid: Int): Drawable {
         val gd = GradientDrawable()
         gd.setColor(ContextCompat.getColor(context, color))

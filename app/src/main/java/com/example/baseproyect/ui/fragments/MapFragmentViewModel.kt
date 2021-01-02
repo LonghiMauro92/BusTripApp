@@ -87,7 +87,9 @@ class MapFragmentViewModel :
 
     var listRecorridoIda = mutableListOf<RecorridoBaseInformation>()
     var listActiveBusRecA = mutableListOf<Coordinates>()
+    var listOriginalBusRecA = mutableListOf<Coordinates>()
     var listRecorridoVuelta = mutableListOf<RecorridoBaseInformation>()
+    var listOriginalBusRecB = mutableListOf<Coordinates>()
     var listActiveBusRecB = mutableListOf<Coordinates>()
 
     fun showBaseRoute(line: Int) {
@@ -142,6 +144,8 @@ class MapFragmentViewModel :
     ) {
         listActiveBusRecA.addAll(recorridoIda[0].coordenadas)
         listActiveBusRecB.addAll(recorridoVuelta[0].coordenadas)
+        listOriginalBusRecA.addAll(recorridoIda[0].coordenadas)
+        listOriginalBusRecB.addAll(recorridoVuelta[0].coordenadas)
     }
 
     fun checkBothFields() {
@@ -248,9 +252,12 @@ class MapFragmentViewModel :
         if (checkLocation) {
             launch {
                 withContext(Dispatchers.IO) {
-                    delay(4000L) // retraso non-blocking de 4 segundos
-                    if (listActiveBusRecA.isNotEmpty() || listActiveBusRecB.isNotEmpty()) {
-                        mapMutableLiveData.postValue(
+                    delay(2000L) // retraso non-blocking de 4 segundos
+                    if (listActiveBusRecA.size == 0 || listActiveBusRecB.size == 0) {
+                        listActiveBusRecA = listOriginalBusRecA
+                        listActiveBusRecB = listOriginalBusRecB
+                    }
+                    mapMutableLiveData.postValue (
                             Event(
                                 Data(
                                     status = Status.SHOW_LOC,
@@ -258,20 +265,10 @@ class MapFragmentViewModel :
                                     dataAlternativa = listActiveBusRecB[0]
                                 )
                             )
-                        )
-                        listActiveBusRecA.removeAt(0)
-                        listActiveBusRecB.removeAt(0)
-                    } else {
-                        mapMutableLiveData.postValue(
-                            Event(
-                                Data(
-                                    status = Status.ERROR,
-                                    data = "error service",
-                                    dataAlternativa = "Back"
-                                )
                             )
-                        )
-                    }
+                    listActiveBusRecA.removeAt(0)
+                    listActiveBusRecB.removeAt(0)
+
                 }
             }
         }

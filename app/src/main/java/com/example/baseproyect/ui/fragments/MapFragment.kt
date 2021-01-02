@@ -16,8 +16,8 @@ import androidx.fragment.app.FragmentTransaction
 import com.example.baseproyect.MainActivity
 import com.example.baseproyect.R
 import com.example.baseproyect.ViewUtils
+import com.example.baseproyect.ViewUtils.getBusColorRoute
 import com.example.baseproyect.ViewUtils.getBusIcon
-import com.example.baseproyect.ViewUtils.setBackgroundColorShape
 import com.example.baseproyect.adapter.CustomInfoWindowAdapter
 import com.example.baseproyect.ui.*
 import com.example.domain.response.Coordinates
@@ -35,9 +35,11 @@ import com.google.android.gms.maps.model.*
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_map_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.ArrayList
 
 
 class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListener,
@@ -157,11 +159,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         buttonSelectedLines.visibility = View.GONE
         buttonSelectedLines.setOnClickListener {
             goToMyLocation()
-            btmSheetTextOrigin.text = MapUtils.getAddressByLatLng(
-                requireContext(),
-                mapFragmentViewModel.myLocation
-            ).name
+            manualPoint = "ORIGIN"
+            val address = MapUtils.getAddressByLatLng(
+            requireContext(),
+            mapFragmentViewModel.myLocation
+        )
+            btmSheetTextOrigin.text = address.name
 
+            mapFragmentViewModel.setManualOriginPoint(address)
+
+            mapFragmentViewModel.proceedSearching()
         }
 
     }
@@ -214,68 +221,116 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         val travel = data as List<MultipleLinesTravelInfo>
 
         val listLatLng = mutableListOf<LatLng>()
-        for (i in travel.get(0).coordenadasIntermedias) {
-            val lat = LatLng(i.latitude, i.longitude)
-            listLatLng.add(lat)
 
+        val listOfParadas = mutableListOf<InfoPuntoParada>()
+        travel.forEach {
 
+            for (i in it.coordenadasIntermedias) {
+                val lat = LatLng(i.latitude, i.longitude)
+                listLatLng.add(lat)
+            }
+            mMap.addPolyline(
+                PolylineOptions()
+                    .clickable(true)
+                    .addAll(
+                        listLatLng
+                    ).color(ContextCompat.getColor(requireContext(),getBusColorRoute(it.linea)))
+            )
+
+            val markerParadaOrigen = mMap.addMarker(
+                MarkerOptions()
+                    .position(
+                        LatLng(
+                            it.coordenadasIntermedias[0].latitude,
+                            it.coordenadasIntermedias[0].longitude
+                        )
+                    )
+                    .icon(
+                        ViewUtils.bitmapDescriptorFromVector(
+                            requireContext(),
+                            R.drawable.ic_parada_de_autobus
+                        )
+                    )
+            )
+            val markerParadaDestino = mMap.addMarker(
+                MarkerOptions()
+                    .position(
+                        LatLng(
+                            it.coordenadasIntermedias[it.coordenadasIntermedias.size - 1].latitude,
+                            it.coordenadasIntermedias[it.coordenadasIntermedias.size - 1].longitude
+                        )
+                    )
+                    .icon(
+                        ViewUtils.bitmapDescriptorFromVector(
+                            requireContext(),
+                            R.drawable.ic_parada_de_autobus
+                        )
+                    )
+            )
+            listLatLng.clear()
+
+            listOfParadas.add(
+                InfoPuntoParada(
+                    it.coordenadasIntermedias[0],
+                    MapUtils.getAddress(requireContext(), markerParadaOrigen),
+                    it.coordenadasIntermedias[it.coordenadasIntermedias.size - 1],
+                    MapUtils.getAddress(requireContext(), markerParadaDestino),
+                    "",
+                    it.trayecto.toInt(),
+                    it.linea.toInt(),
+                    1
+            )
+            )
         }
-        mMap.addPolyline(
-            PolylineOptions()
-                .clickable(true)
-                .addAll(
-                    listLatLng
-                ).color(if (travel.get(0).trayecto == "1") Color.BLUE else Color.RED)
-        )
 
-        val markerParadaOrigen = mMap.addMarker(
-            MarkerOptions()
-                .position(
-                    LatLng(
-                        travel.get(0).coordenadasIntermedias[0].latitude,
-                        travel.get(0).coordenadasIntermedias[0].longitude
-                    )
-                )
-                .icon(
-                    ViewUtils.bitmapDescriptorFromVector(
-                        requireContext(),
-                        R.drawable.ic_parada_de_autobus
-                    )
-                )
-        )
-        val markerParadaDestino = mMap.addMarker(
-            MarkerOptions()
-                .position(
-                    LatLng(
-                        travel[0].coordenadasIntermedias[travel[0].coordenadasIntermedias.size - 1].latitude,
-                        travel[0].coordenadasIntermedias[travel[0].coordenadasIntermedias.size - 1].longitude
-                    )
-                )
-                .icon(
-                    ViewUtils.bitmapDescriptorFromVector(
-                        requireContext(),
-                        R.drawable.ic_parada_de_autobus
-                    )
-                )
-        )
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markerParadaOrigen.position, 12F))
+//        val markerParadaOrigen = mMap.addMarker(
+//            MarkerOptions()
+//                .position(
+//                    LatLng(
+//                        travel.get(0).coordenadasIntermedias[0].latitude,
+//                        travel.get(0).coordenadasIntermedias[0].longitude
+//                    )
+//                )
+//                .icon(
+//                    ViewUtils.bitmapDescriptorFromVector(
+//                        requireContext(),
+//                        R.drawable.ic_parada_de_autobus
+//                    )
+//                )
+//        )
+//        val markerParadaDestino = mMap.addMarker(
+//            MarkerOptions()
+//                .position(
+//                    LatLng(
+//                        travel[0].coordenadasIntermedias[travel[0].coordenadasIntermedias.size - 1].latitude,
+//                        travel[0].coordenadasIntermedias[travel[0].coordenadasIntermedias.size - 1].longitude
+//                    )
+//                )
+//                .icon(
+//                    ViewUtils.bitmapDescriptorFromVector(
+//                        requireContext(),
+//                        R.drawable.ic_parada_de_autobus
+//                    )
+//                )
+//        )
+//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markerParadaOrigen.position, 12F))
 
-        goToFragTravelPrediction(
-            MapUtils.getAddress(requireContext(), markerParadaOrigen),
-            MapUtils.getAddress(requireContext(), markerParadaDestino),
-            travel[0].trayecto
+//        goToFragTravelPrediction(
+//            MapUtils.getAddress(requireContext(), markerParadaOrigen),
+//            MapUtils.getAddress(requireContext(), markerParadaDestino),
+//            travel[0].trayecto //revisar
+//        )
+        goToFragTravelPrediction(            listOfParadas
+
         )
     }
 
-    private fun goToFragTravelPrediction(
-        data: Address,
-        dataAlternativa: Address,
-        recorridoId: String
-    ) {
+    private fun goToFragTravelPrediction(listOfParadas: MutableList<InfoPuntoParada>) {
 
-        val puntoOrigin = PuntoSeleccion(data)
-        val puntoDest = PuntoSeleccion(dataAlternativa)
-
+//        val puntoOrigin = PuntoSeleccion(data)
+//        val puntoDest = PuntoSeleccion(dataAlternativa)
+//        var gson = Gson()
+//        var lista = Utils.getGsonParser()?.toJson(listOfParadas)
         val ft: FragmentTransaction =
             (context as MainActivity).supportFragmentManager
                 .beginTransaction()
@@ -289,10 +344,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         ft.replace(
             R.id.account,
             FragmentTravelPrediction.newInstance(
-                puntoOrigin,
-                puntoDest,
-                mapFragmentViewModel.activeLine[0].toString(),
-                recorridoId, // ver cual parametro enviarle
+                listOfParadas as ArrayList<InfoPuntoParada>,
                 mapFragmentViewModel.activeAlgorithm
             )
         )
@@ -690,6 +742,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 //            mapFragmentViewModel.addressDestination = address
 //
 //            mapFragmentViewModel.proceedSearching()
+
+            mapFragmentViewModel.checkLocation = false
             val address = MapUtils.getAddress(requireContext(), marker)
             manualPoint = "DESTINO"
             mapFragmentViewModel.addressDestination = address

@@ -11,39 +11,47 @@ class GetCalculoAlgoritmosUseCase() : KoinComponent {
 
     private val getAlgoritmsServiceRepository: AlgoritmsService by inject()
     fun selectTypeAlgService(
-        cordenadaO: Coordinates,
-        cordenadaD: Coordinates,
-        currentDateTimeString: String,
-        recorridoId: String,
-        lineaId: String,
-        unidadId: String,
+        listOfParadas:  List<*>?,
         algoritm:String
     ) = when(algoritm){
-        "RegresionAcumulado"->getAlgoritmsServiceRepository.getCalcularTiempoPorRegresionAcumulado(
-            cordenadaO,
-            cordenadaD,
-            currentDateTimeString,
-            recorridoId,
-            lineaId,
-            unidadId
-        )
-        "RegresionDiferenciaDeCeldas"->getAlgoritmsServiceRepository.getCalcularTiempoPorRegresionDiferenciaDeCeldas(
-            cordenadaO,
-            cordenadaD,
-            currentDateTimeString,
-            recorridoId,
-            lineaId,
-            unidadId
+        "RegresionAcumulado" -> {
+            val lista = listOfParadas as List<*>
+            getAlgoritmsServiceRepository.getCalcularTiempoPorRegresionAcumulado(
+                listOfParadas
+            )
+        }
+        "RegresionDiferenciaDeCeldas" -> getAlgoritmsServiceRepository.getCalcularTiempoPorRegresionDiferenciaDeCeldas(
+            listOfParadas
         )
         "TiempoEntreCoordenadasComplejo"->getAlgoritmsServiceRepository.getCalcularTiempoEntreCoordenadasComplejo(
-            cordenadaO,
-            cordenadaD,
-            currentDateTimeString,
-            recorridoId,
-            lineaId,
-            unidadId
+            listOfParadas
         )
         else -> {UseCaseResult.Success(TravelBody())}
+//        "RegresionAcumulado"->getAlgoritmsServiceRepository.getCalcularTiempoPorRegresionAcumulado(
+//            cordenadaO,
+//            cordenadaD,
+//            currentDateTimeString,
+//            recorridoId,
+//            lineaId,
+//            unidadId
+//        )
+//        "RegresionDiferenciaDeCeldas"->getAlgoritmsServiceRepository.getCalcularTiempoPorRegresionDiferenciaDeCeldas(
+//            cordenadaO,
+//            cordenadaD,
+//            currentDateTimeString,
+//            recorridoId,
+//            lineaId,
+//            unidadId
+//        )
+//        "TiempoEntreCoordenadasComplejo"->getAlgoritmsServiceRepository.getCalcularTiempoEntreCoordenadasComplejo(
+//            cordenadaO,
+//            cordenadaD,
+//            currentDateTimeString,
+//            recorridoId,
+//            lineaId,
+//            unidadId
+//        )
+//        else -> {UseCaseResult.Success(TravelBody())}
     }
 
 }

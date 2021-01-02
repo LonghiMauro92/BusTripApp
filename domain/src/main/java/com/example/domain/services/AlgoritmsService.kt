@@ -31,4 +31,9 @@ interface AlgoritmsService {
         lineaId: String,
         unidadId: String
     ): UseCaseResult<TravelBody>
+
+    fun getCalcularTiempoPorRegresionAcumulado(destination: List<*>?): UseCaseResult<List<TravelBody>>
+    fun getCalcularTiempoPorRegresionDiferenciaDeCeldas(destination: List<*>?): UseCaseResult<List<TravelBody>>
+
+    fun getCalcularTiempoEntreCoordenadasComplejo(destination: List<*>?): UseCaseResult<List<TravelBody>>
 }

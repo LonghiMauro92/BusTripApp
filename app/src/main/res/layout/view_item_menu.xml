@@ -57,5 +57,5 @@
         android:layout_height="wrap_content"
         android:nestedScrollingEnabled="false"
         android:visibility="gone"
-        tools:listitem="@layout/view_settings_menu_big_item_recycler_item" />
+        tools:listitem="@layout/view_settings_menu_recycler_item" />
 </LinearLayout>
