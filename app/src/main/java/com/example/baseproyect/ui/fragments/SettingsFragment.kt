@@ -18,9 +18,8 @@ class SettingsFragment : Fragment() {
     private val menuItemSetBusLines by lazy { menu_item_set_bus_lines }
     private val menuItemAlgorithms by lazy { menu_item_view_algorithms }
 
-    private var listShown = false
-    lateinit var menuBussLinesList : List<MenuListItem>
-    lateinit var menuAlgoritmosList : List<MenuListItem>
+    lateinit var menuBussLinesList: List<MenuListItem>
+    lateinit var menuAlgorithmsList: List<MenuListItem>
 
     private val mapViewModel by sharedViewModel<MapFragmentViewModel>()
 
@@ -62,26 +61,26 @@ class SettingsFragment : Fragment() {
 
         menuBussLinesList = listOf<MenuListItem>(
             MenuListItem("500 - AMARILLO") { lineBusActionItem(500) },
-            MenuListItem("501 - BLANCO"){ lineBusActionItem(500) },
-            MenuListItem("503 - AZUL"){ lineBusActionItem(503) },
-            MenuListItem("504 - VERDE"){ lineBusActionItem(504) }
+            MenuListItem("501 - BLANCO") { lineBusActionItem(500) },
+            MenuListItem("503 - AZUL") { lineBusActionItem(503) },
+            MenuListItem("504 - VERDE") { lineBusActionItem(504) }
         )
         menuItemSetBusLines.setSubMenuList(menuBussLinesList)
 
-        menuAlgoritmosList = listOf<MenuListItem>(
-            MenuListItem("Alg - RegresionAcumulado"){ AlgorithmActionItem("RegresionAcumulado") },
-            MenuListItem("Alg - RegresionDiferenciaDeCeldas"){ AlgorithmActionItem("RegresionDiferenciaDeCeldas") },
-            MenuListItem("Alg - TiempoEntreCoordenadasComplejo"){ AlgorithmActionItem("TiempoEntreCoordenadasComplejo") }
+        menuAlgorithmsList = listOf<MenuListItem>(
+            MenuListItem("Alg - RegresionAcumulado") { AlgorithmActionItem("RegresionAcumulado") },
+            MenuListItem("Alg - RegresionDiferenciaDeCeldas") { AlgorithmActionItem("RegresionDiferenciaDeCeldas") },
+            MenuListItem("Alg - TiempoEntreCoordenadasComplejo") { AlgorithmActionItem("TiempoEntreCoordenadasComplejo") }
         )
 
-        menuItemAlgorithms.setSubMenuList(menuAlgoritmosList)
+        menuItemAlgorithms.setSubMenuList(menuAlgorithmsList)
     }
 
-    fun lineBusActionItem(linea:Int) {
+    fun lineBusActionItem(linea: Int) {
         mapViewModel.showBaseRoute(linea)
     }
 
-    fun AlgorithmActionItem(algorithm:String) {
+    fun AlgorithmActionItem(algorithm: String) {
         mapViewModel.activeAlgorithm = algorithm
     }
 

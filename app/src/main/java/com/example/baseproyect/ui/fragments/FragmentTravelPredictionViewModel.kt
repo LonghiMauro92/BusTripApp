@@ -50,12 +50,12 @@ class FragmentTravelPredictionViewModel :
         val dateInString = date.toString("yyyy-MM-dd'T'HH:mm:ss")
         listOfParadas?.forEach { it.fecha = dateInString }
 
-        val lista = listOfParadas?.map { it.toDomainModel() }
+        val listOfStoppingPlace = listOfParadas?.map { it.toDomainModel() }
         viewModelScope.launch {
             when (val result =
                 withContext(Dispatchers.IO) {
                     getCalculoAlgSimpleUseCase.selectTypeAlgService(
-                        lista,
+                        listOfStoppingPlace,
                         algorithm
                     )
                 }) {
@@ -84,10 +84,6 @@ class FragmentTravelPredictionViewModel :
         }
     }
 
-    fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
-        val formatter = SimpleDateFormat(format, locale)
-        return formatter.format(this)
-    }
 
     data class Data(
         var status: Status,
@@ -101,4 +97,9 @@ class FragmentTravelPredictionViewModel :
         CONTENT_DATA,
         ERROR,
     }
+}
+
+fun Date.toString(format: String, locale: Locale = Locale.getDefault()): String {
+    val formatter = SimpleDateFormat(format, locale)
+    return formatter.format(this)
 }

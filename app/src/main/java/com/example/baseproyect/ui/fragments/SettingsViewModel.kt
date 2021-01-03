@@ -8,8 +8,8 @@ import org.koin.core.KoinComponent
 class SettingsViewModel :
     BaseViewModel(), KoinComponent {
 
-    val settingsMutableLiveData = MutableLiveData<Event<SettingsViewModel.Data>>()
-    val liveData: MutableLiveData<Event<SettingsViewModel.Data>>
+    val settingsMutableLiveData = MutableLiveData<Event<Data>>()
+    val liveData: MutableLiveData<Event<Data>>
         get() {
             return settingsMutableLiveData
         }

@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -32,15 +31,12 @@ import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_map_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.ArrayList
-
+import java.util.*
 
 class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListener,
     GoogleMap.OnMyLocationClickListener,
@@ -71,7 +67,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 
     private val imagePuntoOrigen by lazy { imageViewPuntoOrigen }
 
-    private val LOCATION_REQUEST_CODE = 1
     private var manualFlag = false
     private var manualPoint = ""
 
@@ -79,6 +74,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     private lateinit var sheetBehavior: BottomSheetBehavior<View>
 
     private val mapFragmentViewModel by viewModel<MapFragmentViewModel>()
+
+    companion object {
+        const val LOCATION_REQUEST_CODE = 1
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_map_fragment, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -91,277 +98,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         mMapView.onResume()
         mMapView.getMapAsync(this)
 
+        setButtonsListeners()
 
-        sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet)
-
-        /**
-         * bottom sheet state change listener
-         * we are changing button text when sheet changed state
-         * */
-        /**
-         * bottom sheet state change listener
-         * we are changing button text when sheet changed state
-         */
-        sheetBehavior.setBottomSheetCallback(object : BottomSheetCallback() {
-            override fun onStateChanged(
-                bottomSheet: View,
-                newState: Int
-            ) {
-                when (newState) {
-                    BottomSheetBehavior.STATE_HIDDEN -> {
-                    }
-                    BottomSheetBehavior.STATE_EXPANDED -> {
-                    }
-                    BottomSheetBehavior.STATE_COLLAPSED -> {
-                    }
-                    BottomSheetBehavior.STATE_DRAGGING -> {
-                    }
-                    BottomSheetBehavior.STATE_SETTLING -> {
-                    }
-                    BottomSheetBehavior.STATE_HALF_EXPANDED -> {
-                    }
-                }
-            }
-
-            override fun onSlide(
-                bottomSheet: View,
-                slideOffset: Float
-            ) {
-            }
-        })
-
-        //------------------------------------------------------------------------
-        // ------------------ setting listeners ----------------------------------
-        //------------------------------------------------------------------------
-
-        clearMapButton.setOnClickListener {
-            mMap.clear()
-            mapFragmentViewModel.cleanMarkers()
-        }
-        containerDropSheetImage.setOnClickListener {
-            onClickOriginDestinoButton()
-            toggleBottomSheet()
-        }
-        btmSheetProceedSearch.setOnClickListener {
-            mapFragmentViewModel.proceedSearching()
-        }
-        imagePuntoOrigen.setOnClickListener {
-            goToMyLocation()
-            val address = MapUtils.getAddressByLatLng(
-                requireContext(),
-                mapFragmentViewModel.myLocation
-            )
-            manualPoint = "ORIGIN"
-            btmSheetTextOrigin.text = address.name
-
-            mapFragmentViewModel.setManualOriginPoint(address)
-        }
-        buttonSelectedLines.visibility = View.GONE
-        buttonSelectedLines.setOnClickListener {
-            goToMyLocation()
-            manualPoint = "ORIGIN"
-            val address = MapUtils.getAddressByLatLng(
-            requireContext(),
-            mapFragmentViewModel.myLocation
-        )
-            btmSheetTextOrigin.text = address.name
-
-            mapFragmentViewModel.setManualOriginPoint(address)
-
-            mapFragmentViewModel.proceedSearching()
-        }
-
-    }
-
-
-    private fun toggleBottomSheet() {
-        if (sheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
-            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED)
-        } else {
-            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
-        }
-    }
-
-    private fun onClickOriginDestinoButton() {
-        btmSheetImageOrigin.setOnClickListener {
-
-            manualFlag = true
-            manualPoint = "ORIGIN"
-            btmSheetImageDelete.visibility = View.VISIBLE
-            sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        }
-        btmSheetImageDestino.setOnClickListener {
-            manualFlag = true
-            manualPoint = "DESTINO"
-            btmSheetImageDelete.visibility = View.VISIBLE
-            sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        }
-
-        btmSheetImageDelete.setOnClickListener {
-            manualFlag = false
-            manualPoint = ""
-            btmSheetTextOrigin.text = ""
-            btmSheetTextDestino.text = ""
-            btmSheetImageDelete.visibility = View.GONE
-            mMap.clear()
-            mapFragmentViewModel.cleanMarkers()
-        }
-    }
-
-    private fun searchOperation(data: Any?, dataAlternativa: Any?, extraData: Any?) {
-
-        btmSheetTextOrigin.text = ""
-        btmSheetTextDestino.text = ""
-        btmSheetImageDelete.visibility = View.GONE
-        sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        showIntermidateTravel(data, dataAlternativa, extraData)
-    }
-
-    private fun showIntermidateTravel(data: Any?, dataAlternativa: Any?, extraData: Any?) {
-        val travel = data as List<MultipleLinesTravelInfo>
-
-        val listLatLng = mutableListOf<LatLng>()
-
-        val listOfParadas = mutableListOf<InfoPuntoParada>()
-        travel.forEach {
-
-            for (i in it.coordenadasIntermedias) {
-                val lat = LatLng(i.latitude, i.longitude)
-                listLatLng.add(lat)
-            }
-            mMap.addPolyline(
-                PolylineOptions()
-                    .clickable(true)
-                    .addAll(
-                        listLatLng
-                    ).color(ContextCompat.getColor(requireContext(),getBusColorRoute(it.linea)))
-            )
-
-            val markerParadaOrigen = mMap.addMarker(
-                MarkerOptions()
-                    .position(
-                        LatLng(
-                            it.coordenadasIntermedias[0].latitude,
-                            it.coordenadasIntermedias[0].longitude
-                        )
-                    )
-                    .icon(
-                        ViewUtils.bitmapDescriptorFromVector(
-                            requireContext(),
-                            R.drawable.ic_parada_de_autobus
-                        )
-                    )
-            )
-            val markerParadaDestino = mMap.addMarker(
-                MarkerOptions()
-                    .position(
-                        LatLng(
-                            it.coordenadasIntermedias[it.coordenadasIntermedias.size - 1].latitude,
-                            it.coordenadasIntermedias[it.coordenadasIntermedias.size - 1].longitude
-                        )
-                    )
-                    .icon(
-                        ViewUtils.bitmapDescriptorFromVector(
-                            requireContext(),
-                            R.drawable.ic_parada_de_autobus
-                        )
-                    )
-            )
-            listLatLng.clear()
-
-            listOfParadas.add(
-                InfoPuntoParada(
-                    it.coordenadasIntermedias[0],
-                    MapUtils.getAddress(requireContext(), markerParadaOrigen),
-                    it.coordenadasIntermedias[it.coordenadasIntermedias.size - 1],
-                    MapUtils.getAddress(requireContext(), markerParadaDestino),
-                    "",
-                    it.trayecto.toInt(),
-                    it.linea.toInt(),
-                    1
-            )
-            )
-        }
-
-//        val markerParadaOrigen = mMap.addMarker(
-//            MarkerOptions()
-//                .position(
-//                    LatLng(
-//                        travel.get(0).coordenadasIntermedias[0].latitude,
-//                        travel.get(0).coordenadasIntermedias[0].longitude
-//                    )
-//                )
-//                .icon(
-//                    ViewUtils.bitmapDescriptorFromVector(
-//                        requireContext(),
-//                        R.drawable.ic_parada_de_autobus
-//                    )
-//                )
-//        )
-//        val markerParadaDestino = mMap.addMarker(
-//            MarkerOptions()
-//                .position(
-//                    LatLng(
-//                        travel[0].coordenadasIntermedias[travel[0].coordenadasIntermedias.size - 1].latitude,
-//                        travel[0].coordenadasIntermedias[travel[0].coordenadasIntermedias.size - 1].longitude
-//                    )
-//                )
-//                .icon(
-//                    ViewUtils.bitmapDescriptorFromVector(
-//                        requireContext(),
-//                        R.drawable.ic_parada_de_autobus
-//                    )
-//                )
-//        )
-//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markerParadaOrigen.position, 12F))
-
-//        goToFragTravelPrediction(
-//            MapUtils.getAddress(requireContext(), markerParadaOrigen),
-//            MapUtils.getAddress(requireContext(), markerParadaDestino),
-//            travel[0].trayecto //revisar
-//        )
-        goToFragTravelPrediction(            listOfParadas
-
-        )
-    }
-
-    private fun goToFragTravelPrediction(listOfParadas: MutableList<InfoPuntoParada>) {
-
-//        val puntoOrigin = PuntoSeleccion(data)
-//        val puntoDest = PuntoSeleccion(dataAlternativa)
-//        var gson = Gson()
-//        var lista = Utils.getGsonParser()?.toJson(listOfParadas)
-        val ft: FragmentTransaction =
-            (context as MainActivity).supportFragmentManager
-                .beginTransaction()
-
-        ft.setCustomAnimations(
-            R.anim.slide_in,
-            R.anim.face_out,
-            R.anim.face_in,
-            R.anim.slide_out
-        )
-        ft.replace(
-            R.id.account,
-            FragmentTravelPrediction.newInstance(
-                listOfParadas as ArrayList<InfoPuntoParada>,
-                mapFragmentViewModel.activeAlgorithm
-            )
-        )
-        ft.addToBackStack(null)
-        ft.commit()
-    }
-
-    private fun setManualPoint(valor: Any?) {
-        val address = valor as Address?
-        if (manualPoint == "ORIGIN") {
-            btmSheetTextOrigin.text = address?.name
-        } else {
-
-            btmSheetTextDestino.text = address?.name
-        }
-
-        sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     private fun updateUI(data: Event<MapFragmentViewModel.Data>) {
@@ -369,7 +107,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         when (pokemonCardDetailData?.status) {
             MapFragmentViewModel.Status.LOADING -> {
                 setBusLines(data.peekContent().data as MutableList<ListLineBus>)
-
             }
 
             MapFragmentViewModel.Status.SHOW_ROUTES -> setVisibilityMenuButton(
@@ -378,9 +115,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             )
             MapFragmentViewModel.Status.MANUAL_POINT -> setManualPoint(data.peekContent().data)
             MapFragmentViewModel.Status.PROCEED_SEARCHING -> searchOperation(
-                data.peekContent().data,
-                data.peekContent().dataAlternativa,
-                data.peekContent().extraData
+                data.peekContent().data
             )
 
             MapFragmentViewModel.Status.ACTIVATE_BUTTON -> btmSheetProceedSearch.isEnabled = true
@@ -388,6 +123,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                 btmSheetTextOrigin.text = ""
                 btmSheetTextDestino.text = ""
                 btmSheetProceedSearch.isEnabled = false
+            }
+            MapFragmentViewModel.Status.AWAY_MARKERS -> {
+
+                mapFragmentViewModel.showAutoLocation()
             }
             MapFragmentViewModel.Status.SHOW_LOC -> {
                 val marcadorA = data.peekContent().data as Coordinates
@@ -437,6 +176,102 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             }
         }
     }
+
+    private fun setButtonsListeners() {
+
+        clearMapButton.setOnClickListener {
+            mMap.clear()
+            mapFragmentViewModel.cleanMarkers()
+        }
+        containerDropSheetImage.setOnClickListener {
+            onClickOriginDestinoButton()
+            toggleBottomSheet()
+        }
+        btmSheetProceedSearch.setOnClickListener {
+            mapFragmentViewModel.proceedSearching()
+        }
+        imagePuntoOrigen.setOnClickListener {
+            goToMyLocation()
+            val address = MapUtils.getAddressByLatLng(
+                requireContext(),
+                mapFragmentViewModel.myLocation
+            )
+            manualPoint = "ORIGIN"
+            btmSheetTextOrigin.text = address.name
+
+            mapFragmentViewModel.setManualOriginPoint(address)
+        }
+        buttonSelectedLines.visibility = View.GONE
+        buttonSelectedLines.setOnClickListener {
+            goToMyLocation()
+            manualPoint = "ORIGIN"
+            val address = MapUtils.getAddressByLatLng(
+                requireContext(),
+                mapFragmentViewModel.myLocation
+            )
+            btmSheetTextOrigin.text = address.name
+
+            mapFragmentViewModel.setManualOriginPoint(address)
+
+            if (btmSheetTextDestino.text.isNotEmpty()) {
+                mapFragmentViewModel.proceedSearching()
+            }
+        }
+
+
+        sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet)
+
+        /**
+         * bottom sheet state change listener
+         * we are changing button text when sheet changed state
+         * */
+        /**
+         * bottom sheet state change listener
+         * we are changing button text when sheet changed state
+         */
+        sheetBehavior.setBottomSheetCallback(object : BottomSheetCallback() {
+            override fun onStateChanged(
+                bottomSheet: View,
+                newState: Int
+            ) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                    }
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                    }
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                    }
+                    BottomSheetBehavior.STATE_DRAGGING -> {
+                    }
+                    BottomSheetBehavior.STATE_SETTLING -> {
+                    }
+                    BottomSheetBehavior.STATE_HALF_EXPANDED -> {
+                    }
+                }
+            }
+
+            override fun onSlide(
+                bottomSheet: View,
+                slideOffset: Float
+            ) {
+            }
+        })
+    }
+
+    private fun toggleBottomSheet() {
+        if (sheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
+            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED)
+        } else {
+            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
+        }
+    }
+
+    /**
+     * OPERACIONES SOBRE LINEAS Y RECORRIDOS
+     *
+     * - setBusLines: muesrta las lineas disponibles por el servidor
+     * - setRoutes: pinta el recorrido y marcadores de cada linea clickeada
+     */
 
     private fun setBusLines(busLines: MutableList<ListLineBus>) {
         when (busLines.size) {
@@ -514,15 +349,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         for (i in recIda) {
             val lat = LatLng(i.latitude, i.longitude)
             listLatLng.add(lat)
-
-
         }
+
         for (i in recVuelta) {
             val lat = LatLng(i.latitude, i.longitude)
             listLatLng2.add(lat)
-
-
         }
+
         mMap.addPolyline(
             PolylineOptions()
                 .clickable(true)
@@ -541,13 +374,50 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         mMap.setOnPolylineClickListener(this)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_map_fragment, container, false)
+    private fun onClickOriginDestinoButton() {
+        btmSheetImageOrigin.setOnClickListener {
+
+            manualFlag = true
+            manualPoint = "ORIGIN"
+            btmSheetImageDelete.visibility = View.VISIBLE
+            sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+        btmSheetImageDestino.setOnClickListener {
+            manualFlag = true
+            manualPoint = "DESTINO"
+            btmSheetImageDelete.visibility = View.VISIBLE
+            sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+
+        btmSheetImageDelete.setOnClickListener {
+            manualFlag = false
+            manualPoint = ""
+            btmSheetTextOrigin.text = ""
+            btmSheetTextDestino.text = ""
+            btmSheetImageDelete.visibility = View.GONE
+            mMap.clear()
+            mapFragmentViewModel.cleanMarkers()
+        }
     }
+
+    private fun setManualPoint(valor: Any?) {
+        val address = valor as Address?
+        if (manualPoint == "ORIGIN") {
+            btmSheetTextOrigin.text = address?.name
+        } else {
+
+            btmSheetTextDestino.text = address?.name
+        }
+
+        sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    /**
+     * OPERACIONES SOBRE EL MAPA
+     *
+     * - Permisos y acciones propias del Mapa que necesitan de GoogleMap.
+     * - InfoWindowAdapter
+     */
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -623,10 +493,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         baseRouteButton3.setOnLongClickListener {
             if (!mapFragmentViewModel.activeLineButtonFlag3) {
                 mapFragmentViewModel.activeLine.add(502)
-//                baseRouteButton3.background = setBackgroundColorShape(
-//                    requireContext(),
-//                    R.color.colorBlue,5
-//                )
 
                 baseRouteButton3.size = FloatingActionButton.SIZE_NORMAL
                 mapFragmentViewModel.activeLineButtonFlag3 = true
@@ -728,20 +594,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 
         mMap.setOnMapLongClickListener(this)
 
-        adapter = CustomInfoWindowAdapter(LayoutInflater.from(activity), requireContext())
+        adapter = CustomInfoWindowAdapter(
+            LayoutInflater.from(activity),
+            requireContext(),
+            mapFragmentViewModel
+        )
 
         mMap.setInfoWindowAdapter(adapter)
         googleMap.setOnInfoWindowClickListener { marker ->
-
-//            goToMyLocation()
-//            val address = MapUtils.getAddress(requireContext(), marker)
-//            val address2 =
-//                MapUtils.getAddressByLatLng(requireContext(), mapFragmentViewModel.myLocation)
-//            mapFragmentViewModel.checkLocation = false
-//            mapFragmentViewModel.addressOrigin = address2
-//            mapFragmentViewModel.addressDestination = address
-//
-//            mapFragmentViewModel.proceedSearching()
 
             mapFragmentViewModel.checkLocation = false
             val address = MapUtils.getAddress(requireContext(), marker)
@@ -751,6 +611,123 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             toggleBottomSheet()
             mapFragmentViewModel.setManualDestPoint(address)
         }
+        googleMap.setOnInfoWindowCloseListener {
+            mapFragmentViewModel.userAwaitBusRoutes = false
+            mapFragmentViewModel.checkLocation = true
+            mapFragmentViewModel.showAutoLocation()
+        }
+    }
+
+    /**
+     * OPERACIONES PARA BUSCAR UN LUGAR
+     *
+     * - searchOperation: limpia los campos y colapsa el modal de informacion de puntos selecionados
+     *
+     * - showIntermediateTravel: pinta el recorrido intermedio y marcadores de las paradas
+     *              de las lineas seleccionadas.
+     *
+     * - goToFragTravelPrediction: crea el fragmento FragmentTravelPrediction para mostrar
+     *              la ventana informativa con los resultados de cada viaje
+     */
+
+    private fun searchOperation(data: Any?) {
+
+        btmSheetTextOrigin.text = ""
+        btmSheetTextDestino.text = ""
+        btmSheetImageDelete.visibility = View.GONE
+        sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        showIntermediateTravel(data)
+    }
+
+    private fun showIntermediateTravel(data: Any?) {
+        val travel = data as List<MultipleLinesTravelInfo>
+
+        val listLatLng = mutableListOf<LatLng>()
+
+        val listOfParadas = mutableListOf<InfoPuntoParada>()
+        travel.forEach {
+
+            for (i in it.coordenadasIntermedias) {
+                val lat = LatLng(i.latitude, i.longitude)
+                listLatLng.add(lat)
+            }
+            mMap.addPolyline(
+                PolylineOptions()
+                    .clickable(true)
+                    .addAll(
+                        listLatLng
+                    ).color(ContextCompat.getColor(requireContext(), getBusColorRoute(it.linea)))
+            )
+
+            val markerParadaOrigen = mMap.addMarker(
+                MarkerOptions()
+                    .position(
+                        LatLng(
+                            it.coordenadasIntermedias[0].latitude,
+                            it.coordenadasIntermedias[0].longitude
+                        )
+                    )
+                    .icon(
+                        ViewUtils.bitmapDescriptorFromVector(
+                            requireContext(),
+                            R.drawable.ic_parada_de_autobus
+                        )
+                    )
+            )
+            val markerParadaDestino = mMap.addMarker(
+                MarkerOptions()
+                    .position(
+                        LatLng(
+                            it.coordenadasIntermedias[it.coordenadasIntermedias.size - 1].latitude,
+                            it.coordenadasIntermedias[it.coordenadasIntermedias.size - 1].longitude
+                        )
+                    )
+                    .icon(
+                        ViewUtils.bitmapDescriptorFromVector(
+                            requireContext(),
+                            R.drawable.ic_parada_de_autobus
+                        )
+                    )
+            )
+            listLatLng.clear()
+
+            listOfParadas.add(
+                InfoPuntoParada(
+                    it.coordenadasIntermedias[0],
+                    MapUtils.getAddress(requireContext(), markerParadaOrigen),
+                    it.coordenadasIntermedias[it.coordenadasIntermedias.size - 1],
+                    MapUtils.getAddress(requireContext(), markerParadaDestino),
+                    "",
+                    it.trayecto.toInt(),
+                    it.linea.toInt(),
+                    1
+                )
+            )
+        }
+        goToFragTravelPrediction(listOfParadas)
+    }
+
+    private fun goToFragTravelPrediction(listOfParadas: MutableList<InfoPuntoParada>) {
+
+        val ft: FragmentTransaction =
+            (context as MainActivity).supportFragmentManager
+                .beginTransaction()
+
+        ft.setCustomAnimations(
+            R.anim.slide_in,
+            R.anim.face_out,
+            R.anim.face_in,
+            R.anim.slide_out
+        )
+        ft.replace(
+            R.id.account,
+            FragmentTravelPrediction.newInstance(
+                listOfParadas as ArrayList<InfoPuntoParada>,
+                mapFragmentViewModel.activeAlgorithm
+            )
+        )
+        ft.addToBackStack(null)
+        ft.commit()
     }
 
     override fun onMyLocationButtonClick(): Boolean {
@@ -775,17 +752,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         }
     }
 
-    override fun onMapClick(puntoPulsado: LatLng) {
+    override fun onMapClick(puntoPulsado: LatLng) {}
 
-        mMap.setOnMapClickListener {
-            mMap.addMarker(MarkerOptions().position(puntoPulsado).title("Marker in Sydney"))
-
-        }
-    }
-
-    override fun onInfoWindowClick(p0: Marker) {
-
-    }
+    override fun onInfoWindowClick(p0: Marker) {}
 
     override fun onMapLongClick(p0: LatLng) {
 
@@ -808,11 +777,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         }
     }
 
-    override fun onMyLocationClick(p0: Location) {
-        Toast.makeText(context, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-    }
+    override fun onMyLocationClick(p0: Location) {}
 
-    fun goToMyLocation() {
+    private fun goToMyLocation() {
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -821,34 +788,32 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            LocationServices.getFusedLocationProviderClient(requireContext()).getLastLocation()
-                .addOnSuccessListener(
-                    OnSuccessListener<Location?> {
-                        mMap.isMyLocationEnabled = true
-                        mMap.animateCamera(
-                            CameraUpdateFactory.newLatLngZoom(
-                                LatLng(
-                                    it?.latitude ?: 0.0, it?.longitude ?: 0.0
-                                ), 12F
-                            )
+            LocationServices.getFusedLocationProviderClient(requireContext()).lastLocation
+                .addOnSuccessListener {
+                    mMap.isMyLocationEnabled = true
+                    mMap.animateCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                            LatLng(
+                                it?.latitude ?: 0.0, it?.longitude ?: 0.0
+                            ), 12F
                         )
-                    })
+                    )
+                }
         } else {
-            LocationServices.getFusedLocationProviderClient(requireContext()).getLastLocation()
-                .addOnSuccessListener(
-                    OnSuccessListener<Location?> {
+            LocationServices.getFusedLocationProviderClient(requireContext()).lastLocation
+                .addOnSuccessListener {
 
-                        mapFragmentViewModel.myLocation =
-                            LatLng(it?.latitude ?: 0.0, it?.longitude ?: 0.0)
-                        mMap.isMyLocationEnabled = true
-                        mMap.animateCamera(
-                            CameraUpdateFactory.newLatLngZoom(
-                                LatLng(
-                                    it?.latitude ?: 0.0, it?.longitude ?: 0.0
-                                ), 12F
-                            )
+                    mapFragmentViewModel.myLocation =
+                        LatLng(it?.latitude ?: 0.0, it?.longitude ?: 0.0)
+                    mMap.isMyLocationEnabled = true
+                    mMap.animateCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                            LatLng(
+                                it?.latitude ?: 0.0, it?.longitude ?: 0.0
+                            ), 12F
                         )
-                    })
+                    )
+                }
         }
     }
 }

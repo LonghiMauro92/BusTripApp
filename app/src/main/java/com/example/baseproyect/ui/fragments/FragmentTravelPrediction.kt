@@ -26,7 +26,6 @@ class FragmentTravelPrediction : Fragment() {
 
     private val predictorViewModel by viewModel<FragmentTravelPredictionViewModel>()
 
-
     private var adapter: TravelPredictionAdapter? = null
 
     companion object {
@@ -94,7 +93,7 @@ class FragmentTravelPrediction : Fragment() {
         recyclerView.visibility = View.GONE
     }
 
-    fun setUIValues(data: Any?) {
+    private fun setUIValues(data: Any?) {
 
         cardLoader.visibility = View.GONE
         recyclerView.visibility = View.VISIBLE
