@@ -1,16 +1,16 @@
-package com.example.baseproyect.ui
+package com.example.baseproyect.utils
 
 import android.app.Activity
 import androidx.appcompat.app.AlertDialog
 import com.example.baseproyect.R
-import com.example.baseproyect.ui.StringUtils.EMPTY_STRING
+import com.example.baseproyect.utils.StringUtils.EMPTY_STRING
 
 fun invokeAlertDialog(
     activity: Activity,
     title: String = EMPTY_STRING,
     message: String,
-    positiveButtonS: String="",
-    negativeButtonS: String="",
+    positiveButtonS: String = "",
+    negativeButtonS: String = "",
     positiveButton: (() -> Unit)? = null,
     negativeButton: (() -> Unit)? = null
 ) {

@@ -14,15 +14,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.example.baseproyect.MainActivity
 import com.example.baseproyect.R
-import com.example.baseproyect.ViewUtils
-import com.example.baseproyect.ViewUtils.getBusColorRoute
-import com.example.baseproyect.ViewUtils.getBusIcon
 import com.example.baseproyect.adapter.CustomInfoWindowAdapter
 import com.example.baseproyect.ui.*
+import com.example.baseproyect.utils.MapUtils
+import com.example.baseproyect.utils.ViewUtils
+import com.example.baseproyect.utils.ViewUtils.getBusColorRoute
+import com.example.baseproyect.utils.ViewUtils.getBusIcon
+import com.example.baseproyect.utils.invokeAlertDialog
 import com.example.domain.response.Coordinates
-import com.example.domain.response.ListLineBus
-import com.example.domain.response.MultipleLinesTravelInfo
+import com.example.domain.response.LineBus
 import com.example.domain.response.RecorridoBaseInformation
+import com.example.domain.response.TravelLineInformation
 import com.getbase.floatingactionbutton.FloatingActionButton
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -106,7 +108,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         val pokemonCardDetailData = data.getContentIfNotHandled()
         when (pokemonCardDetailData?.status) {
             MapFragmentViewModel.Status.LOADING -> {
-                setBusLines(data.peekContent().data as MutableList<ListLineBus>)
+                setBusLines(data.peekContent().data as MutableList<LineBus>)
             }
 
             MapFragmentViewModel.Status.SHOW_ROUTES -> setVisibilityMenuButton(
@@ -273,7 +275,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
      * - setRoutes: pinta el recorrido y marcadores de cada linea clickeada
      */
 
-    private fun setBusLines(busLines: MutableList<ListLineBus>) {
+    private fun setBusLines(busLines: MutableList<LineBus>) {
         when (busLines.size) {
             1 -> {
 
@@ -640,7 +642,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     }
 
     private fun showIntermediateTravel(data: Any?) {
-        val travel = data as List<MultipleLinesTravelInfo>
+        val travel = data as List<TravelLineInformation>
 
         val listLatLng = mutableListOf<LatLng>()
 

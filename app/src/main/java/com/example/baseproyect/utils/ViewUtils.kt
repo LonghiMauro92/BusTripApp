@@ -1,4 +1,4 @@
-package com.example.baseproyect
+package com.example.baseproyect.utils
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -7,11 +7,9 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.GradientDrawable.OVAL
-import android.os.Build
-import android.widget.LinearLayout
 import androidx.annotation.ColorRes
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import com.example.baseproyect.R
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
@@ -88,7 +86,8 @@ object ViewUtils {
             "505" -> R.color.color505Card
             else -> R.color.colorNegro
         }
-    fun setBackgroundColorShape(context: Context, @ColorRes color: Int,wid: Int): Drawable {
+
+    fun setBackgroundColorShape(context: Context, @ColorRes color: Int, wid: Int): Drawable {
         val gd = GradientDrawable()
         gd.setColor(ContextCompat.getColor(context, color))
         gd.shape = OVAL

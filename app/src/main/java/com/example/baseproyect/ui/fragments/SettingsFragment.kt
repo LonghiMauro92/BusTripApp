@@ -18,8 +18,8 @@ class SettingsFragment : Fragment() {
     private val menuItemSetBusLines by lazy { menu_item_set_bus_lines }
     private val menuItemAlgorithms by lazy { menu_item_view_algorithms }
 
-    lateinit var menuBussLinesList: List<MenuListItem>
-    lateinit var menuAlgorithmsList: List<MenuListItem>
+    private lateinit var menuBusLinesList: List<MenuListItem>
+    private lateinit var menuAlgorithmsList: List<MenuListItem>
 
     private val mapViewModel by sharedViewModel<MapFragmentViewModel>()
 
@@ -59,28 +59,27 @@ class SettingsFragment : Fragment() {
         )
 
 
-        menuBussLinesList = listOf<MenuListItem>(
+        menuBusLinesList = listOf<MenuListItem>(
             MenuListItem("500 - AMARILLO") { lineBusActionItem(500) },
             MenuListItem("501 - BLANCO") { lineBusActionItem(500) },
             MenuListItem("503 - AZUL") { lineBusActionItem(503) },
             MenuListItem("504 - VERDE") { lineBusActionItem(504) }
         )
-        menuItemSetBusLines.setSubMenuList(menuBussLinesList)
+        menuItemSetBusLines.setSubMenuList(menuBusLinesList)
 
         menuAlgorithmsList = listOf<MenuListItem>(
-            MenuListItem("Alg - RegresionAcumulado") { AlgorithmActionItem("RegresionAcumulado") },
-            MenuListItem("Alg - RegresionDiferenciaDeCeldas") { AlgorithmActionItem("RegresionDiferenciaDeCeldas") },
-            MenuListItem("Alg - TiempoEntreCoordenadasComplejo") { AlgorithmActionItem("TiempoEntreCoordenadasComplejo") }
+            MenuListItem("Alg - RegresionDiferenciaDeCeldas") { showAlgorithmActionItem("RegresionDiferenciaDeCeldas") },
+            MenuListItem("Alg - TiempoEntreCoordenadasComplejo") { showAlgorithmActionItem("TiempoEntreCoordenadasComplejo") }
         )
 
         menuItemAlgorithms.setSubMenuList(menuAlgorithmsList)
     }
 
-    fun lineBusActionItem(linea: Int) {
+    private fun lineBusActionItem(linea: Int) {
         mapViewModel.showBaseRoute(linea)
     }
 
-    fun AlgorithmActionItem(algorithm: String) {
+    private fun showAlgorithmActionItem(algorithm: String) {
         mapViewModel.activeAlgorithm = algorithm
     }
 

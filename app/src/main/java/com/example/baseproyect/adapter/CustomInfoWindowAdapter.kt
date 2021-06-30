@@ -8,8 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.baseproyect.R
-import com.example.baseproyect.ui.MapUtils
 import com.example.baseproyect.ui.fragments.MapFragmentViewModel
+import com.example.baseproyect.utils.MapUtils
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -26,7 +26,7 @@ class CustomInfoWindowAdapter(
         val v = inflater.inflate(R.layout.infowindow_layout, null)
 
         //necesario para frenar el thread cuando muestro un recorrido
-        mapFragmentViewModel.userAwaitBusRoutes =true
+        mapFragmentViewModel.userAwaitBusRoutes = true
         mapFragmentViewModel.checkLocation = false
 
         val address =

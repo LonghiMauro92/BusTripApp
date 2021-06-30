@@ -8,19 +8,18 @@ import com.example.baseproyect.ui.Event
 import com.example.baseproyect.ui.InfoPuntoParada
 import com.example.baseproyect.ui.toDomainModel
 import com.example.domain.response.UseCaseResult
-import com.example.domain.usecase.GetCalculoAlgoritmosUseCase
+import com.example.domain.usecase.ExecuteTypeAlgorithmUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 import java.text.SimpleDateFormat
 import java.util.*
 
-class FragmentTravelPredictionViewModel :
+class FragmentTravelPredictionViewModel(private val getCalculoAlgSimpleUseCase: ExecuteTypeAlgorithmUseCase) :
     BaseViewModel(), KoinComponent {
 
-    private val getCalculoAlgSimpleUseCase: GetCalculoAlgoritmosUseCase by inject()
+//    private val getCalculoAlgSimpleUseCase: ExecuteTypeAlgorithmUseCase by inject()
 
     lateinit var algorithm: String
 

@@ -1,12 +1,9 @@
 package com.example.data2.impl
 
-import com.example.data2.mapper.toTravelBody
-import com.example.data2.mapper.transformListRecorridosMultipleLinesResponseToListRecorridoBaseInformation
 import com.example.data2.mapper.transformListTravelBodyBEResponseToListTravelBodyInformation
-import com.example.data2.response.TravelBodyBEResponse
+import com.example.data2.response.TravelEstimate
 import com.example.data2.service.ServiceApi
 import com.example.data2.service.ServiceGenerator
-import com.example.data2.service.TravelEstimate
 import com.example.domain.response.Coordinates
 import com.example.domain.response.TravelBody
 import com.example.domain.response.UseCaseResult
@@ -57,18 +54,10 @@ class CalculadorTiemposServiceImpl : AlgoritmsService, KoinComponent {
     }
 
     override fun getCalcularTiempoPorRegresionAcumulado(destination: List<*>?): UseCaseResult<List<TravelBody>> {
-        val list = destination as List<InfoPuntoParadaDomain>
-//        val travelData = TravelEstimate(
-//            cordenadaO,
-//            cordenadaD,
-//            currentDateTimeString,
-//            recorridoId.toInt(),
-//            lineaId.toInt(),
-//            unidadId.toInt()
-//        )
+        val list = destination as List<*>
         val call =
             api.createService(ServiceApi::class.java).calcularTiempoPorRegresionAcumulado(
-                list
+                list as List<InfoPuntoParadaDomain>
             )
 
         try {

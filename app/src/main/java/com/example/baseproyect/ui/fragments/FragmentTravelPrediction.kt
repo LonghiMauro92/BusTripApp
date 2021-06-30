@@ -9,7 +9,7 @@ import com.example.baseproyect.R
 import com.example.baseproyect.adapter.TravelPredictionAdapter
 import com.example.baseproyect.ui.Event
 import com.example.baseproyect.ui.InfoPuntoParada
-import com.example.baseproyect.ui.invokeAlertDialog
+import com.example.baseproyect.utils.invokeAlertDialog
 import com.example.domain.response.TravelBody
 import kotlinx.android.synthetic.main.fragment_travel_prediction.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -24,7 +24,6 @@ class FragmentTravelPrediction : Fragment() {
     private var algoritmo: String = ""
     private lateinit var listaPuntos: ArrayList<InfoPuntoParada>
 
-    private val predictorViewModel by viewModel<FragmentTravelPredictionViewModel>()
 
     private var adapter: TravelPredictionAdapter? = null
 
@@ -56,6 +55,8 @@ class FragmentTravelPrediction : Fragment() {
 
     }
 
+    private val predictorViewModel by viewModel<FragmentTravelPredictionViewModel>()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -68,8 +69,9 @@ class FragmentTravelPrediction : Fragment() {
     }
 
     private fun updateUI(data: Event<FragmentTravelPredictionViewModel.Data>) {
-        val pokemonCardDetailData = data.getContentIfNotHandled()
-        when (pokemonCardDetailData?.status) {
+
+        val cardDetailData = data.getContentIfNotHandled()
+        when (cardDetailData?.status) {
             FragmentTravelPredictionViewModel.Status.LOADING -> {
                 setLoader()
             }

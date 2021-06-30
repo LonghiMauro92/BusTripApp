@@ -1,11 +1,10 @@
 package com.example.baseproyect.ui
 
-import com.example.data2.service.TravelEstimate
 import com.example.domain.response.Coordinates
 import com.example.domain.usecase.InfoPuntoParadaDomain
 import java.io.Serializable
 
-class InfoPuntoParada (
+class InfoPuntoParada(
     var posicionOrigen: Coordinates,
     var addressOrigen: com.example.baseproyect.ui.Address,
     var posicionDestino: Coordinates,
@@ -13,7 +12,8 @@ class InfoPuntoParada (
     var fecha: String,
     var trayecto: Int,
     var lineaId: Int,
-    var unidadId: Int = 1 ): Serializable
+    var unidadId: Int = 1
+) : Serializable
 
 fun InfoPuntoParada.toDomainModel(): InfoPuntoParadaDomain =
     InfoPuntoParadaDomain(

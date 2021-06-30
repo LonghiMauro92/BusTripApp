@@ -3,8 +3,8 @@ package com.example.baseproyect.adapter
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.example.baseproyect.ViewUtils
-import com.example.baseproyect.ui.MapUtils
+import com.example.baseproyect.utils.MapUtils
+import com.example.baseproyect.utils.ViewUtils
 import com.example.domain.response.TravelBody
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.fragment_ride_data.view.*

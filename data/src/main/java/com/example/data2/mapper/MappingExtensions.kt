@@ -27,13 +27,13 @@ fun transformPositionRecorridoResponseToRecorridoIntermedio(response: PositionRe
     )
 
 
-fun transformListRecorridosMultipleLinesResponseToListRecorridoBaseInformation(list: List<RecorridosMultipleLinesResponse>): List<MultipleLinesTravelInfo> =
+fun transformListRecorridosMultipleLinesResponseToListRecorridoBaseInformation(list: List<RecorridosMultipleLinesResponse>): List<TravelLineInformation> =
     list.map {
         it.toMultipleLinesTravelInfo()
     }
 
 fun RecorridosMultipleLinesResponse.toMultipleLinesTravelInfo() =
-    MultipleLinesTravelInfo(
+    TravelLineInformation(
         trayecto,
         linea,
         transformListCoordinatesResponseToListCoordinates(coordenadas)

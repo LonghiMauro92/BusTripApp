@@ -1,6 +1,7 @@
 package com.example.domain.response
 
-class MultipleLinesTravelInfo  (
+class TravelLineInformation(
     val trayecto: String = "",
     val linea: String = "",
-    val coordenadasIntermedias: List<Coordinates> = listOf())
+    val coordenadasIntermedias: List<Coordinates> = listOf()
+)

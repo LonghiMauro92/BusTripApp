@@ -7,7 +7,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 object NetworkingConfigHelper {
     fun createRetrofitInstance(): Retrofit {
         return Retrofit.Builder()
-//            .baseUrl(getBaseUrl())  // agregar la url base de los servicios
             .addConverterFactory(GsonConverterFactory.create())
             .client(OkHttpClient.Builder().build())
             .build()

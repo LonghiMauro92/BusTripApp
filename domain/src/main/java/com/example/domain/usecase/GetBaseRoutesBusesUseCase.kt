@@ -2,10 +2,9 @@ package com.example.domain.usecase
 
 import com.example.domain.services.RideService
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
-class GetBaseRoutesBusesUseCase : KoinComponent {
+class GetBaseRoutesBusesUseCase(private val getRideServiceRepository: RideService) : KoinComponent {
 
-    private val getRideServiceRepository: RideService by inject()
-    operator fun invoke(destination: Int) = getRideServiceRepository.getLocalServideRideInformation( destination)
+    operator fun invoke(destination: Int) =
+        getRideServiceRepository.getLocalServiceRideInformation(destination)
 }

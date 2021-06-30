@@ -1,13 +1,12 @@
 package com.example.domain.usecase
 
 import com.example.domain.response.PositionMultipleLines
-import com.example.domain.response.PositionRecorrido
 import com.example.domain.services.RideService
 import org.koin.core.KoinComponent
-import org.koin.core.inject
 
-class GetRecorridoEntrePuntosSeleccionados : KoinComponent {
+class GetRecorridoEntrePuntosSeleccionados(private val getRideServiceRepository: RideService) :
+    KoinComponent {
 
-    private val getRideServiceRepository: RideService by inject()
-    operator fun invoke(puntosSeleccionados: PositionMultipleLines) = getRideServiceRepository.getRecorridoEntrePuntosSeleccionados(puntosSeleccionados)
+    operator fun invoke(puntosSeleccionados: PositionMultipleLines) =
+        getRideServiceRepository.getRecorridoEntrePuntosSeleccionados(puntosSeleccionados)
 }

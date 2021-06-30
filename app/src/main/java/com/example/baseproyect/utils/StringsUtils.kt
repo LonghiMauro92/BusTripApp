@@ -1,4 +1,4 @@
-package com.example.baseproyect.ui
+package com.example.baseproyect.utils
 
 object StringUtils {
     const val EMPTY_STRING: String = ""

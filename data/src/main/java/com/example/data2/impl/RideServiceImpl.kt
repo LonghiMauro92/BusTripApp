@@ -3,9 +3,6 @@ package com.example.data2.impl
 import com.example.data2.mapper.BusLineMapper
 import com.example.data2.mapper.transformListRecorridoBaseResponseToListRecorridoBaseInformation
 import com.example.data2.mapper.transformListRecorridosMultipleLinesResponseToListRecorridoBaseInformation
-import com.example.data2.mapper.transformPositionRecorridoResponseToRecorridoIntermedio
-import com.example.data2.response.RecorridosMultipleLinesResponse
-import com.example.domain.response.PositionRecorrido
 import com.example.data2.service.ServiceApi
 import com.example.data2.service.ServiceGenerator
 import com.example.domain.response.*
@@ -15,12 +12,11 @@ import org.koin.core.KoinComponent
 class RideServiceImpl : RideService, KoinComponent {
 
     private val api = ServiceGenerator()
-    override fun getLocalServideRideInformation(destination: Int): UseCaseResult<List<RecorridoBaseInformation>> {
+    override fun getLocalServiceRideInformation(destination: Int): UseCaseResult<List<RecorridoBaseInformation>> {
         val call =
             api.createService(ServiceApi::class.java)
                 .getServiceBaseRouteInformation(destination.toString())
 
-//        val mapper = RecorridoBaseMapper()
         try {
             val response = call.execute()
             if (response.isSuccessful) {
@@ -40,7 +36,7 @@ class RideServiceImpl : RideService, KoinComponent {
         return UseCaseResult.Failure(Exception("response not success"))
     }
 
-    override fun getLinesInformation(): UseCaseResult<List<ListLineBus>> {
+    override fun getLinesInformation(): UseCaseResult<List<LineBus>> {
 
         val call = api.createService(ServiceApi::class.java).getListOfBuses()
 
@@ -60,10 +56,11 @@ class RideServiceImpl : RideService, KoinComponent {
     }
 
 
-    override fun getRecorridoEntrePuntosSeleccionados(puntosSeleccionados: PositionMultipleLines): UseCaseResult<List<MultipleLinesTravelInfo>> {
+    override fun getRecorridoEntrePuntosSeleccionados(puntosSeleccionados: PositionMultipleLines): UseCaseResult<List<TravelLineInformation>> {
 
         val call =
-            api.createService(ServiceApi::class.java).getParadasCercanasMultiplesLineas(puntosSeleccionados)
+            api.createService(ServiceApi::class.java)
+                .getParadasCercanasMultiplesLineas(puntosSeleccionados)
 
         try {
             val response = call.execute()
@@ -79,7 +76,7 @@ class RideServiceImpl : RideService, KoinComponent {
         return UseCaseResult.Failure(Exception(""))
     }
 
-    override fun getMultipleLinesSearching(destination: PositionMultipleLines): UseCaseResult<List<MultipleLinesTravelInfo>> {
+    override fun getMultipleLinesSearching(destination: PositionMultipleLines): UseCaseResult<List<TravelLineInformation>> {
         val call =
             api.createService(ServiceApi::class.java)
                 .getParadasCercanasMultiplesLineas(destination)
@@ -90,7 +87,9 @@ class RideServiceImpl : RideService, KoinComponent {
                 val body = response.body()
                 if (body != null) {
                     return UseCaseResult.Success(
-                        transformListRecorridosMultipleLinesResponseToListRecorridoBaseInformation(body)
+                        transformListRecorridosMultipleLinesResponseToListRecorridoBaseInformation(
+                            body
+                        )
                     )
                 } else {
                     return UseCaseResult.Failure(Exception("failed"))

@@ -9,11 +9,11 @@ import com.example.domain.usecase.*
 import org.koin.dsl.module
 
 val useCasesModule = module {
-    single { GetBaseRoutesBusesUseCase() }
-    single { GetLinesBusesUseCase() }
-    single { GetCalculoAlgoritmosUseCase() }
-    single { GetRecorridoEntrePuntosSeleccionados() }
-    single { GetListMultipleLinesTravelInfoUseCase() }
+    single { GetBaseRoutesBusesUseCase(get()) }
+    factory { GetLinesBusesUseCase(get()) }
+    single { ExecuteTypeAlgorithmUseCase(get()) }
+    single { GetRecorridoEntrePuntosSeleccionados(get()) }
+    single { GetListMultipleLinesTravelInfoUseCase(get()) }
 
 }
 

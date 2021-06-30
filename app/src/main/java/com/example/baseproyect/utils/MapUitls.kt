@@ -1,4 +1,4 @@
-package com.example.baseproyect.ui
+package com.example.baseproyect.utils
 
 import android.content.Context
 import android.location.Address
@@ -22,7 +22,7 @@ object MapUtils {
         val address = direccion[0].getAddressLine(0)
         val nameAddress = address.split(",")[0]
         val subtextAddressss = address.replace("$nameAddress, ", "")
-        return Address(
+        return com.example.baseproyect.ui.Address(
             "",
             nameAddress,
             subtextAddressss,
@@ -45,7 +45,7 @@ object MapUtils {
         val address = direccion[0].getAddressLine(0)
         val nameAddress = address.split(",")[0]
         val subtextAddressss = address.replace("$nameAddress, ", "")
-        return Address(
+        return com.example.baseproyect.ui.Address(
             "",
             nameAddress,
             subtextAddressss,

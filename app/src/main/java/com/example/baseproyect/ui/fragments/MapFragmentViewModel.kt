@@ -39,7 +39,8 @@ class MapFragmentViewModel :
     val listMarkers = mutableListOf<Marker>()
     val listSimulateBusMarkers = mutableListOf<Marker>()
 
-    var activeLine: MutableList<Int> = mutableListOf() // Por defecto, al realizar nua busqueda, toma la linea 500
+    var activeLine: MutableList<Int> =
+        mutableListOf() // Por defecto, al realizar nua busqueda, toma la linea 500
     var activeLineButtonFlag1: Boolean = false
     var activeLineButtonFlag2: Boolean = false
     var activeLineButtonFlag3: Boolean = false
