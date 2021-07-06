@@ -101,8 +101,8 @@ class FragmentTravelPrediction : Fragment() {
         recyclerView.visibility = View.VISIBLE
 
         val values = data as List<TravelBody>
-
-        adapter = TravelPredictionAdapter(values, algoritmo)
+        values.toSet()
+        adapter = TravelPredictionAdapter(values.toMutableList(), algoritmo)
 
         recyclerView.adapter = adapter
         adapter?.listener = {

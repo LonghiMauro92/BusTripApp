@@ -272,9 +272,10 @@ class MapFragmentViewModel :
                             )
                         } else {
                             //nothing - continue
-                        }
-                    }
 
+                        }
+
+                    }
                 }
             }
         }

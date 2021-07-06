@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() , BottomNavigationView.OnNavigationItem
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.principal_main_activity);
+        setContentView(R.layout.principal_main_activity)
         mainPagerAdapter = ViewPagerFragmentAdapter(supportFragmentManager)
 
         // Set items to be displayed.

@@ -59,17 +59,19 @@ class SettingsFragment : Fragment() {
         )
 
 
-        menuBusLinesList = listOf<MenuListItem>(
+        menuBusLinesList = listOf(
             MenuListItem("500 - AMARILLO") { lineBusActionItem(500) },
-            MenuListItem("501 - BLANCO") { lineBusActionItem(500) },
+            MenuListItem("501 - ROJO") { lineBusActionItem(501) },
+            MenuListItem("502 - BLANCO") { lineBusActionItem(502) },
             MenuListItem("503 - AZUL") { lineBusActionItem(503) },
-            MenuListItem("504 - VERDE") { lineBusActionItem(504) }
+            MenuListItem("504 - VERDE") { lineBusActionItem(504) },
+            MenuListItem("505 - MARRON") { lineBusActionItem(505) }
         )
         menuItemSetBusLines.setSubMenuList(menuBusLinesList)
 
-        menuAlgorithmsList = listOf<MenuListItem>(
-            MenuListItem("Alg - RegresionDiferenciaDeCeldas") { showAlgorithmActionItem("RegresionDiferenciaDeCeldas") },
-            MenuListItem("Alg - TiempoEntreCoordenadasComplejo") { showAlgorithmActionItem("TiempoEntreCoordenadasComplejo") }
+        menuAlgorithmsList = listOf(
+            MenuListItem("Regresion por diferencia de celdas") { showAlgorithmActionItem("RegresionDiferenciaDeCeldas") },
+            MenuListItem("Tiempo entre coordenadas complejo") { showAlgorithmActionItem("TiempoEntreCoordenadasComplejo") }
         )
 
         menuItemAlgorithms.setSubMenuList(menuAlgorithmsList)

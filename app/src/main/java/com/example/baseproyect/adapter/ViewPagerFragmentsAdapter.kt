@@ -3,9 +3,7 @@ package com.example.baseproyect.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.lifecycle.Lifecycle
 import com.example.baseproyect.ui.fragments.MainScreen
-import com.example.baseproyect.ui.fragments.MapFragment
 
 class ViewPagerFragmentAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
 

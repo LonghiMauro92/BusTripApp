@@ -7,7 +7,7 @@
 
     <color name="colorYell">#ECC503</color>
     <color name="colorYellPressed">#6FF8CF02</color>
-    <color name="colorYellCard">#86F6F202</color>
+    <color name="colorYellCard">#6BF6F202</color>
     <color name="colorRed">#DA0303</color>
     <color name="colorRedPressed">#ADDA0303</color>
     <color name="colorRedCard">#37F60505</color>
@@ -25,6 +25,7 @@
     <color name="colorTravelPredictionTitlesCard">#03A9F4</color>
     <color name="colorTravelPredictionHistoryCard">#FFFFFF</color>
     <color name="colorDivider">#EAEAEA</color>
+    <color name="color502Card">#BCEAEAEA</color>
     <color name="colorGris">#6A6A6A</color>
     <color name="colorNegro">#000000</color>
 

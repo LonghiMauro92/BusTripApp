@@ -14,18 +14,8 @@ open class BaseViewModel : ViewModel(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Default + SupervisorJob()
 
-    protected var mainStateNetworkingResponse = MutableLiveData<String>()
-
-    val mainStateNetworking: LiveData<String>
-        get() {
-            return mainStateNetworkingResponse
-        }
-
     override fun onCleared() {
         coroutineContext.cancel()
         super.onCleared()
     }
-
-    open fun toBackground() {}
-    open fun toForeground() {}
 }

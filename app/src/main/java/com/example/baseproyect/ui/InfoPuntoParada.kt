@@ -6,9 +6,9 @@ import java.io.Serializable
 
 class InfoPuntoParada(
     var posicionOrigen: Coordinates,
-    var addressOrigen: com.example.baseproyect.ui.Address,
+    var addressOrigen: Address,
     var posicionDestino: Coordinates,
-    var addressDestino: com.example.baseproyect.ui.Address,
+    var addressDestino: Address,
     var fecha: String,
     var trayecto: Int,
     var lineaId: Int,

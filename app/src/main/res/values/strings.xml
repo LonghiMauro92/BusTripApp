@@ -9,4 +9,6 @@
     <string name="bottom_sheet_hint_destino">Selecciona el lugar de destino</string>
     <string name="bottom_sheet_button_buscar">Buscar</string>
 
+    <string name="travel_ride_data_distance_text">%1$s Kms</string>
+
 </resources>

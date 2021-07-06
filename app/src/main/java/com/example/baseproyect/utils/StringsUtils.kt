@@ -2,7 +2,10 @@ package com.example.baseproyect.utils
 
 object StringUtils {
     const val EMPTY_STRING: String = ""
+}
 
-    const val ALERT_DIALOG_BACKEND_ERROR = "No"
-    const val ALERT_DIALOG_CONFIRM_ENDTRIP = "Yes"
+fun Double.getTimeFormat():String{
+    val toMinSeg = (this / 60).toString()
+
+    return "${toMinSeg.substringBefore(".")} min "+"${toMinSeg.substringAfter(".").substring(0,2)} seg"
 }

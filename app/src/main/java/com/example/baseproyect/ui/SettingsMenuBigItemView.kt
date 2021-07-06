@@ -21,7 +21,7 @@ class SettingsMenuBigItemView(context: Context, attributeSet: AttributeSet) :
 
     private val imageViewDropDownMenu by lazy { view_settings_menu_big_item_image_arrow_down }
 
-    val recyclerMenuList by lazy { view_settings_menu_big_item_down_list }
+    private val recyclerMenuList by lazy { view_settings_menu_big_item_down_list }
 
     private var listShown = false
 
@@ -42,10 +42,6 @@ class SettingsMenuBigItemView(context: Context, attributeSet: AttributeSet) :
 
             setLabel(label)
         }
-
-        val visibility =
-            attributes.getBoolean(R.styleable.SettingsMenuBigItemView_uic_visibility, false)
-
 
         attributes.recycle()
 

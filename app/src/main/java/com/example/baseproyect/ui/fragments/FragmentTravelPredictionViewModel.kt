@@ -19,8 +19,6 @@ import java.util.*
 class FragmentTravelPredictionViewModel(private val getCalculoAlgSimpleUseCase: ExecuteTypeAlgorithmUseCase) :
     BaseViewModel(), KoinComponent {
 
-//    private val getCalculoAlgSimpleUseCase: ExecuteTypeAlgorithmUseCase by inject()
-
     lateinit var algorithm: String
 
     val predictionMutableLiveData = MutableLiveData<Event<Data>>()

@@ -1,10 +1,13 @@
 package com.example.baseproyect.adapter
 
+import android.content.res.ColorStateList
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.baseproyect.R
 import com.example.baseproyect.utils.MapUtils
 import com.example.baseproyect.utils.ViewUtils
+import com.example.baseproyect.utils.getTimeFormat
 import com.example.domain.response.TravelBody
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.fragment_ride_data.view.*
@@ -21,8 +24,11 @@ class TravelPredictionViewHolder(itemView: View) :
 
         itemView.fragment_card_linea_text_value.text = item.linea
         itemView.fragment_card_algorithm_text_value.text = algoritmo
-        itemView.fragment_card_time_text_value.text = item.tiempo.toString()
-        itemView.fragment_card_distance_text_value.text = item.distancia.toString()
+        itemView.fragment_card_time_text_value.text = item.tiempo.getTimeFormat()
+        itemView.fragment_card_distance_text_value.text = context.getString(
+            R.string.travel_ride_data_distance_text,
+            item.distancia.toString().substring(0, 4)
+        )
         itemView.fragment_card_recorrido_text_value_origin.text = MapUtils.getAddressByLatLng(
             itemView.context,
             latlngOrigin
@@ -31,21 +37,40 @@ class TravelPredictionViewHolder(itemView: View) :
             itemView.context,
             latlngDestino
         ).name
-        itemView.fragment_card_info.setCardBackgroundColor(
-            ContextCompat.getColor(
-                itemView.context, ViewUtils.getBusCard(
-                    item.linea
-                )
-            )
-        )
+        itemView.fragment_card_title_text_view_bg.backgroundTintList = getColorTint(item.linea)
         itemView.fragment_card_title_text_view.setTextColor(
             ContextCompat.getColor(
-                itemView.context, ViewUtils.getBusColorRoute(
-                    item.linea
-                )
+                itemView.context, R.color.colorNegro
             )
         )
 
+    }
+
+    fun getColorTint(linea: String): ColorStateList {
+        val states = arrayOf(
+            intArrayOf(-android.R.attr.state_enabled),
+            intArrayOf(android.R.attr.state_pressed),
+            intArrayOf(android.R.attr.state_enabled)
+        )
+
+        val colors = intArrayOf(
+            ContextCompat.getColor(
+                itemView.context, ViewUtils.getBusCard(
+                    linea
+                )
+            ),  // disabled
+            ContextCompat.getColor(
+                itemView.context, ViewUtils.getBusCard(
+                    linea
+                )
+            ),  // pressed
+            ContextCompat.getColor(
+                itemView.context, ViewUtils.getBusCard(
+                    linea
+                )
+            ) // enabled
+        )
+        return ColorStateList(states, colors)
     }
 
 }

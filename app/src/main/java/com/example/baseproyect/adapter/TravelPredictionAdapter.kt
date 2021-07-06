@@ -8,7 +8,7 @@ import com.example.domain.response.TravelBody
 import kotlinx.android.synthetic.main.fragment_ride_data.view.*
 
 class TravelPredictionAdapter(
-    var items: List<TravelBody> = mutableListOf(),
+    var items: MutableList<TravelBody> = mutableListOf(),
     var algoritmo: String
 ) : RecyclerView.Adapter<TravelPredictionViewHolder>() {
 
