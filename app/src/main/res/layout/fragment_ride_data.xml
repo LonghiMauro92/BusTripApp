@@ -16,56 +16,72 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/fragment_card_title_text_view_bg"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/btn_bg_buttons"
-            android:backgroundTint="@color/color505"
-            android:padding="5dp"
-            app:layout_constraintEnd_toStartOf="@+id/fragment_card_image_close"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        <!--        <FrameLayout-->
+        <!--            android:id="@+id/fragment_card_title_text_view_bg"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginStart="20dp"-->
+        <!--            android:layout_marginEnd="20dp"-->
+        <!--            android:layout_marginTop="10dp"-->
+        <!--            android:background="@drawable/btn_bg_buttons"-->
+        <!--            android:backgroundTint="@color/color505"-->
+        <!--            android:padding="5dp"-->
+        <!--            app:layout_constraintEnd_toStartOf="@+id/fragment_card_image_close"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent">-->
 
-            <TextView
-                android:id="@+id/fragment_card_title_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Informacion del recorrido "
-                android:textColor="@color/colorBottomNavBar"
-                android:textSize="25sp"
-                android:textStyle="bold" />
-        </FrameLayout>
+        <!--            <TextView-->
+        <!--                android:id="@+id/fragment_card_title_text_view"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_gravity="center"-->
+        <!--                android:text="Informacion del recorrido "-->
+        <!--                android:textColor="@color/colorBottomNavBar"-->
+        <!--                android:textSize="25sp"-->
+        <!--                android:textStyle="bold" />-->
+        <!--        </FrameLayout>-->
 
         <TextView
             android:id="@+id/fragment_card_linea_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
             android:text="Linea Colectivo :"
             android:textColor="@color/colorNegro"
             android:textSize="20sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/fragment_card_title_text_view_bg"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_card_title_text_view_bg" />
+            app:layout_constraintTop_toTopOf="@+id/fragment_card_title_text_view_bg" />sd
 
-        <TextView
-            android:id="@+id/fragment_card_linea_text_value"
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:id="@+id/fragment_card_title_text_view_bg"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:textColor="@color/colorGris"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/fragment_card_linea_text"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/btn_bg_buttons"
+            android:backgroundTint="@color/color505"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            app:layout_constraintEnd_toStartOf="@+id/fragment_card_image_close"
             app:layout_constraintStart_toEndOf="@+id/fragment_card_linea_text"
-            app:layout_constraintTop_toTopOf="@+id/fragment_card_linea_text"
-            tools:text="500" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/fragment_card_linea_text_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/colorAccentLight"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_card_linea_text"
+                app:layout_constraintStart_toEndOf="@+id/fragment_card_linea_text"
+                app:layout_constraintTop_toTopOf="@+id/fragment_card_linea_text"
+                tools:text="500" />
+        </FrameLayout>
 
         <ImageView
             android:id="@+id/imageView1"
@@ -119,7 +135,8 @@
             android:layout_height="1dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:background="@color/colorDivider"
+            android:layout_marginEnd="10dp"
+            android:background="@color/colorGris"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
@@ -156,7 +173,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
-            android:background="@color/colorDivider"
+            android:background="@color/colorGris"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/fragment_card_algorithm_text" />
 
@@ -179,10 +196,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:layout_marginEnd="20dp"
             android:textColor="@color/colorGris"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginEnd="20dp"
             app:layout_constraintBottom_toBottomOf="@+id/fragment_card_time_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/fragment_card_time_text"
@@ -208,10 +225,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:layout_marginEnd="20dp"
             android:textColor="@color/colorGris"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginEnd="20dp"
             app:layout_constraintBottom_toBottomOf="@+id/fragment_card_distance_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/fragment_card_distance_text"
@@ -225,9 +242,9 @@
             android:layout_marginEnd="10dp"
             android:padding="5dp"
             android:src="@drawable/ic_close"
-            app:layout_constraintBottom_toBottomOf="@id/fragment_card_title_text_view_bg"
+            app:layout_constraintBottom_toBottomOf="@+id/fragment_card_title_text_view_bg"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/fragment_card_title_text_view_bg" />
+            app:layout_constraintTop_toTopOf="@+id/fragment_card_title_text_view_bg" />
 
         <ProgressBar
             android:id="@+id/fragment_card_image_loading"

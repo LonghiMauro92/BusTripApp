@@ -3,16 +3,14 @@ package com.example.baseproyect.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.GradientDrawable.OVAL
-import androidx.annotation.ColorRes
+import android.graphics.Rect
+import android.util.DisplayMetrics
+import android.view.TouchDelegate
+import android.view.View
 import androidx.core.content.ContextCompat
 import com.example.baseproyect.R
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
 
 
 object ViewUtils {
@@ -78,13 +76,54 @@ object ViewUtils {
 
     fun getBusCard(line: String): Int =
         when (line) {
-            "500" -> R.color.colorYellCard
-            "501" -> R.color.colorRedCard
+            "500" -> R.color.colorYell
+            "501" -> R.color.colorRed
             "502" -> R.color.color502Card
-            "503" -> R.color.colorGreenCard
-            "504" -> R.color.colorBlueCard
-            "505" -> R.color.color505Card
+            "503" -> R.color.colorGreenPressed
+            "504" -> R.color.colorBlue
+            "505" -> R.color.color505
             else -> R.color.colorNegro
         }
+
+    fun expandTouchArea(
+        context: Context,
+        parentView: View,
+        view: View,
+        extraLeftDp: Int,
+        extraRightDp: Int,
+        extraTopDp: Int,
+        extraBottomDp: Int
+    ) {
+        parentView.post {
+            try {
+                val rect = Rect()
+                view.getHitRect(rect)
+                rect.left -= convertDpToPx(
+                    extraLeftDp.toFloat(),
+                    context
+                ) as Int
+                rect.top -= convertDpToPx(
+                    extraTopDp.toFloat(),
+                    context
+                ) as Int
+                rect.right += convertDpToPx(
+                    extraRightDp.toFloat(),
+                    context
+                ) as Int
+                rect.bottom += convertDpToPx(
+                    extraBottomDp.toFloat(),
+                    context
+                ) as Int
+                parentView.touchDelegate = TouchDelegate(rect, view)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+    fun convertDpToPx(dp: Float, context: Context): Float {
+        val resources = context.resources
+        val metrics = resources.displayMetrics
+        return dp * (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+    }
 }
 

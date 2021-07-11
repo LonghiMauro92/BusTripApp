@@ -38,11 +38,13 @@ class TravelPredictionViewHolder(itemView: View) :
             latlngDestino
         ).name
         itemView.fragment_card_title_text_view_bg.backgroundTintList = getColorTint(item.linea)
-        itemView.fragment_card_title_text_view.setTextColor(
-            ContextCompat.getColor(
-                itemView.context, R.color.colorNegro
+        if(item.linea == "502") {
+            itemView.fragment_card_linea_text_value.setTextColor(
+                ContextCompat.getColor(
+                    itemView.context, R.color.colorNegro
+                )
             )
-        )
+        }
 
     }
 

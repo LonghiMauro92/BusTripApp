@@ -10,10 +10,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.baseproyect.R
 import com.example.baseproyect.adapter.SettingsBigItemMenuListAdapter
+import com.example.baseproyect.utils.ViewUtils.expandTouchArea
 import kotlinx.android.synthetic.main.view_item_menu.view.*
 
 class SettingsMenuBigItemView(context: Context, attributeSet: AttributeSet) :
     FrameLayout(context, attributeSet) {
+
+    private val viewContainer by lazy { view_settings_menu_big_item_container }
 
     private val imageViewIcon by lazy { view_settings_menu_big_item_image_view_icon }
 
@@ -46,7 +49,7 @@ class SettingsMenuBigItemView(context: Context, attributeSet: AttributeSet) :
         attributes.recycle()
 
         imageViewDropDownMenu.setOnClickListener { toggleListVisibility() }
-
+        expandTouchArea(context, viewContainer, imageViewDropDownMenu, 15, 15, 15, 15)
     }
 
 

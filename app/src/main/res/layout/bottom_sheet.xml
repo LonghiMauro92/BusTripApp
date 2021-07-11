@@ -77,7 +77,7 @@
             android:layout_marginTop="15dp"
             android:background="@drawable/container_location"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView1"
+            app:layout_constraintStart_toEndOf="@id/imageViewPuntoOrigen"
             app:layout_constraintTop_toBottomOf="@+id/label_delete_imageView">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -143,7 +143,7 @@
             android:layout_marginTop="15dp"
             android:background="@drawable/container_location"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView2"
+            app:layout_constraintStart_toEndOf="@+id/imageViewPuntoDestino"
             app:layout_constraintTop_toBottomOf="@+id/frame1">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -197,10 +197,10 @@
             style="@style/BaseBottomButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="20dp"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
             android:enabled="false"
             android:foreground="?attr/selectableItemBackground"
             android:text="@string/bottom_sheet_button_buscar"

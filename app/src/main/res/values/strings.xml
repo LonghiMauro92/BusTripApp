@@ -10,5 +10,8 @@
     <string name="bottom_sheet_button_buscar">Buscar</string>
 
     <string name="travel_ride_data_distance_text">%1$s Kms</string>
+    <string name="settings_menu_line_selection_text">Linea %1$s seleccionada por defecto</string>
+    <string name="settings_menu_algorithm_selection_text">Algoritmo %1$s seleccionado por defecto</string>
+    <string name="settings_menu_item_view_history">Ver Rutas Disponibles</string>
 
 </resources>

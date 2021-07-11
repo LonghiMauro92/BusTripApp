@@ -79,10 +79,20 @@ class SettingsFragment : Fragment() {
 
     private fun lineBusActionItem(linea: Int) {
         mapViewModel.showBaseRoute(linea)
+        Toast.makeText(
+            context,
+            getString(R.string.settings_menu_line_selection_text, linea.toString()),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     private fun showAlgorithmActionItem(algorithm: String) {
         mapViewModel.activeAlgorithm = algorithm
+        Toast.makeText(
+            context,
+            getString(R.string.settings_menu_algorithm_selection_text, algorithm),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
 }
