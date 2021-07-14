@@ -75,7 +75,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
     private lateinit var adapter: CustomInfoWindowAdapter
     private lateinit var sheetBehavior: BottomSheetBehavior<View>
 
-    private val mapFragmentViewModel by viewModel<MapFragmentViewModel>()
+    val mapFragmentViewModel by viewModel<MapFragmentViewModel>()
 
     companion object {
         const val LOCATION_REQUEST_CODE = 1

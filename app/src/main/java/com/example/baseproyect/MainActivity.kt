@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() , BottomNavigationView.OnNavigationItem
     /**
      * Scrolls `ViewPager` to show the provided screen.
      */
-    private fun scrollToScreen(mainScreen: MainScreen) {
+    fun scrollToScreen(mainScreen: MainScreen) {
         val screenPosition = mainPagerAdapter.getItems().indexOf(mainScreen)
         if (screenPosition != viewPager.currentItem) {
             viewPager.currentItem = screenPosition

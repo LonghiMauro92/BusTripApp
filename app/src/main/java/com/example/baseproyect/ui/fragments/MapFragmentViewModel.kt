@@ -55,7 +55,8 @@ class MapFragmentViewModel :
     var listOriginalBusRecB = mutableListOf<Coordinates>()
     var listActiveBusRecB = mutableListOf<Coordinates>()
 
-    var activeAlgorithm: String = "RegresionAcumulado" // Por defecto tomara el 1er algoritmo
+    var activeAlgorithm: String =
+        RegressionAlgType.REGRESSION_LINEAL_MULTIPLE.toString() // Por defecto tomara el 1er algoritmo
 
     var myLocation: LatLng = LatLng(0.0, 0.0)
 
@@ -320,6 +321,15 @@ class MapFragmentViewModel :
                 }
             }
         }
+    }
+
+    fun setLineSelectedByConfigurations(line: Int) {
+        activeLine.add(line)
+        showBaseRoute(line)
+    }
+
+    fun setAlgorithmSelectedByConfigurations(algorithm: String) {
+        activeAlgorithm = algorithm
     }
 
     fun setGoToButton() {

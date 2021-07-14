@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.example.baseproyect.MainActivity
 import com.example.baseproyect.R
 import com.example.baseproyect.ui.MenuListItem
 import kotlinx.android.synthetic.main.fragment_settings.*
 import kotlinx.android.synthetic.main.view_item_menu.view.*
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SettingsFragment : Fragment() {
     private val menuItemViewHistory by lazy { menu_item_view_history }
@@ -20,8 +20,6 @@ class SettingsFragment : Fragment() {
 
     private lateinit var menuBusLinesList: List<MenuListItem>
     private lateinit var menuAlgorithmsList: List<MenuListItem>
-
-    private val mapViewModel by sharedViewModel<MapFragmentViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,15 +68,23 @@ class SettingsFragment : Fragment() {
         menuItemSetBusLines.setSubMenuList(menuBusLinesList)
 
         menuAlgorithmsList = listOf(
-            MenuListItem("Regresion por diferencia de celdas") { showAlgorithmActionItem("RegresionDiferenciaDeCeldas") },
-            MenuListItem("Tiempo entre coordenadas complejo") { showAlgorithmActionItem("TiempoEntreCoordenadasComplejo") }
+            MenuListItem(RegressionAlgType.REGRESSION_LINEAL_MULTIPLE.toString()) {
+                showAlgorithmActionItem(
+                    RegressionAlgType.REGRESSION_LINEAL_MULTIPLE.toString()
+                )
+            },
+            MenuListItem(RegressionAlgType.REGRESSION_MATRIX_SCOPE.toString()) {
+                showAlgorithmActionItem(
+                    RegressionAlgType.REGRESSION_MATRIX_SCOPE.toString()
+                )
+            }
         )
 
         menuItemAlgorithms.setSubMenuList(menuAlgorithmsList)
     }
 
     private fun lineBusActionItem(linea: Int) {
-        mapViewModel.showBaseRoute(linea)
+        setLineSelection(linea)
         Toast.makeText(
             context,
             getString(R.string.settings_menu_line_selection_text, linea.toString()),
@@ -87,7 +93,13 @@ class SettingsFragment : Fragment() {
     }
 
     private fun showAlgorithmActionItem(algorithm: String) {
-        mapViewModel.activeAlgorithm = algorithm
+
+        val fragment = childFragmentManager.findFragmentByTag("f1")
+
+        if (fragment is MapFragment) {
+            fragment.mapFragmentViewModel.setAlgorithmSelectedByConfigurations(algorithm)
+        }
+
         Toast.makeText(
             context,
             getString(R.string.settings_menu_algorithm_selection_text, algorithm),
@@ -95,4 +107,20 @@ class SettingsFragment : Fragment() {
         ).show()
     }
 
+    fun setLineSelection(linea: Int) {
+        val parentActvity = activity as MainActivity
+        parentActvity.scrollToScreen(MainScreen.MAP)
+        val fragment = childFragmentManager.findFragmentByTag("f1")
+
+        if (fragment is MapFragment) {
+            fragment.mapFragmentViewModel.setLineSelectedByConfigurations(linea)
+        }
+    }
+}
+
+enum class RegressionAlgType(val valor: String) {
+    REGRESSION_LINEAL_MULTIPLE("Regresión Lineal Múltiple"),
+    REGRESSION_MATRIX_SCOPE("Regresion Enfoque Matricial");
+
+    override fun toString() = this.valor
 }

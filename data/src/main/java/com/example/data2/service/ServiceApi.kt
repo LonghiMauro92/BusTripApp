@@ -1,6 +1,9 @@
 package com.example.data2.service
 
-import com.example.data2.response.*
+import com.example.data2.response.ListLineBusResponse
+import com.example.data2.response.RecorridoBaseResponse
+import com.example.data2.response.RecorridosMultipleLinesResponse
+import com.example.data2.response.TravelBodyBEResponse
 import com.example.domain.response.PositionMultipleLines
 import com.example.domain.usecase.InfoPuntoParadaDomain
 import retrofit2.Call
@@ -15,31 +18,20 @@ interface ServiceApi {
     @GET("/RecorridoBase/ObtenerRecorridos")
     fun getListOfBuses(): Call<List<ListLineBusResponse>>
 
+    ////////// Calculo de tiempos y distancia
 
     @Headers("Content-Type: application/json;charset=UTF-8")
     @POST("/CalculadorTiempo/ObtenerTiempoPorRegresionAcumulado")
-    fun calcularTiempoPorRegresionAcumulado(
+    fun calcularTiempoPorRegresionLinealMultiple(
         @Body user: List<InfoPuntoParadaDomain>
     ): Call<List<TravelBodyBEResponse>>
-
 
     @POST("/CalculadorTiempo/ObtenerTiempoPorRegresionDiferenciaDeCeldas")
-    fun calcularTiempoPorRegresionDiferenciaDeCeldas(
+    fun calcularTiempoPorRegresionEnfoqueMatricial(
         @Body user: List<InfoPuntoParadaDomain>
     ): Call<List<TravelBodyBEResponse>>
 
-
-    @POST("/CalculadorTiempo/ObtenerTiempoEntreCoordenadasComplejo")
-    fun calcularTiempoEntreCoordenadasComplejo(
-        @Body user: List<InfoPuntoParadaDomain>
-    ): Call<List<TravelBodyBEResponse>>
-
-
-    @POST("/RecorridoBase/CaminosAlternativos")
-    fun calcularRecorridoEntreDosPuntosSeleccionados(
-        @Body puntosSeleccionados: PositionRecorrido
-    ): Call<PositionRecorridoResponse>
-
+    //////////
 
     @POST("/RecorridoBase/ParadasCercanas")
     fun getParadasCercanasMultiplesLineas(

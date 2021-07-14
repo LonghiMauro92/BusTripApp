@@ -2,26 +2,23 @@ package com.example.domain.usecase
 
 import com.example.domain.response.TravelBody
 import com.example.domain.response.UseCaseResult
-import com.example.domain.services.AlgoritmsService
+import com.example.domain.services.AlgorithmsService
 import org.koin.core.KoinComponent
 
-class ExecuteTypeAlgorithmUseCase(private val getAlgorithmsServiceRepository: AlgoritmsService) :
+class ExecuteTypeAlgorithmUseCase(private val getAlgorithmsServiceRepository: AlgorithmsService) :
     KoinComponent {
 
     fun selectTypeAlgService(
         listOfParadas: List<*>?,
         algoritm: String
     ) = when (algoritm) {
-        "RegresionAcumulado" -> {
+        "Regresión Lineal Múltiple" -> {
             listOfParadas as List<*>
-            getAlgorithmsServiceRepository.getCalcularTiempoPorRegresionAcumulado(
+            getAlgorithmsServiceRepository.getCalcularTiempoPorRegresionLinealMultiple(
                 listOfParadas
             )
         }
-        "RegresionDiferenciaDeCeldas" -> getAlgorithmsServiceRepository.getCalcularTiempoPorRegresionDiferenciaDeCeldas(
-            listOfParadas
-        )
-        "TiempoEntreCoordenadasComplejo" -> getAlgorithmsServiceRepository.getCalcularTiempoEntreCoordenadasComplejo(
+        "Regresion Enfoque Matricial" -> getAlgorithmsServiceRepository.getCalcularTiempoPorRegresionEnfoqueMatricial(
             listOfParadas
         )
         else -> {
