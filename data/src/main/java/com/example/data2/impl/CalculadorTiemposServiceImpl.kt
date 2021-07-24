@@ -59,28 +59,4 @@ class CalculadorTiemposServiceImpl : AlgorithmsService, KoinComponent {
 
         return UseCaseResult.Failure(Exception("response not success"))
     }
-
-//    override fun getCalcularTiempoEntreCoordenadasComplejo(destination: List<*>?): UseCaseResult<List<TravelBody>> {
-//        val listSelected = destination as List<InfoPuntoParadaDomain>
-//
-//        val call =
-//            api.createService(ServiceApi::class.java).calcularTiempoEntreCoordenadasComplejo(
-//                listSelected
-//            )
-//
-//        try {
-//
-//            val response = call.execute()
-//            if (response.isSuccessful)
-//                response.body()?.let {
-//                    transformListTravelBodyBEResponseToListTravelBodyInformation(it)
-//                }?.let {
-//                    return UseCaseResult.Success(it)
-//                }
-//        } catch (e: Exception) {
-//            return UseCaseResult.Failure(e)
-//        }
-//
-//        return UseCaseResult.Failure(Exception("response not success"))
-//    }
 }

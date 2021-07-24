@@ -26,7 +26,7 @@ class SettingsMenuBigItemView(context: Context, attributeSet: AttributeSet) :
 
     private val recyclerMenuList by lazy { view_settings_menu_big_item_down_list }
 
-    private var listShown = false
+    private var listShown = true
 
     init {
 

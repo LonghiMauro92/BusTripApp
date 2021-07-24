@@ -15,21 +15,21 @@
             android:id="@+id/map"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".MapsActivity"/>
+            tools:context=".MapsActivity" />
 
         <com.getbase.floatingactionbutton.FloatingActionsMenu
             android:id="@+id/fragment_map_base_route"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             app:fab_addButtonColorNormal="?attr/colorPrimary"
             app:fab_addButtonSize="normal"
             app:fab_labelsPosition="left"
-            android:layout_marginBottom="30dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
             <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/accion_bus_1"
+                android:id="@+id/accion_bus_500"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_directions_bus_black_24dp"
@@ -39,7 +39,7 @@
                 app:fab_title="500" />
 
             <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/accion_bus_2"
+                android:id="@+id/accion_bus_501"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_directions_bus_black_24dp"
@@ -49,37 +49,37 @@
                 app:fab_title="501" />
 
             <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/accion_bus_3"
+                android:id="@+id/accion_bus_502"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_directions_bus_black_24dp"
                 app:fab_colorNormal="@color/color502"
                 app:fab_colorPressed="@color/colorGris"
                 app:fab_size="mini"
-                app:fab_title="502"/>
+                app:fab_title="502" />
 
             <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/accion_bus_5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_directions_bus_black_24dp"
-                app:fab_colorNormal="@color/colorGreen"
-                app:fab_colorPressed="@color/colorGreenPressed"
-                app:fab_size="mini"
-                app:fab_title="503" />
-
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/accion_bus_4"
+                android:id="@+id/accion_bus_503"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_directions_bus_black_24dp"
                 app:fab_colorNormal="@color/colorBlue"
                 app:fab_colorPressed="@color/colorBluePressed"
                 app:fab_size="mini"
+                app:fab_title="503" />
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/accion_bus_504"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_directions_bus_black_24dp"
+                app:fab_colorNormal="@color/colorGreen"
+                app:fab_colorPressed="@color/colorGreenPressed"
+                app:fab_size="mini"
                 app:fab_title="504" />
 
             <com.getbase.floatingactionbutton.FloatingActionButton
-                android:id="@+id/accion_bus_6"
+                android:id="@+id/accion_bus_505"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_directions_bus_black_24dp"
@@ -106,12 +106,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
             android:layout_marginBottom="40dp"
-            android:visibility="visible"
             android:background="@android:color/transparent"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/fragment_map_base_route"
-            app:srcCompat="@drawable/ic_doble_a_la_derecha"
-            />
+            app:srcCompat="@drawable/ic_doble_a_la_derecha" />
+
         <FrameLayout
             android:id="@+id/account"
             android:layout_width="match_parent"

@@ -1,81 +1,62 @@
 package com.example.baseproyect
 
 import android.os.Bundle
-import android.view.MenuItem
-import androidx.annotation.IdRes
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.ViewPager
+import androidx.appcompat.content.res.AppCompatResources
 import com.example.baseproyect.adapter.ViewPagerFragmentAdapter
-import com.example.baseproyect.ui.fragments.MainScreen
-import com.example.baseproyect.ui.fragments.getMainScreenForMenuItem
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.baseproyect.adapter.ViewPagerFragmentAdapter.Companion.FIRST_TAB
+import com.example.baseproyect.adapter.ViewPagerFragmentAdapter.Companion.SECOND_TAB
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.principal_main_activity.*
+import kotlinx.android.synthetic.main.view_interactions_tab.view.*
 
-class MainActivity : AppCompatActivity() , BottomNavigationView.OnNavigationItemSelectedListener {
-    val viewPager: ViewPager by lazy {view_pager}
-    val bottomNavigationView: BottomNavigationView by lazy {bottom_navigation_view}
-    private lateinit var mainPagerAdapter: ViewPagerFragmentAdapter
+class MainActivity : AppCompatActivity() {
+    private val viewPager by lazy { view_pager }
+    val tabLayout by lazy { tab_layout }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.principal_main_activity)
-        mainPagerAdapter = ViewPagerFragmentAdapter(supportFragmentManager)
 
-        // Set items to be displayed.
-        mainPagerAdapter.setItems(arrayListOf(MainScreen.MAP, MainScreen.CONFIGURATION))
+        viewPager.adapter = ViewPagerFragmentAdapter(supportFragmentManager, lifecycle)
+        viewPager.isUserInputEnabled = false
+        TabLayoutMediator(tabLayout, viewPager) { _, _ -> }.attach()
 
-        // Show the default screen.
-        val defaultScreen = MainScreen.MAP
-        scrollToScreen(defaultScreen)
-        selectBottomNavigationViewMenuItem(defaultScreen.menuItemId)
-
-        // Set the listener for item selection in the bottom navigation view.
-        bottomNavigationView.setOnNavigationItemSelectedListener(this)
-
-        // Attach an adapter to the view pager and make it select the bottom navigation
-        // menu item and change the title to proper values when selected.
-        viewPager.adapter = mainPagerAdapter
-        viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
-            override fun onPageSelected(position: Int) {
-                val selectedScreen = mainPagerAdapter.getItems()[position]
-                selectBottomNavigationViewMenuItem(selectedScreen.menuItemId)
-                supportActionBar?.setTitle(selectedScreen.titleStringId)
-            }
-        })
+        setCustomViewTabLayout()
     }
 
-    /**
-     * Scrolls `ViewPager` to show the provided screen.
-     */
-    fun scrollToScreen(mainScreen: MainScreen) {
-        val screenPosition = mainPagerAdapter.getItems().indexOf(mainScreen)
-        if (screenPosition != viewPager.currentItem) {
-            viewPager.currentItem = screenPosition
-        }
-    }
+    private fun setCustomViewTabLayout() {
 
-    /**
-     * Selects the specified item in the bottom navigation view.
-     */
-    fun selectBottomNavigationViewMenuItem(@IdRes menuItemId: Int) {
-        bottomNavigationView.setOnNavigationItemSelectedListener(null)
-        bottomNavigationView.selectedItemId = menuItemId
-        bottomNavigationView.setOnNavigationItemSelectedListener(this)
-    }
-
-    /**
-     * Listener implementation for registering bottom navigation clicks.
-     */
-    override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
-        getMainScreenForMenuItem(menuItem.itemId)?.let {
-            scrollToScreen(it)
-            supportActionBar?.setTitle(it.titleStringId)
-            return true
-        }
-        return false
+        tabLayout.visibility = View.VISIBLE
+        val customViewTab1 = View.inflate(baseContext, R.layout.view_interactions_tab, null)
+        customViewTab1.counter.text = getString(R.string.map_id)
+        customViewTab1.icon.setImageDrawable(
+            AppCompatResources.getDrawable(
+                baseContext,
+                R.drawable.ic_mapa
+            )
+        )
+        tabLayout.getTabAt(FIRST_TAB)?.customView = customViewTab1
+        val customViewTab2 = View.inflate(baseContext, R.layout.view_interactions_tab, null)
+        customViewTab2.counter.text = getString(R.string.settings_id)
+        customViewTab2.icon.setImageDrawable(
+            AppCompatResources.getDrawable(
+                baseContext,
+                R.drawable.ic_menu
+            )
+        )
+        tabLayout.getTabAt(SECOND_TAB)?.customView = customViewTab2
     }
 
 
+    fun swipeToTab(tabIndex: Int) {
+
+        tabLayout.getTabAt(tabIndex)?.select()
+
+        viewPager.currentItem = tabIndex
+
+    }
 
 }

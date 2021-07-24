@@ -2,30 +2,34 @@ package com.example.baseproyect.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
-import com.example.baseproyect.ui.fragments.MainScreen
+import androidx.lifecycle.Lifecycle
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.baseproyect.ui.fragments.MapFragment
+import com.example.baseproyect.ui.fragments.SettingsFragment
 
-class ViewPagerFragmentAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+class ViewPagerFragmentAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
+    FragmentStateAdapter(fragmentManager, lifecycle) {
+    companion object {
+        const val MAX_TABS = 2
+        const val FIRST_TAB = 0
+        const val SECOND_TAB = 1
+    }
 
-    private val screens = arrayListOf<MainScreen>()
+    override fun getItemCount(): Int = MAX_TABS
 
-    fun setItems(screens: List<MainScreen>) {
-        this.screens.apply {
-            clear()
-            addAll(screens)
-            notifyDataSetChanged()
+
+    override fun createFragment(position: Int): Fragment {
+
+        return when (position) {
+            FIRST_TAB -> {
+                MapFragment.newInstance()
+            }
+            SECOND_TAB -> {
+
+                SettingsFragment.newInstance()
+            }
+            else ->
+                MapFragment.newInstance()
         }
-    }
-
-    fun getItems(): List<MainScreen> {
-        return screens
-    }
-
-    override fun getItem(position: Int): Fragment {
-        return screens[position].fragment
-    }
-
-    override fun getCount(): Int {
-        return screens.size
     }
 }

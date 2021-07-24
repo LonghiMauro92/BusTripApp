@@ -4,7 +4,7 @@
     <item
         android:id="@+id/bottom_navigation_item_logs"
         android:icon="@drawable/ic_mapa"
-        android:title="@string/home_id" />
+        android:title="@string/map_id" />
 
     <item
         android:id="@+id/bottom_navigation_item_progress"

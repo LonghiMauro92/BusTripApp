@@ -68,14 +68,27 @@ class FragmentTravelPredictionViewModel(private val getCalculoAlgSimpleUseCase: 
                     )
                 }
                 is UseCaseResult.Success -> {
-                    predictionMutableLiveData.postValue(
-                        Event(
-                            Data(
-                                status = Status.CONTENT_DATA,
-                                data = result.data
+                    val travelData = result.data
+                    if (travelData.isNotEmpty()) {
+                        predictionMutableLiveData.postValue(
+                            Event(
+                                Data(
+                                    status = Status.CONTENT_DATA,
+                                    data = result.data
+                                )
                             )
                         )
-                    )
+                    } else {
+                        predictionMutableLiveData.postValue(
+                            Event(
+                                Data(
+                                    status = Status.ERROR,
+                                    data = "La consulta que realizaste no se ha encontrado.Por favor busque otra ubicación",
+                                    dataAlternativa = "Volver"
+                                )
+                            )
+                        )
+                    }
                 }
             }
         }

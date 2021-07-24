@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@color/colorTravelPredictionHistoryCard">
+    android:background="@color/colorTravelPredictionHistoryCard"
+    android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/view_settings_menu_big_item_container"
         android:layout_width="match_parent"
-        android:background="@drawable/settings_item_bg"
-        android:layout_height="80dp">
+        android:layout_height="80dp"
+        android:background="@drawable/settings_item_bg">
 
         <ImageView
             android:id="@+id/view_settings_menu_big_item_image_view_icon"
@@ -27,7 +27,7 @@
             android:id="@+id/view_settings_menu_big_item_text_view_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="15dp"
             android:layout_marginEnd="10dp"
             android:ellipsize="end"
             android:maxLines="1"
@@ -46,13 +46,14 @@
             android:layout_marginEnd="20dp"
             android:src="@drawable/ic_flecha_hacia_abajo_gruesa"
             android:visibility="gone"
-            tools:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/view_settings_menu_big_item_text_view_label"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/view_settings_menu_big_item_down_list"
         android:layout_width="match_parent"

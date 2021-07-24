@@ -21,6 +21,7 @@
     <color name="color505Pressed">#573701</color>
     <color name="color505Card">#99603D01</color>
     <color name="color502">#FFFFFF</color>
+    <color name="colorWhite">#FFFFFF</color>
     <color name="colorTravelPredictionCard">#260178</color>
     <color name="colorTravelPredictionTitlesCard">#03A9F4</color>
     <color name="colorTravelPredictionHistoryCard">#FFFFFF</color>

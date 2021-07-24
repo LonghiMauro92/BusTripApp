@@ -11,18 +11,17 @@ class ExecuteTypeAlgorithmUseCase(private val getAlgorithmsServiceRepository: Al
     fun selectTypeAlgService(
         listOfParadas: List<*>?,
         algoritm: String
-    ) = when (algoritm) {
+    ): UseCaseResult<List<TravelBody>> = when (algoritm) {
         "Regresión Lineal Múltiple" -> {
-            listOfParadas as List<*>
             getAlgorithmsServiceRepository.getCalcularTiempoPorRegresionLinealMultiple(
                 listOfParadas
             )
         }
-        "Regresion Enfoque Matricial" -> getAlgorithmsServiceRepository.getCalcularTiempoPorRegresionEnfoqueMatricial(
+        "Enfoque Matricial" -> getAlgorithmsServiceRepository.getCalcularTiempoPorRegresionEnfoqueMatricial(
             listOfParadas
         )
         else -> {
-            UseCaseResult.Success(TravelBody())
+            UseCaseResult.Success(emptyList())
         }
     }
 

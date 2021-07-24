@@ -36,8 +36,8 @@ class MapFragmentViewModel :
     var visibleOptions: Boolean = false
     var checkLocation: Boolean = true
     var userAwaitBusRoutes: Boolean = false
-    val listMarkers = mutableListOf<Marker>()
-    val listSimulateBusMarkers = mutableListOf<Marker>()
+    private val listMarkers = mutableListOf<Marker>()
+    private val listSimulateBusMarkers = mutableListOf<Marker>()
 
     var activeLine: MutableList<Int> =
         mutableListOf() // Por defecto, al realizar nua busqueda, toma la linea 500
@@ -206,16 +206,26 @@ class MapFragmentViewModel :
 
     fun proceedSearching() {
         checkLocation = false
-        if (activeLine.isEmpty()) {
-            activeLine.add(500)
-        }
-        getRecorridoEntreDosPuntosSeleccionados(
-            PositionMultipleLines(
-                Coordinates(addressOrigin.latitude!!, addressOrigin.longitude!!),
-                Coordinates(addressDestination.latitude!!, addressDestination.longitude!!),
-                activeLine
+        if (activeLine.isNotEmpty()) {
+            getRecorridoEntreDosPuntosSeleccionados(
+                PositionMultipleLines(
+                    Coordinates(addressOrigin.latitude!!, addressOrigin.longitude!!),
+                    Coordinates(addressDestination.latitude!!, addressDestination.longitude!!),
+                    activeLine
+                )
             )
-        )
+        } else {
+
+            mapMutableLiveData.postValue(
+                Event(
+                    Data(
+                        status = Status.ERROR,
+                        data = "No hay ninguna linea seleccionada para la busqueda, Por favor seleccione una desde el Menu de Configuración",
+                        dataAlternativa = "Back"
+                    )
+                )
+            )
+        }
     }
 
     fun addMarker(marker: Marker) {
@@ -241,7 +251,7 @@ class MapFragmentViewModel :
     }
 
     fun showAutoLocation() {
-        if (checkLocation) {
+        if (checkLocation && activeLine.isNotEmpty()) {
             launch {
                 withContext(Dispatchers.IO) {
                     delay(2000L) // retraso non-blocking de 4 segundos
@@ -251,6 +261,9 @@ class MapFragmentViewModel :
                     }
 
                     if (checkLocation) {
+                        // Cuando tengo que mostrar el recorrido de un colectivo
+                        // le paso la lista de recorrido ida y vuelta
+
                         mapMutableLiveData.postValue(
                             Event(
                                 Data(
@@ -282,7 +295,7 @@ class MapFragmentViewModel :
         }
     }
 
-    fun getRecorridoEntreDosPuntosSeleccionados(puntosSeleccionados: PositionMultipleLines) {
+    private fun getRecorridoEntreDosPuntosSeleccionados(puntosSeleccionados: PositionMultipleLines) {
 
         viewModelScope.launch {
             when (val result =
@@ -332,6 +345,18 @@ class MapFragmentViewModel :
         activeAlgorithm = algorithm
     }
 
+    fun removedSelectedLinesByConfigurations() {
+        activeLine.clear()
+
+        mapMutableLiveData.postValue(
+            Event(
+                Data(
+                    status = Status.CLEAN_MAP
+                )
+            )
+        )
+    }
+
     fun setGoToButton() {
         if (activeLineButtonFlag1 || activeLineButtonFlag2 || activeLineButtonFlag3 || activeLineButtonFlag4 || activeLineButtonFlag5 || activeLineButtonFlag6) {
             mapMutableLiveData.postValue(
@@ -371,6 +396,7 @@ class MapFragmentViewModel :
         SHOW_LOC,
         ENABLE_GOTO_BUTTON,
         DISABLE_GOTO_BUTTON,
-        AWAY_MARKERS
+        AWAY_MARKERS,
+        CLEAN_MAP
     }
 }
