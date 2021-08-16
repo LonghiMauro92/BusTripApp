@@ -21,6 +21,7 @@ import com.example.baseproyect.utils.ViewUtils
 import com.example.baseproyect.utils.ViewUtils.getBusColorRoute
 import com.example.baseproyect.utils.ViewUtils.getBusIcon
 import com.example.baseproyect.utils.invokeAlertDialog
+import com.example.baseproyect.utils.onClickThrottled
 import com.example.domain.response.Coordinates
 import com.example.domain.response.LineBus
 import com.example.domain.response.RecorridoBaseInformation
@@ -183,9 +184,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
 
     private fun setButtonsListeners() {
 
-        clearMapButton.setOnClickListener {
+        clearMapButton.onClickThrottled({
             cleanMapAndMarkers()
-        }
+        })
         containerDropSheetImage.setOnClickListener {
             onClickOriginDestinoButton()
             toggleBottomSheet()
@@ -193,7 +194,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         btmSheetProceedSearch.setOnClickListener {
             mapFragmentViewModel.proceedSearching()
         }
-        imagePuntoOrigen.setOnClickListener {
+        imagePuntoOrigen.onClickThrottled({
             goToMyLocation()
             val address = MapUtils.getAddressByLatLng(
                 requireContext(),
@@ -203,9 +204,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             btmSheetTextOrigin.text = address.name
 
             mapFragmentViewModel.setManualOriginPoint(address)
-        }
+        }, 5000L)
         buttonSelectedLines.visibility = View.GONE
-        buttonSelectedLines.setOnClickListener {
+        buttonSelectedLines.onClickThrottled({
             goToMyLocation()
             manualPoint = "ORIGIN"
             val address = MapUtils.getAddressByLatLng(
@@ -219,7 +220,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             if (btmSheetTextDestino.text.isNotEmpty()) {
                 mapFragmentViewModel.proceedSearching()
             }
-        }
+        })
 
 
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet)
@@ -342,67 +343,68 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
         listLatLong: MutableList<RecorridoBaseInformation>,
         mutableList: MutableList<RecorridoBaseInformation>
     ) {
-//revisar, puede haber crash
-        val recIda =
-            listLatLong[0].coordenadas
-        val recVuelta =
-            mutableList[0].coordenadas
-        val listLatLng = mutableListOf<LatLng>()
-        val listLatLng2 = mutableListOf<LatLng>()
-        for (i in recIda) {
-            val lat = LatLng(i.latitude, i.longitude)
-            listLatLng.add(lat)
+        if (listLatLong.isNotEmpty() || mutableList.isNotEmpty()) {
+            val recIda =
+                listLatLong[0].coordenadas
+            val recVuelta =
+                mutableList[0].coordenadas
+            val listLatLng = mutableListOf<LatLng>()
+            val listLatLng2 = mutableListOf<LatLng>()
+            for (i in recIda) {
+                val lat = LatLng(i.latitude, i.longitude)
+                listLatLng.add(lat)
+            }
+
+            for (i in recVuelta) {
+                val lat = LatLng(i.latitude, i.longitude)
+                listLatLng2.add(lat)
+            }
+
+            mMap.addPolyline(
+                PolylineOptions()
+                    .clickable(true)
+                    .addAll(
+                        listLatLng
+                    ).color(Color.BLUE)
+            )
+
+            mMap.addPolyline(
+                PolylineOptions()
+                    .clickable(true)
+                    .addAll(
+                        listLatLng2
+                    ).color(Color.RED)
+            )
+            mMap.setOnPolylineClickListener(this)
         }
-
-        for (i in recVuelta) {
-            val lat = LatLng(i.latitude, i.longitude)
-            listLatLng2.add(lat)
-        }
-
-        mMap.addPolyline(
-            PolylineOptions()
-                .clickable(true)
-                .addAll(
-                    listLatLng
-                ).color(Color.BLUE)
-        )
-
-        mMap.addPolyline(
-            PolylineOptions()
-                .clickable(true)
-                .addAll(
-                    listLatLng2
-                ).color(Color.RED)
-        )
-        mMap.setOnPolylineClickListener(this)
     }
 
     private fun onClickOriginDestinoButton() {
-        btmSheetImageOrigin.setOnClickListener {
+        btmSheetImageOrigin.onClickThrottled({
 
             manualFlag = true
             manualPoint = "ORIGIN"
             btmSheetImageDelete.visibility = View.VISIBLE
             sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        }
-        btmSheetImageDestino.setOnClickListener {
+        })
+        btmSheetImageDestino.onClickThrottled({
             manualFlag = true
             manualPoint = "DESTINO"
             btmSheetImageDelete.visibility = View.VISIBLE
             sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        }
+        })
 
-        btmSheetImageDelete.setOnClickListener {
+        btmSheetImageDelete.onClickThrottled({
             manualFlag = false
             manualPoint = ""
             btmSheetTextOrigin.text = ""
             btmSheetTextDestino.text = ""
             btmSheetImageDelete.visibility = View.GONE
             cleanMapAndMarkers()
-        }
+        })
     }
 
-    fun cleanMapAndMarkers() {
+    private fun cleanMapAndMarkers() {
 
         mMap.clear()
         mapFragmentViewModel.cleanMarkers()
@@ -573,30 +575,30 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             }
         }
 
-        baseRouteButton500.setOnClickListener {
+        baseRouteButton500.onClickThrottled({
 
             mapFragmentViewModel.showBaseRoute(500)
-        }
-        baseRouteButton501.setOnClickListener {
+        })
+        baseRouteButton501.onClickThrottled({
 
             mapFragmentViewModel.showBaseRoute(501)
-        }
-        baseRouteButton502.setOnClickListener {
+        })
+        baseRouteButton502.onClickThrottled({
 
             mapFragmentViewModel.showBaseRoute(502)
-        }
-        baseRouteButton503.setOnClickListener {
+        })
+        baseRouteButton503.onClickThrottled({
 
             mapFragmentViewModel.showBaseRoute(503)
-        }
-        baseRouteButton504.setOnClickListener {
+        })
+        baseRouteButton504.onClickThrottled({
 
             mapFragmentViewModel.showBaseRoute(504)
-        }
-        baseRouteButton505.setOnClickListener {
+        })
+        baseRouteButton505.onClickThrottled({
 
             mapFragmentViewModel.showBaseRoute(505)
-        }
+        })
 
         mMap.setOnMapClickListener(this)
 
@@ -620,6 +622,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMyLocationButtonClickListe
             mapFragmentViewModel.setManualDestPoint(address)
         }
         googleMap.setOnInfoWindowCloseListener {
+            mapFragmentViewModel.removeActiveLine()
             mapFragmentViewModel.userAwaitBusRoutes = false
             mapFragmentViewModel.checkLocation = true
             mapFragmentViewModel.showAutoLocation()

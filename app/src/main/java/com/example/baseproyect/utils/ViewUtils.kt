@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Rect
+import android.os.Handler
 import android.util.DisplayMetrics
 import android.view.TouchDelegate
 import android.view.View
@@ -120,10 +121,24 @@ object ViewUtils {
             }
         }
     }
+
     fun convertDpToPx(dp: Float, context: Context): Float {
         val resources = context.resources
         val metrics = resources.displayMetrics
         return dp * (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+    }
+}
+
+const val DEFAULT_DEBOUNCE_TIME = 1500L
+
+fun View.onClickThrottled(onClickAction: () -> Unit, debounceTime: Long = DEFAULT_DEBOUNCE_TIME) {
+    var isClickEnable = true
+    this.setOnClickListener {
+        if (isClickEnable) {
+            isClickEnable = false
+            onClickAction.invoke()
+            Handler().postDelayed({ isClickEnable = true }, debounceTime)
+        }
     }
 }
 

@@ -65,11 +65,12 @@ class FragmentTravelPrediction : Fragment() {
         predictorViewModel.getCurrentPrediction(
             listaPuntos, algoritmo
         )
-
     }
 
     private fun updateUI(data: Event<FragmentTravelPredictionViewModel.Data>) {
 
+        cardLoader.visibility = View.GONE
+        recyclerView.visibility = View.GONE
         val cardDetailData = data.getContentIfNotHandled()
         when (cardDetailData?.status) {
             FragmentTravelPredictionViewModel.Status.LOADING -> {
@@ -79,6 +80,7 @@ class FragmentTravelPrediction : Fragment() {
             FragmentTravelPredictionViewModel.Status.CONTENT_DATA -> {
                 setUIValues(data.peekContent().data)
             }
+
             FragmentTravelPredictionViewModel.Status.ERROR -> {
                 invokeAlertDialog(
                     activity = requireActivity(),
@@ -119,6 +121,12 @@ class FragmentTravelPrediction : Fragment() {
     }
 
     fun onCloseClick() {
+
+        val fragment = parentFragmentManager.fragments[0]
+
+        if (fragment is MapFragment) {
+            fragment.mapFragmentViewModel.checkLocation = false
+        }
         cardInformation.visibility = View.GONE
     }
 }

@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <debug-overrides>
+    <base-config cleartextTrafficPermitted="true">
         <trust-anchors>
-            <certificates src="user" />
             <certificates src="system" />
         </trust-anchors>
-    </debug-overrides>
+    </base-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">http://10.0.2.2:8080</domain>
-        <domain includeSubdomains="true">localhost</domain>
-        <debug-overrides>
-            <trust-anchors>
-                <certificates src="user" />
-                <certificates src="system" />
-            </trust-anchors>
-        </debug-overrides>
     </domain-config>
 </network-security-config>
-
-
-    <!--<domain includeSubdomains="true">localhost</domain>-->

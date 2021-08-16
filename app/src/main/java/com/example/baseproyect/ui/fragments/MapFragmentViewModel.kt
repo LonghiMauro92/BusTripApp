@@ -345,6 +345,10 @@ class MapFragmentViewModel :
         activeAlgorithm = algorithm
     }
 
+    fun removeActiveLine() {
+        activeLine.clear()
+    }
+
     fun removedSelectedLinesByConfigurations() {
         activeLine.clear()
 
