@@ -1,8 +1,8 @@
 package com.example.di
 
-import com.example.data2.NetworkingConfigHelper
-import com.example.data2.impl.CalculadorTiemposServiceImpl
-import com.example.data2.impl.RideServiceImpl
+import com.example.data.NetworkingConfigHelper
+import com.example.data.impl.CalculadorTiemposServiceImpl
+import com.example.data.impl.RideServiceImpl
 import com.example.domain.services.AlgorithmsService
 import com.example.domain.services.RideService
 import com.example.domain.usecase.*

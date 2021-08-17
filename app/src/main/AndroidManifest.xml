@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.baseproyect"
+    package="com.example.proyecto_final"
     android:targetSandboxVersion="1">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
-        android:name="com.example.baseproyect.App"
+        android:name="com.example.proyecto_final.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -31,7 +31,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDYiFa_Ov3pmkFsbQAdOCgHd4iaYmBEpwY" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name="com.example.proyecto_final.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
