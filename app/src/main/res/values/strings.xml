@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BusTravelApp</string>
+    <string name="app_name">BusTripApp</string>
     <string name="map_id">Mapa</string>
     <string name="settings_id">Menu-Configuraciones</string>
 
